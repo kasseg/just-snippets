@@ -1,0 +1,84 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.customfields.option.Option
+import com.onresolve.jira.groovy.user.FormField
+if (getActionName() == "Передать") {
+    FormField teamField = getFieldByName('Team')
+    //Прячет и показывает поля, в зависимости от команды
+    if (teamField.getValue() == "SalesWorks technical"){
+        fieldHandler("Заявка влияет на закрытие периода", "select",false,false)
+        fieldHandler("Временное решение", "select",false,false)
+        fieldHandler("Описание временного решения", "text",true,false)
+        fieldHandler("Проблема с дневным отчетом", "select",false,true)
+        fieldHandler("Проблема с продуктом", "select",false,true)
+        fieldHandler("Версия приложения Bluebook", "select",false,true)
+        fieldHandler("Браузер", "text",false,true)
+        fieldHandler("Модель устройства, версия Andriod", "text",false,true)    
+    } else if (teamField.getValue() == "RSS"){
+        fieldHandler("Заявка влияет на закрытие периода", "select",false,true)
+        fieldHandler("Временное решение", "select",false,true)
+        fieldHandler("Описание временного решения", "text",false,true)
+        fieldHandler("Проблема с дневным отчетом", "select",false,true)
+        fieldHandler("Проблема с продуктом", "select",false,true)
+        fieldHandler("Версия приложения Bluebook", "select",false,true)
+        fieldHandler("Браузер", "text",false,true)
+        fieldHandler("Модель устройства, версия Andriod", "text",false,true)
+    } else if (teamField.getValue() == "FE"){
+        fieldHandler("Заявка влияет на закрытие периода", "select",false,true)
+        fieldHandler("Временное решение", "select",false,true)
+        fieldHandler("Описание временного решения", "text",false,true)
+        fieldHandler("Проблема с дневным отчетом", "select",false,false)
+        fieldHandler("Проблема с продуктом", "select",false,false)
+        fieldHandler("Версия приложения Bluebook", "select",false,true)
+        fieldHandler("Браузер", "text",false,true)
+        fieldHandler("Модель устройства, версия Andriod", "text",false,true)
+    } else if (teamField.getValue() == "Bluebook technical"){
+        fieldHandler("Заявка влияет на закрытие периода", "select",false,true)
+        fieldHandler("Временное решение", "select",false,true)
+        fieldHandler("Описание временного решения", "text",false,true)
+        fieldHandler("Проблема с дневным отчетом", "select",false,true)
+        fieldHandler("Проблема с продуктом", "select",false,true)
+        fieldHandler("Версия приложения Bluebook", "select",true,false)
+        fieldHandler("Браузер", "text",false,false)
+        fieldHandler("Модель устройства, версия Andriod", "text",false,false)
+    } else {
+        fieldHandler("Заявка влияет на закрытие периода", "select",false,true)
+        fieldHandler("Временное решение", "select",false,true)
+        fieldHandler("Описание временного решения", "text",false,true)
+        fieldHandler("Проблема с дневным отчетом", "select",false,true)
+        fieldHandler("Проблема с продуктом", "select",false,true)
+        fieldHandler("Версия приложения Bluebook", "select",false,true)
+        fieldHandler("Браузер", "text",false,true)
+        fieldHandler("Модель устройства, версия Andriod", "text",false,true)
+    }
+}
+
+def fieldHandler(String fieldName, String fieldType, boolean isRequired, boolean isHidden) {
+  def customFieldManager = ComponentAccessor.getCustomFieldManager()
+  def optionsManager = ComponentAccessor.getOptionsManager()
+  def field = getFieldByName(fieldName)
+  def fieldObject = customFieldManager.getCustomFieldObject(field.getFieldId())
+  def config = fieldObject.getRelevantConfig(getIssueContext())
+  def options = optionsManager.getOptions(config)
+  def resetOption
+  if (fieldType=="select"){
+      if (!(underlyingIssue.getCustomFieldValue(fieldObject) as String)?.trim()){
+       field.setFormValue(-1)
+      } else {
+       resetOption = options.find {it.value == (underlyingIssue.getCustomFieldValue(fieldObject) as String)}
+       field.setFormValue(resetOption.optionId)
+      }
+  } else if (fieldType=="text"){
+      field.setFormValue(underlyingIssue.getCustomFieldValue(fieldObject))
+  }
+  if (isRequired){
+     field.setRequired(true)
+  } else {
+     field.setRequired(false)
+  }
+    
+  if (isHidden){
+    field.setHidden(true)
+  } else {
+     field.setHidden(false)
+  }
+}
