@@ -1,0 +1,1 @@
+cfValues["Service-Activity"]?.keySet()?.size() == 2
