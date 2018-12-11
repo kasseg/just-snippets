@@ -1,0 +1,3 @@
+//действия при создании заявки by Evgeniy Russkikh
+customfield_10002+={"Anastasiya.Grigoryan","irina.suchkova","yanina.novikova","margarita.mukhina"};
+autotransition("Tresuary HO", key, true,true,true);

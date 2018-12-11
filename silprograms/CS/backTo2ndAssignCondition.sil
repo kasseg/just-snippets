@@ -1,0 +1,11 @@
+//На второе назначение by Evgeniy Russkikh
+if (customfield_13117=="Мульти"){
+    if (arrayElementExists(labels, "Multiplied")){
+        return false;
+    } else {
+        return true;
+    }
+} else {
+    return false;
+}
+// customfield_13117 = Исполнители проекта

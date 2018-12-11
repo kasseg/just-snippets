@@ -1,0 +1,8 @@
+//На аппрув Sales Manager ТЦ
+//вычисляет Sales Manager ТЦ Автора и устанавливает их в поле Одобрения
+number startPos=matchEnd(description, "Номер ТЦ");
+string subdescr=substring(description,startPos,-1);
+number endPos=indexOf(subdescr, "\n");
+string storeNum=substring(subdescr, 2, endPos-2);
+string [] approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(description=*Sales Manager*))","r4 domain LDAP");
+customfield_10100=approvers;

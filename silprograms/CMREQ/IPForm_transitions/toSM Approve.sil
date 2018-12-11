@@ -1,0 +1,16 @@
+//Утверждающим устанавливает Store Manager ТЦ by Evgeniy Russkikh
+include "General_excludeListOfApprovers";//подключение списка исключений
+string [] approvers;
+string storeNum=substring(description, matchEnd(description, "№ ТЦ")+2, indexOf(description, "\n")-2);
+if (storeNum=="1491"){
+    approvers=ldapUserList({"sAMAccountName"},"(&(description=*Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1491 - Everybody,OU=ST1491-SIP,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+} else if (storeNum=="1492"){
+    approvers=ldapUserList({"sAMAccountName"},"(&(description=*Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1492 - Everybody,OU=ST1492-SVT,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+} else {
+    approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(!(description=*Assistant*))(!(description=*Deputy*))(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+}
+if(isNull(approvers)){
+    storeNum=substring(storeNum, length(storeNum)-4, -1);
+    approvers=s%storeNum%.storeManager;
+}
+customfield_10100=approvers;

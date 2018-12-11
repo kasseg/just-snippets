@@ -1,0 +1,4 @@
+//Действия при создании заявки Активация клиентов вторсырья by Evgeniy Russkikh
+string [] toAdd={"pavel.ashpetov","irina.semenova","evgeniya.neplokhova"};
+customfield_10002+=deleteElement(toAdd, reporter);
+autotransition("Contract management group", key, true,true,true);

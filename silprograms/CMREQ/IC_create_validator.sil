@@ -1,0 +1,24 @@
+//Проверка при создании by Evgeniy Russkikh
+string [] whoCanCreate={
+            "admin-ap",
+            "admin-er",
+            "anna.kudryavceva",
+            "stanislav.ermilov",
+            "yuriy.bakulin",
+            "cm.krnalivayko",
+            "Larisa.Kalinina",
+            "svetlana.romanova02",
+            "mdm.kandrekova",
+            "mdm.ekaplina",
+            "mdm.eshishkina",
+            "cm.akudryavtseva",
+            "cm.akostromina",
+            "cm.tsuvorova",
+            "cm.sbogdanova",
+            "cm.mvardanian"
+};
+if (arrayElementExists(whoCanCreate,reporter)){
+    //всё хорошо
+} else {
+    return false, "У Вас нет доступа к созданию данного типа заявок";
+}

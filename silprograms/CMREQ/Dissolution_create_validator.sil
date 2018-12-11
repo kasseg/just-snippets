@@ -1,0 +1,10 @@
+//Валидатор создания заявки "Расторжение контракта после Акта ввода в эксплуатацию" by Evgeniy Russkikh
+/*string issueReporter=getUser(reporter).username;
+if (issueReporter=="admin-er"){
+    if (description=="error"){
+        return false, "Не заполнены все поля";
+}
+} else {
+    return false, "Данная завявка еще в разработке";
+    }*/
+    

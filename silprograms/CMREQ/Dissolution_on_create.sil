@@ -1,0 +1,5 @@
+//Действия при создании заявки "Расторжение контракта после Акта ввода в эксплуатацию" by Evgeniy Russkikh
+string storeNumber=chop(#{Issue Location},4);
+string city=substring(#{Issue Location},5,-1);
+description="|*Номер ТЦ*|"+storeNumber+"|\r\n|*Город*|"+city+"|\r\n"+description;
+autotransition("DM APPROVE", key, true,true,true);

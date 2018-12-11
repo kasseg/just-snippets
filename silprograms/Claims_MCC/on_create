@@ -1,0 +1,12 @@
+//Действия при создании заявки, до индексации в БД by Evgeniy Russkikh
+if (contains(summary,"цена") or contains(summary,"цене")){
+    components="Рекламации по ценам";
+} else if (contains(summary,"количеств") or contains(summary,"кол-в")){
+    components="Рекламации по количеству";
+} else if (contains(summary,"НДС")){
+    components="Рекламации по НДС";
+} else if (contains(summary,"возврат")){
+    components="Рекламации по возвратам";
+} else {
+    components="Иные";
+}

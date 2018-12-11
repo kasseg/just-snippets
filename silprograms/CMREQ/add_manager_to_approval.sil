@@ -1,0 +1,10 @@
+//вычисляет менеджера Автора и устанавливает его в поле Одобрения
+string issueReporter=getUser(reporter).username;
+string mgr=ldapUserAttr("manager", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+if (isNotNull(mgr)){
+    string mgrUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+mgr+")","r4 domain LDAP");
+    customfield_10100=mgrUserName;
+} else {
+autotransition("Отклонить", key, true,true,true);
+//addJSDComment(key, "remoteuser", "У автора заявки нет руководителя, заявка отклоняется", true);
+}

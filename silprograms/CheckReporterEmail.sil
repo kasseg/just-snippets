@@ -1,0 +1,7 @@
+if (isNull(userEmailAddress(reporter)) and size(fieldHistory(key, "status"))<5)
+{
+   lfExecuteJS("checkemail.js");
+}
+//
+// убрано из workflow (это используется только при нажатии кнопки "Начать работу")
+// скорее всего нигде не используется

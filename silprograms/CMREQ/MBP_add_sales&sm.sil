@@ -1,0 +1,5 @@
+//вычисляет Sales Manager и Sales Manager ТЦ Автора и устанавливает их в поле Одобрения
+string issueReporter=getUser(reporter).username;
+string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+string [] approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber="+storeNum+")(|(description=*Sales Manager*)(description=*Store Manager*)))","r4 domain LDAP");
+customfield_10100=approvers;

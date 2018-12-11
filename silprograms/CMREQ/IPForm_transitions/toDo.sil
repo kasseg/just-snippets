@@ -1,0 +1,48 @@
+//Вычисление следующего шага роутинга by Evgeniy Russkikh
+string storeNum=substring(description, matchEnd(description, "№ ТЦ")+2, indexOf(description, "\n")-2);
+
+if (storeNum!="ЦО"){// Если для ТЦ
+    JFieldChange[] changes  = getFieldChanges(key, "status");
+    string fromStatus = changes[size(changes)-1].oldVal; // узнаём из какого статуса пришла заявка
+    
+    string summ=substring(description, matchEnd(description, "Сумма")+2, -1);
+    summ=substring(summ,0, indexOf(summ, "\n")-2);
+    
+    string priorityFP;
+    if (contains (description, "Приоритет работ для работ Facility и Property")){
+    priorityFP=substring(description, matchEnd(description, "Приоритет работ для работ Facility и Property")+2, -1);
+    priorityFP=substring(priorityFP,0, indexOf(priorityFP, "\n")-2);
+    } else priorityFP="0";
+    
+    string budget=substring(description, matchEnd(description, "Included in current year budget")+2, -1);
+    budget=substring(budget,0, indexOf(budget, "\n")-2);
+    
+    if (fromStatus=="DM Operations"){
+        if (summ!="от 8,4 млн руб до 21 млн руб"){
+            if (priorityFP=="3" || budget=="Нет" && (priorityFP=="1" || priorityFP=="2")){
+                autotransition("Dep Director Expansion", key, true,true,true);  //На Dep Director
+            } else {
+                autotransition("Done", key, true,true,true);
+            }
+        } else {//если больше 8,4млн
+            autotransition("Dep Director Expansion", key, true,true,true);  //На Dep Director
+        }
+    } else if (fromStatus=="Dep Director Expansion"){
+        if (summ!="от 8,4 млн руб до 21 млн руб"){
+            autotransition("Done", key, true,true,true);
+        } else {
+            autotransition("Operation Director", key, true,true,true);  //На Operation Director
+        }
+    }
+} else {//если ЦО
+    number step=(number)arrayGetElement(labels,0)+1;
+    labels=(string)step;
+    if (labels!="5"){
+    autotransition("Waiting for approval", key, true,true,true);
+    } else {
+        labels="";
+        autotransition("Done", key, true,true,true);
+    }
+}
+
+autotransition("Operation Director", key, true,true,true);  //На Operation Director

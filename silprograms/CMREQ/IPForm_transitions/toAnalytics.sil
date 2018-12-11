@@ -1,0 +1,14 @@
+// На одну из 5 групп: IP MP Facility, MP Property и т.д. by Evgeniy Russkikh
+string getIP=substring(description, matchEnd(description, "Вид работ")+2, -1);
+getIP=substring(getIP,0, indexOf(getIP, "\n")-2);
+if (getIP=="IT"){
+    customfield_10100="Andrey.Badanov";
+} else if (getIP=="Equipment"){
+    customfield_10100={"elena.safronova", "yu.titova"};
+} else if (getIP=="Facility"){
+    customfield_10100="pavel.ashpetov";
+} else if (getIP=="Construction"){
+   customfield_10100="Alena.Elshina";
+} else {//тогда Property
+   customfield_10100="taymuraz.beslekoyev";
+}

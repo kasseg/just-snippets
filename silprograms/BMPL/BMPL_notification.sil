@@ -1,0 +1,28 @@
+//Оповещение о заявках более 3х дней by Anatoliy Gundarov
+
+include "bmpl/BMPL_types.sil";
+for (BMPL_type cur_type in bmpl_types){
+    string [] sendTo={}; 
+    string myJQL = "project = BMPL and status =  Open AND issuetype = 'BMPL Task' AND 'BMPL Type' = '"+cur_type.bmpl_type+"' AND updated <= -3d ORDER BY created DESC";
+    string[] outofdate = selectIssues(myJQL);
+    if(arraySize(outofdate)!=0){
+        sendTo = cur_type.emailusers;
+        string head = "<head><style>#customers {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;border-collapse: collapse;}#customers td, #customers th {border: 1px solid #ddd;padding: 5px;}#customers th {padding-top: 8px;padding-bottom: 8px;text-align: left;background-color: #214f81;color: white;}</style></head>";
+        string sendbody=head+"<table id='customers'><th>Задача</th><th>Последнее обновление</th>";
+        string last_update ="";
+        string format = "dd.MM.yyyy HH:mm:ss z";
+        for(string curIsuue in outofdate){
+            JComment cmt = getLastComment(curIsuue);
+            if(!cmt.updated==""){
+                last_update = formatDate(cmt.updated, format);
+            }
+            else{
+                last_update = formatDate(%curIsuue%.updated, format);
+            }
+            sendbody+="<tr><td><a href='"+getIssueURL(curIsuue)+"'>"+%curIsuue%.key+"</a></td><td> "+ last_update +"</td></tr>";
+        }
+        string tosend_message = "<html><body><img src='https://jira.r4.madm.net/s/-8afm4w/73016/b5a7941b5c073eb6643972c2b899996a/_/images/64jira.png' alt='JIRA'><H2 style='color:#214f81;'>Задачи обновлённые более 3х дней назад<br>"+cur_type.bmpl_type+"</H2><H3 style='color:#214f81'>Всего задач:" +arraySize(outofdate) + "</H3>"+sendbody+"</table></body></html>";
+        sendHtmlEmail("it-support", sendTo, {"anatoliy.gundarov@metro-cc.ru"}, "более 3х дней", tosend_message);
+        // sendHtmlEmail("it-support",  {"anatoliy.gundarov@metro-cc.ru"}, {"anatoliy.gundarov@metro-cc.ru"}, "более 3х дней", tosend_message);
+    }
+}

@@ -1,0 +1,28 @@
+//Проверяет форму на ошибки by Evgeniy Russkikh. Создание доступно только Sales Manager + Analytics
+string issueReporter=getUser(reporter).username;
+string job=ldapUserAttr("metroJobTitle", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+string job2=ldapUserAttr("description", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+if (contains(toLower(job),"food service") or contains(toLower(job2),"food service") or contains(toLower(job),"sales manager") 
+    or contains(toLower(job2),"field operations manager") 
+    or contains(toLower(job2),"field operation manager") 
+    or userInGroup("MCC RU - APP - Jira_CMREQ_GoldCard",issueReporter)
+    or issueReporter=="admin-er" 
+    or reporter=="kseniya.orlova" 
+    or reporter=="zalina.islamgulova"
+    or reporter=="ekaterina.abrosimova" 
+    or reporter=="Maria.Drabkina" 
+    or reporter=="nikolay.bulgakov"
+    or userInGroup("MCC RU - customer Manager Franchise", issueReporter)){
+        if (description=="error"){
+         return false, "Не заполнены все поля";
+        } else if (description=="errorNubmers"){
+            return false, "Номер клиента и доп. карты должны состоять минимум из 10 символов";
+        } else if (description==""){
+            return false, "Обратитесь в службу поддержки, прикрепив скриншот с данной ошибкой";
+        } else {
+         string wantedCard = substring(description, matchEnd(description, "Тип клиента после"), -1);
+         if (contains(wantedCard, "VIP card") and (reporter!="kseniya.orlova" and reporter!="zalina.islamgulova" and reporter!="ekaterina.abrosimova" and reporter!="Maria.Drabkina")){
+             return false, "Вам недоступно создание заявки на получение VIP card";
+         } 
+        }
+} else return false, "Создание данной заявки доступно только Sales Manager и Field Operation Manager";

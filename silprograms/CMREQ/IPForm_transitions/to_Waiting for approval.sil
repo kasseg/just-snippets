@@ -1,0 +1,15 @@
+//В случае IPFormы для ЦО, цепочка согласования меняется. Всегда используется этот статус, но смотрит на Label.
+if (labels=="1"){
+   customfield_10100="albert.kayumov";
+   //customfield_10100="nataliya.bazhenova";
+} else if (labels=="2"){
+    customfield_10100="Oksana.Chumak";
+} else if (labels=="3"){
+    customfield_10100="evgeniy.kovalev";
+} else if (labels=="4"){
+    customfield_10100="olga.ageeva";
+} else if (labels=="5"){
+    customfield_10100="olga.malinkina";
+} else {
+    sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"}, "("+key+") IPFORM, хьюстон у нас проблема ","Надо чекнуть");
+}

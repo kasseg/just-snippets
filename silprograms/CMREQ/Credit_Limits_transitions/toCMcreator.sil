@@ -1,0 +1,3 @@
+// возврат на автора by Evgeniy Russkikh
+string issueReporter=getUser(reporter).username;
+customfield_10100=issueReporter;

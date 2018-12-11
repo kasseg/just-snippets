@@ -1,0 +1,5 @@
+//Действия после создания заявки by Evgeniy Russkikh
+summary+=" ("+description+")";
+string [] toAdd={"stanislav.ermilov","cm.akudryavtseva","cm.akostromina","cm.mvardanian","cm.sbogdanova"};
+customfield_10002+=deleteElement(toAdd, reporter);
+autotransition("Master Data Entry", key, true,true,true); 

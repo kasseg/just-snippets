@@ -1,0 +1,9 @@
+string reporterstore=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" + reporter + ")","r4 domain LDAP");
+reporterstore=substring(reporterstore, length(reporterstore)-3, length(reporterstore));
+if (chop(reporterstore,1)=="0"){
+    reporterstore=substring(reporterstore, 1 , length(reporterstore));
+} 
+if (isNotNull(reporterstore)){
+description="*Номер ТЦ обращения:* "+reporterstore+"\r\n"+description;
+}
+autotransition("SM Approve", key, true,true,true); 

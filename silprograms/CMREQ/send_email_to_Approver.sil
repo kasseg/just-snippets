@@ -1,0 +1,3 @@
+//Отправялет письмо аппруверам данного реквеста
+//sendEmail("it-support@metro-cc.ru", customfield_10100, {}, "("+key+"). Требуется утверждение","Заявке требуется утверждение. <br><a href=\"https://jira.r4.madm.net/servicedesk/customer/portal/261/"+key+"\">Вот ссылочка</a><br>"+customfield_10100);
+sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "из Jira ("+key+") присвоен номер Ант","Заявке требуется утверждение. <br><a href=\"https://jira.r4.madm.net/servicedesk/customer/portal/261/"+key+"\">Вот ссылочка</a><br>"+customfield_10100);

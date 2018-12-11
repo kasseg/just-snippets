@@ -1,0 +1,15 @@
+// Действия при создании заявки by Evgeniy Russkikh
+//customfield_10002+={"olga.malinkina","elvira.mingaliyeva","anna.davydova","dina.syunyakova"};
+string [] toAdd={"olga.malinkina","elvira.mingaliyeva","anna.davydova","dina.syunyakova","nataliya.bazhenova"};
+customfield_10002+=deleteElement(toAdd, reporter);
+watchers+={"olga.malinkina","dina.syunyakova","nataliya.bazhenova"};
+string storeNum=substring(description, matchEnd(description, "№ ТЦ")+2, indexOf(description, "\n")-2);
+string describe=substring(description, matchEnd(description, "Описание / Specification")+2, -1);
+describe=substring(describe, 0, indexOf(describe, "\n")-2);
+summary+=" "+storeNum+" ("+chop(describe,100)+")";
+if (storeNum!="ЦО"){
+autotransition("Analytics", key, true,true,true);
+} else {
+    labels="1";
+    autotransition("Waiting for approval", key, true,true,true);
+}

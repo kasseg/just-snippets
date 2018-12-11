@@ -1,0 +1,10 @@
+//Валидатор создания by Evgeniy Russkikh
+string issueReporter=getUser(reporter).username;
+string [] whoCanCreate={"n.sherkazhukhova","anastasiya.suslina","dmitriy.izraylit","admin-er","vasiliy.gorenko", "nikolay.bogdanov01", "ekaterina.kiseleva01", "andrey.melentev", "irina.zabrodina", "Darya.Karama", "aleksandr.mikhaylov", "polina.vardaya", "aleksey.galkin01", "vladimir.bolonin", "elizaveta.tyukalova", "vladislav.miroshin", "Elena.Mekhed"};
+if (arrayElementExists(whoCanCreate,issueReporter)){
+    if (description=="error"){
+        return false, "Не заполнены все обязательные поля";
+    }
+} else {
+    return false, "У Вас нет доступа к созданию данного типа заявок";
+}

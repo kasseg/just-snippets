@@ -1,0 +1,11 @@
+// Проверка перед передачей на утверждение by Evgeniy Russkikh
+if (customfield_13117=="Мульти"){
+    if (arrayElementExists(labels, "Multiplied")){
+        return true;
+    } else {
+        return false;
+    }
+} else {
+    return true;
+}
+// customfield_13117 = Исполнители проекта

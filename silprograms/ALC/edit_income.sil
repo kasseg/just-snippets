@@ -1,0 +1,49 @@
+include "Main/Stores.sil";
+string formatforsummary = "yyyyMMdd";
+string sum_date = formatDate(currentDate(), formatforsummary);
+if (isNull(customfield_10702)){
+    customfield_10702 ="ЦО";
+}
+string store_number = chop(customfield_10702,4);
+string ssc_group = "SSC Group 2";
+summary += " " + store_number + " " + sum_date;
+customfield_10002 += customfield_13200;
+customfield_13200 = "";
+string[] ssc1 = {"1012", "1013", "1015", "1016", "1019", "1020", "1022", "1025",
+                 "1027", "1036", "1037", "1038", "1041", "1044", "1048", "1049",
+                 "1058", "1059", "1060", "1063", "1067", "1068", "1071", "1083",
+                 "1088", "1306", "1310", "1311", "1317", "1320", "1322", "1544"
+};
+string[] ssc2 = {"1010", "1011", "1021", "1023", "1032", "1033", "1034", "1039",
+                 "1040", "1043", "1046", "1047", "1050", "1051", "1052", "1055",
+                 "1056", "1057", "1064", "1069", "1070", "1073", "1074", "1086", 
+                 "1095", "1202", "1303", "1307", "1336", "1337", "1356", "1357", 
+                 "1444"
+};
+string[] ssc3 = {"1014", "1017", "1018", "1024", "1026", "1028", "1029", "1030", 
+                 "1031", "1035", "1042", "1045", "1053", "1054", "1061", "1065", 
+                 "1066", "1072", "1076", "1078", "1082", "1094", "1196", "1197", 
+                 "1304", "1308", "1309", "1318", "1340", "1342", "1529", "1542"
+};
+
+if(elementExists(ssc1, store_number) ){
+   ssc_group = "SSC Group 1";
+}                 
+if(elementExists(ssc2, store_number) ){
+   ssc_group = "SSC Group 2";
+   runnerLog(ssc_group);
+}                 
+if(elementExists(ssc3, store_number) ){
+   ssc_group = "SSC Group 3";
+}
+    customfield_13500 = ssc_group;
+
+if(!contains(summary, "Подтверждение цен в COD")){
+    for(Store cur_store in all_stores){
+        if(cur_store.index==store_number){
+            string [] groups = {cur_store.storegroup,"MCC RU - Deputy Store Managers"};
+            string [] user_list = usersInGroups(groups);
+            customfield_10002 = arrayUnion(customfield_10002,user_list);
+        }
+    }
+}

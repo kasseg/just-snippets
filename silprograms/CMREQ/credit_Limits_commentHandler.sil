@@ -1,0 +1,6 @@
+JComment cmt = getLastComment(key);
+string current=cmt["author"];
+
+if (reporter==current){
+   autotransition("To Do", key, true,true,true);
+}

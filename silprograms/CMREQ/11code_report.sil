@@ -1,0 +1,58 @@
+string jql="project=\"Customer Manager Requests\" and issuetype = Инцидент ";
+/*
+string [] cmreqKeys=selectIssues(jql);
+string letter="<table border=\"1\"><tr><th>ТЦ Обращения</th><th>ТЦ Клиента</th><th>Номер</th><th>Тип</th><th>Наименование</th><th>Фактический адрес</th><th>Дата создания</th><th>Автор</th><th>Утверждающий</th><th>Номер заявки</th></tr>";
+string bigRow="";
+string allNumbers="";
+string allTypes="";
+string allNames="";
+for(string oneKey in cmreqKeys){
+    string [] descrArrayByRows=split(oneKey.description, "\r\n");
+    //string descrTableHtml="<table border=\"1\">";
+    allNumbers="<table height=\"100%\">";
+    allTypes="<table height=\"100%\">";
+    allNames="<table height=\"100%\">";
+
+    for (number i = 1; i <arraySize(descrArrayByRows); i = i + 1){
+        descrArrayByRows[i]=substring(descrArrayByRows[i],1,length(descrArrayByRows[i])-1);
+        descrArrayByRows[i]=replace(descrArrayByRows[i], "|", "::");
+        string[] splittedRow=split(descrArrayByRows[i],"::");
+        allNumbers+="<tr><td valign=\"middle\" height=\"50\">"+splittedRow[0]+"</td></tr>";
+        allTypes+="<tr><td valign=\"middle\" height=\"50\">"+splittedRow[1]+"</td></tr>";
+        allNames+="<tr><td valign=\"middle\" height=\"50\">"+splittedRow[2]+"</td></tr>";
+        if (i==arraySize(descrArrayByRows)-1){
+            allNumbers+="</table>";
+            allTypes+="</table>";
+            allNames+="</table>";
+        }
+        /*descrTableHtml+="<tr><td>";
+        
+        descrArrayByRows[i]=substring(descrArrayByRows[i],1,length(descrArrayByRows[i])-1);
+        descrArrayByRows[i]=replace(descrArrayByRows[i], "|", "</td><td>");
+        descrTableHtml+=descrArrayByRows[i]+"</td></tr>";*//*
+        
+    }
+    //descrTableHtml+="</table>";
+    bigRow+="<tr><td>"+oneKey.customfield_10702+"</td><td>"+oneKey.customfield_12108+"</td><td vertical-align=\"middle\">"+allNumbers+"</td><td vertical-align=\"middle\">"+allTypes+"</td><td vertical-align=\"middle\">"+allNames+"</td><td>"+oneKey.customfield_12311+"</td><td>"+oneKey.created+"</td><td>"+userFullName(oneKey.issueReporter)+"</td><td>"+userFullName(oneKey.customfield_10100)+"</td><td>"+oneKey+"</td></tr>";
+}
+letter+=bigRow+"</table>";
+//lfDialogMessage(letter, "ERROR");
+sendEmail("admin-er", "", "Отчет по объединениям 11 кодом","Были созданы следующие заявки на объединение:<br>"+letter);
+*/
+string [] cmreqKeys=selectIssues(jql);
+string letter="<table border=\"1\"><tr><th>ТЦ Обращения</th><th>ТЦ Клиента</th><th>Объединенные клиенты (номер|тип|наименование)</th><th>Фактический адрес</th><th>Дата создания</th><th>Автор</th><th>Утверждающий</th><th>Номер заявки</th></tr>";
+string bigRow="";
+for(string oneKey in cmreqKeys){
+    string [] descrArrayByRows=split(oneKey.description, "\r\n");
+    string descrTableHtml="<table border=\"1\">";
+    for (number i = 1; i <arraySize(descrArrayByRows); i = i + 1){
+        descrTableHtml+="<tr><td>";
+        descrArrayByRows[i]=substring(descrArrayByRows[i],1,length(descrArrayByRows[i])-1);
+        descrArrayByRows[i]=replace(descrArrayByRows[i], "|", "</td><td>");
+        descrTableHtml+=descrArrayByRows[i]+"</td></tr>";
+    }
+    descrTableHtml+="</table>";
+    bigRow+="<tr><td>"+oneKey.customfield_10702+"</td><td>"+oneKey.customfield_12108+"</td><td>"+descrTableHtml+"</td><td>"+oneKey.customfield_12311+"</td><td>"+oneKey.created+"</td><td>"+userFullName(reporter)+"</td><td>"+userFullName(oneKey.customfield_10100)+"</td><td>"+oneKey+"</td></tr>";
+}
+letter+=bigRow+"</table>";
+sendEmail("admin-er", "", "Отчет по объединениям 11 кодом","Были созданы следующие заявки на объединение:<br>"+letter);

@@ -1,0 +1,204 @@
+//Вычисление следующего шага роутинга by Evgeniy Russkikh
+JFieldChange[] changes  = getFieldChanges(key, "status");
+string fromStatus = changes[size(changes)-1].oldVal; // узнаём из какого статуса пришла заявка
+    // РЕГУЛЯРНЫЕ КЛИЕНТЫ
+    
+if (fromStatus=="Wait Customer"){ // если пришёл ответ на запрос инфомрации
+    autotransition(changes[size(changes)-2].oldVal, key, true,true,true);//возвращает в статус, который был до запроса информации
+}else {
+if (contains(summary,"Credit Limits. Regular clients") or contains(summary,"Credit Limits. Seasonal increasing Regular clients")){
+    if (contains(description,"до 50 000")){
+        if (fromStatus=="Security Approve"){
+            autotransition("SM Approve", key, true,true,true);
+        } else if (fromStatus=="SM Approve"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 50 001 до 200 000")){
+        if (fromStatus=="Security Approve"){
+            autotransition("SM Approve", key, true,true,true);
+        } else if (fromStatus=="SM Approve"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 200 001 до 500 000")){
+        if (fromStatus=="SM Approve"){
+            autotransition("Security HO", key, true,true,true);
+        } else if (fromStatus=="Security HO"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 500 001 до 999 999")){
+        if (fromStatus=="SM Approve"){
+            autotransition("Security HO", key, true,true,true);
+        } else if (fromStatus=="Security HO"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("DM Finance", key, true,true,true);
+        } else if (fromStatus=="DM Finance"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    }
+    //ФЕДЕРАЛЬНЫЕ КЛИЕНТЫ НИЖЕ
+} else if (contains(summary,"Credit Limits. Federal clients") or contains(summary,"Credit Limits. Seasonal increasing Federal clients")){
+    if (contains(description,"до 500 000")){
+        if (fromStatus=="Security HO"){
+            autotransition("Analytics", key, true,true,true);
+        } else if (fromStatus=="Analytics"){ // RSM or Head of KAM
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 500 001 до 999 999")){
+        if (fromStatus=="Security HO"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("DM Finance", key, true,true,true);
+        } else if (fromStatus=="DM Finance"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    }
+    
+} else if (contains(summary,"Credit Limits. Fasol clients")){
+        if (contains(description,"до 200 000")){
+            if (fromStatus=="SM Approve"){
+            autotransition("Security HO", key, true,true,true);// Regional Manager Fasol
+        } else if (fromStatus=="Security HO"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 200 001 до 500 000")){
+        if (fromStatus=="SM Approve"){
+            autotransition("Security HO", key, true,true,true);// Regional Manager Fasol
+        } else if (fromStatus=="Security HO"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 500 001 до 999 999")){
+        if (fromStatus=="SM Approve"){
+            autotransition("Security HO", key, true,true,true);// Regional Manager Fasol
+        } else if (fromStatus=="Security HO"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("DM Finance", key, true,true,true);
+        } else if (fromStatus=="DM Finance"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    }
+} else if (contains(summary,"Credit Limits. FSD")){
+        if (contains(description,"до 50 000")){
+        if (fromStatus=="Security HO"){
+            autotransition("Analytics", key, true,true,true);
+        } else if (fromStatus=="Analytics"){
+            autotransition("CM creator", key, true,true,true);
+            }
+    } else if (contains(description,"от 50 001 до 200 000")){
+            if (fromStatus=="Security HO"){
+            autotransition("Analytics", key, true,true,true);// Head of FSD
+        } else if (fromStatus=="Analytics"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 200 001 до 500 000")){
+        if (fromStatus=="Security HO"){
+            autotransition("Analytics", key, true,true,true);// Head of FSD
+        } else if (fromStatus=="Analytics"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 500 001 до 999 999")){
+        if (fromStatus=="Security HO"){
+            autotransition("Analytics", key, true,true,true);// Head of FSD
+        } else if (fromStatus=="Analytics"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("DM Finance", key, true,true,true);
+        } else if (fromStatus=="DM Finance"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    }
+} else if (contains(summary,"Credit Limits. Credit committee")){
+    if (fromStatus=="Security HO"){
+        autotransition("Tresuary HO", key, true,true,true);// Head of FSD
+    } else if (fromStatus=="Tresuary HO"){
+        autotransition("CM creator", key, true,true,true);
+    } 
+ } else if (contains(summary,"Credit Limits. Tender committee")){
+    if (fromStatus=="Analytics"){//Tender Manager
+    autotransition("Security HO", key, true,true,true);
+    } else if (fromStatus=="Security HO"){
+        autotransition("Tresuary HO", key, true,true,true);
+    } else if (fromStatus=="Tresuary HO"){
+        autotransition("CM creator", key, true,true,true);
+    }
+} else if (contains(summary,"Credit Limits. Tender clients")){
+    if (fromStatus=="Analytics"){//Tender Manager
+    autotransition("Security HO", key, true,true,true);
+    } else if (fromStatus=="Security HO"){
+        autotransition("Tresuary HO", key, true,true,true);
+    } else if (fromStatus=="Tresuary HO"){
+        autotransition("DM Operations", key, true,true,true);
+    } else if (fromStatus=="DM Operations"){
+        autotransition("CM creator", key, true,true,true);
+    }
+}  else if (contains(summary,"Credit Limits. Transfer / decreasing credit limit")){
+    if (fromStatus=="Tresuary HO"){
+        autotransition("Contract management group", key, true,true,true);
+    }
+} else if (contains(summary,"Credit Limits. E-commerce clients")){
+    if (contains(description,"до 200 000")){
+        if (fromStatus=="Security HO"){
+            autotransition("Analytics", key, true,true,true);
+        } else if (fromStatus=="Analytics"){ // RSM or Head of KAM
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 200 001 до 500 000")){
+        if (fromStatus=="Analytics"){
+            autotransition("Security HO", key, true,true,true);
+        } else if (fromStatus=="Security HO"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    } else if (contains(description,"от 500 001 до 999 999")){
+        if (fromStatus=="Security HO"){
+            autotransition("Tresuary HO", key, true,true,true);
+        } else if (fromStatus=="Tresuary HO"){
+            autotransition("DM Operations", key, true,true,true);
+        } else if (fromStatus=="DM Operations"){
+            autotransition("DM Finance", key, true,true,true);
+        } else if (fromStatus=="DM Finance"){
+            autotransition("CM creator", key, true,true,true);
+        }
+    }
+} else if (contains(summary,"Credit Limits. СЕНСУС")){
+    if (fromStatus=="Tresuary HO"){
+        autotransition("Contract management group", key, true,true,true);
+    } 
+}
+}

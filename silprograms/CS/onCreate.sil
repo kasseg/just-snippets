@@ -1,0 +1,13 @@
+//Действия при создании by Evgeniy Russkikh
+switch(customfield_13117) {
+    case "Мульти":
+        customfield_10002={"margarita.makzhanova","kseniya.rakhimova"};
+        break;
+    case "Дизайн":
+        customfield_10002={"margarita.makzhanova","tatiana.griotti","vladimir.krasny","kseniya.rakhimova"};
+        break;
+
+    case "Контент":
+        customfield_10002={"margarita.makzhanova","lyudmila.galkina","marina.morozova05","kseniya.rakhimova"};
+        break;
+}

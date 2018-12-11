@@ -1,0 +1,7 @@
+//на утверждение руководителем FSD
+if (summary=="Gold Card Fasol"){
+    string approval=substring(description,indexOf(description, "(")+1,indexOf(description, "@"));
+    customfield_10100=approval;
+} else {
+    customfield_10100="Olga.Boyko";
+}

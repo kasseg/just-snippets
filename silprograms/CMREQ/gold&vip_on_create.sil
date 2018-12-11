@@ -1,0 +1,13 @@
+//Если заявка создана коллегами из cards HO - короткий роутинг. Иначе полный.
+string issueReporter=getUser(reporter).username;
+string [] HOpeople={"kseniya.orlova","zalina.islamgulova","ekaterina.abrosimova","Maria.Drabkina"};
+string job=ldapUserAttr("metroJobTitle", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+string job2=ldapUserAttr("description", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+if (contains(toLower(job),"food service") or contains(toLower(job2),"food service") or summary=="Gold Card Fasol"){
+    autotransition("Under Review", key, true,true,true);
+} else if (arrayElementExists(HOpeople,reporter)){
+    autotransition("Analytics", key, true,true,true); 
+} else {
+    autotransition("SM Approve", key, true,true,true); 
+}
+

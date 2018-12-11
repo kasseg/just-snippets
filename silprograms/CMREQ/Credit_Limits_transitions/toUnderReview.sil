@@ -1,0 +1,4 @@
+//to Under Review
+if (contains(summary,"Credit Limits. Fasol clients")){
+    customfield_10100="aleksandr.prokhorov";
+}

@@ -1,0 +1,106 @@
+if (argv["screen"] == "create" or argv["screen"] == "edit") {
+lfHide("customfield_12700");
+if (isNotNull(argv["reporter"])){
+if (isNull(userEmailAddress(argv["reporter"]))){
+ lfShowFieldMessage("reporter", "У данного пользователя отсутствует E-mail!", "WARNING"); 
+}else {
+lfHideFieldMessage("reporter");
+}
+}
+}
+
+if (argv["screen"] == "view") {
+lfHide("customfield_12700");
+string issueReporter=getUser(reporter).username;
+if (isNotNull(issueReporter)){
+string mgl="mgl domain LDAP";
+string r4="r4 domain LDAP";
+string reporterstore=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" + issueReporter + ")",r4);
+if (isNull(reporterstore)){
+    reporterstore=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" + issueReporter + ")",mgl);
+}
+reporterstore=substring(reporterstore, length(reporterstore)-4, length(reporterstore));
+if (isNull(reporterstore)){
+    if (ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")",mgl) =="3113"){
+        reporterstore="MGL";
+    }
+}
+
+string job=ldapUserAttr("metroJobTitle", "(sAMAccountName=" + issueReporter + ")",r4);
+if (isNull(job)){
+    job=ldapUserAttr("metroJobTitle", "(sAMAccountName=" + issueReporter + ")",mgl);
+}
+
+string depart=ldapUserAttr("department", "(sAMAccountName=" + issueReporter + ")",r4);
+if (isNull(depart)){
+    depart=ldapUserAttr("department", "(sAMAccountName=" + issueReporter + ")",mgl);
+}
+string bigresult;
+string storePartic;
+string departPartic;
+string jobPartic;
+string haveNotEmail;
+string tableData;
+string ShowFieldMessageType;
+if (isNull(userEmailAddress(reporter))){
+    haveNotEmail="<font color=\"red\">У автора отсутствует E-mail!</font>";
+    ShowFieldMessageType="ERROR";
+} else {
+    haveNotEmail="Автор";
+    ShowFieldMessageType="WARNING";
+}
+for (string userByOne in customfield_10002)
+{
+    storePartic=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" + userByOne + ")",r4);
+    if (isNull(storePartic)){
+        storePartic=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" + userByOne + ")",mgl);
+    }
+    storePartic=substring(storePartic, length(storePartic)-4,length(storePartic));
+    if (isNull(storePartic)){
+        if (ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + userByOne + ")",mgl) =="3113"){
+            storePartic="MGL";
+        }
+    }
+    departPartic=ldapUserAttr("department", "(sAMAccountName=" + userByOne + ")",r4);
+    if (isNull(departPartic)){
+        departPartic=ldapUserAttr("department", "(sAMAccountName=" + userByOne + ")",mgl);
+    }
+    jobPartic=ldapUserAttr("metroJobTitle", "(sAMAccountName=" + userByOne + ")",r4);
+    if (isNull(jobPartic)){
+        jobPartic=ldapUserAttr("metroJobTitle", "(sAMAccountName=" + userByOne + ")",mgl);
+    }
+    
+    
+    bigresult=bigresult+"<tr><td>"+userByOne+"</td><td>"+storePartic+"</td><td>"+departPartic+"</td><td>"+jobPartic+"</td></tr>";
+}
+    tableData="<style type=\"text/css\">BODY {background: white;}TABLE#UsersADdetails {border-collapse: collapse; border: 2px solid white;}TABLE#UsersADdetails TD {  padding: 3px;  border: 1px solid grey;  text-align: left; font-size: 80%; }TABLE#UsersADdetails TH {  padding: 3px;  border: 1px solid grey;  text-align: left;} </style><table id=\"UsersADdetails\"><tr><th>Логин</th><th>№ ТЦ</th><th>Отдел</th><th>Должность</th></tr>";
+    lfShowFieldMessage("reporter", tableData+"<tr><td colspan=\"4\" align=\"center\"><b>"+haveNotEmail+"</b></td></tr><tr><td>"+issueReporter+"</td><td>"+reporterstore +"</td><td>"+depart+"</td><td>"+job+"</td></tr><tr><td colspan=\"4\" align=\"center\"><b>Participants:</b></td></tr>"+bigresult+"</table>", ShowFieldMessageType);    
+     
+}
+
+if (customfield_11010=="FLS"){
+  
+    if (userInGroup("MCC RU - FLS", currentUser())){
+         // если у автора нет почтового ящика - вывести информационное сообщение (не модальное)
+        if (isNull(userEmailAddress(reporter)) and (status !="In Progress")) //if (isNull(userEmailAddress(reporter)) and size(fieldHistory(key, "status"))<5)
+            {
+                lfDialogMessage("У автора отсутствует E-Mail! Он не получит почтовые сообщения от JIRA! \n Проверьте список участников, возможно необходимо добавить групповой ящик пользователя.", "WARNING");
+            }
+
+        //ниже подсказка для флс, если есть комменты автора        
+        number [] allComments = getAllCommentIds(key);
+        boolean checkOrNo=false;
+        for(number x in allComments) {
+         string [] cmt = getCommentById(x);
+         if (cmt["author"]==reporter){
+             checkOrNo=true;
+         }
+        }
+        if (checkOrNo){
+            lfShowFieldMessage("description","Присутствуют комментарии автора" ,"WARNING");
+        }
+    }
+}
+
+}
+//основной скрипт

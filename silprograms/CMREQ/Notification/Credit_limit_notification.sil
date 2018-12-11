@@ -1,0 +1,37 @@
+//оповещение по почте о задачах обновленных более 3хдней назад. Висит на шедульке, каждый день в 7 утра по мск
+string myJQL = "project = CMREQ AND status = 'Contract management group' AND updated <= -3d ORDER BY updated ASC";
+string[] outofdate = selectIssues(myJQL);
+string head = "<head><style>#customers {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;border-collapse: collapse;}#customers td, #customers th {border: 1px solid #ddd;padding: 5px;}#customers th {padding-top: 8px;padding-bottom: 8px;text-align: left;background-color: #214f81;color: white;}</style></head>";
+string sendbody=head+"<table id='customers'><th>Задача</th><th>Последнее обновление</th>";
+string last_update ="";
+string format = "dd.MM.yyyy HH:mm:ss z";
+for(string curIssue in outofdate){
+    JComment cmt = getLastComment(curIssue);
+    if(!cmt.updated==""){
+        last_update = formatDate(cmt.updated, format);
+    }
+    else{
+        last_update = formatDate(%curIssue%.updated, format);
+    }
+    sendbody+="<tr><td><a href='"+getIssueURL(curIssue)+"'>"+%curIssue%.key+"</a></td><td> "+ last_update +"</td></tr>";
+}
+string tosend_message = "<html><body><img src='https://jira.r4.madm.net/s/-8afm4w/73016/b5a7941b5c073eb6643972c2b899996a/_/images/64jira.png' alt='JIRA'><H2 style='color:#214f81;'>Задачи обновлённые более 3х дней назад</H2><H3 style='color:#214f81'>Всего задач:" +arraySize(outofdate) + "</H3>"+sendbody+"</table></body></html>";
+sendHtmlEmail("it-support", {"cfm@metro-cc.ru"}, {"anatoliy.gundarov@metro-cc.ru"}, "более 3х дней", tosend_message);
+
+
+number index=1;
+string jql= "issuetype =\"Credit Limits\" and status = \"Contract management group\"";
+string [] SelIss = selectIssues (jql);
+string answer = "";
+head = "<head><style>#customers {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;border-collapse: collapse;}#customers td, #customers th {border: 1px solid #ddd;padding: 5px;}#customers th {padding-top: 8px;padding-bottom: 8px;text-align: left;background-color: #214f81;color: white;}</style></head>";
+sendbody=head+"<table id='customers'><th>Задача</th><th>Описание</th>";
+
+
+
+for (string isc in SelIss) {
+    runnerLog(isc+";"+%isc%.summary,index/size(SelIss)*100);
+    sendbody+="<tr><td><a href='"+isc+"'>" + isc + "</a></td><td> " + %isc%.summary + "</td></tr>";
+     
+    index++;
+}
+sendEmail("it-support@metro-cc.ru", {"cm.tsuvorova01@metro-cc.ru"},{"Marina.Koneva@metro-cc.ru","victor.gribanovskiy@metro-cc.ru","stanislav.ermilov@metro-cc.ru","anatoliy.gundarov@metro-cc.ru","yuriy.bakulin@metro-cc.ru"},"Отчёт CMREQ",sendbody);

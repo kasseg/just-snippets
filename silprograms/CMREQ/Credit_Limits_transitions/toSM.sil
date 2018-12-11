@@ -1,0 +1,32 @@
+//Утверждающим устанавливает Store Manager ТЦ, к котому принадлежит Автор by Evgeniy Russkikh
+include "General_excludeListOfApprovers";//подключение списка исключений
+number startPos=matchEnd(description, "GM#/ТЦ №");
+string subdescr=substring(description,startPos,-1);
+number endPos=indexOf(subdescr, "\n");
+string storeNum=substring(subdescr, 2, endPos-2);
+string [] approvers;
+
+//string [] approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+if (storeNum=="1491"){
+    approvers=ldapUserList({"sAMAccountName"},"(&(description=*Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1491 - Everybody,OU=ST1491-SIP,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+} else if (storeNum=="1492"){
+    approvers=ldapUserList({"sAMAccountName"},"(&(description=*Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1492 - Everybody,OU=ST1492-SVT,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+} else {
+    approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(!(description=*Assistant*))(!(description=*Deputy*))(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+}
+if(isNull(approvers) && isNotNull(storeNum)){
+    approvers=s%storeNum%.storeManager;
+}
+customfield_10100=approvers;
+/*
+include "General_excludeListOfApprovers";//подключение списка исключений
+string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +reporter+ ")","r4 domain LDAP");
+if (isNull(storeNum)){
+    storeNum=ldapUserAttr("metroStoreNumber", "(mail="+userEmailAddress(reporter)+")","r4 domain LDAP");
+}
+string [] approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber="+storeNum+")(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+if(isNull(approvers) && isNotNull(storeNum)){
+    storeNum=substring(storeNum, length(storeNum)-4, -1);
+    approvers=s%storeNum%.storeManager;
+}
+customfield_10100=approvers;*/

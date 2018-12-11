@@ -1,0 +1,5 @@
+if(summary=="IC. Changes in the OLF"){
+customfield_10100={"marina.sereda","Marianna.Malinova","marina.abakhova"};
+} else {
+customfield_10100={"ulyana.bochkova","Anna.Asomudinova"};
+}

@@ -1,0 +1,7 @@
+//условия для отмены by Evgeny Russkikh
+if ((currentUser() == "kseniya.rakhimova" or currentUser() == "admin-er" or currentUser() == "margarita.makzhanova" or currentUser() == "admin-ag" or currentUser() == reporter) 
+and (status!="Done" and status!="Cancelled")){
+    return true;    
+} else {
+    return false;
+}

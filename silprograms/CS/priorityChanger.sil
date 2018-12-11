@@ -1,0 +1,3 @@
+//Если приоритет изменили не Маргарита или Ксения, то возвращать предыдущее значение
+string [] priorities=fieldHistory(key, "priority");
+priority=priorities[size(priorities)-3];

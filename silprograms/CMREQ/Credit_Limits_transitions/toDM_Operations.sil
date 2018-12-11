@@ -1,0 +1,69 @@
+//на утверждение в Operations by Evgeniy Russkikh
+// Для regular clients утверждающим устанавливает District Manager, отвечающий за ТЦ, к котому принадлежит Автор
+include "General_excludeListOfApprovers";//подключение списка исключений
+string [] storeManager;
+function getDistrict(){
+    number startPos=matchEnd(description, "GM#/ТЦ №");
+    string subdescr=substring(description,startPos,-1);
+    number endPos=indexOf(subdescr, "\n");
+    string storeNum=substring(subdescr, 2, endPos-2);
+    string districtUserName;
+    if (storeNum=="0000"){
+        districtUserName="irina.pervushina";
+    } else {
+        //string [] storeManager=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+        if (storeNum=="1491"){
+        storeManager=ldapUserList({"sAMAccountName"},"(&(description=Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1491 - Everybody,OU=ST1491-SIP,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+        } else if (storeNum=="1492"){
+            storeManager=ldapUserList({"sAMAccountName"},"(&(description=Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1492 - Everybody,OU=ST1492-SVT,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+        } else {
+            storeManager=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(!(description=*Assistant*))(!(description=*Deputy*))(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+        }
+        if(isNull(storeManager) && isNotNull(storeNum)){
+            storeManager=s%storeNum%.storeManager;
+        }
+        /*string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +reporter+ ")","r4 domain LDAP");
+        string storeManager=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber="+storeNum+")(description=*Store Manager*))","r4 domain LDAP");*/
+        string district;
+        if (size(storeManager)==1){
+        district=ldapUserAttr("manager", "(sAMAccountName=" +storeManager+ ")","r4 domain LDAP");
+        //string districtUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+district+")","r4 domain LDAP");
+        //customfield_10100=districtUserName;
+        } else {
+            district=ldapUserAttr("manager", "(sAMAccountName=" +storeManager[0]+ ")","r4 domain LDAP");
+        }
+        districtUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+district+")","r4 domain LDAP");
+    }
+    customfield_10100=districtUserName;
+}
+
+if (contains(summary,"Credit Limits. Regular clients") or contains(summary,"Credit Limits. Seasonal increasing Regular clients")){
+getDistrict();
+   
+} else if (contains(summary,"Credit Limits. Federal clients") or contains(summary,"Credit Limits. Seasonal increasing Federal clients")){
+    if (contains(description,"до 500 000")){//дистрикт
+        getDistrict();
+    } else {
+        if (!contains(description,"HoReCa")){
+        customfield_10100="Olga.Parshina";
+        } else {
+            customfield_10100="Viktor.Smirnov";
+        }
+    }
+} else if (contains(summary,"Credit Limits. Fasol clients")){
+    if (contains(description,"от 200 001 до 500 000")){//дистрикт
+        getDistrict();
+    } else {
+        customfield_10100="Viktor.Smirnov";
+    }
+} else if (contains(summary,"Credit Limits. FSD")){
+    customfield_10100="Olga.Parshina";
+} else if (contains(summary,"Credit Limits. Tender clients")){
+    customfield_10100="Viktor.Smirnov";
+} else if (contains(summary,"Credit Limits. E-commerce clients")){
+    if (contains(description,"от 500 001 до 999 999")){
+        customfield_10100="Olga.Parshina";
+    } else {
+        getDistrict();
+    }
+}

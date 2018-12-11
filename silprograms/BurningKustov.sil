@@ -1,0 +1,4 @@
+if (argv["screen"] == "view" and (argv["assignee"]== "Kustov, Roman" or argv["assignee"]== "Kosarev, Aleksandr"))
+{
+    lfExecuteJS("flame.js");
+}

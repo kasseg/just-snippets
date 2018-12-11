@@ -1,0 +1,2 @@
+//действия после создания заявки by Evgeniy Russkikh
+autotransition("SM Approve", key, true,true,true);

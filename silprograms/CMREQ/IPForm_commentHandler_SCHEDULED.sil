@@ -1,0 +1,6 @@
+string issueKey=argv[0];
+string reporterEmail=getUser(%issueKey%.reporter).email;
+JComment cmt = getLastComment(issueKey);
+if (arrayElementExists(%issueKey%.customfield_10100, cmt.author)){
+    sendEmail("it-support@metro-cc.ru", reporterEmail, {}, " прокомментирована ("+issueKey+")",cmt.author+" написал комментарий:<br>"+cmt.text+"<br><a href=\"http://jira.r4.madm.net/browse/"+issueKey+"\">Ссылка на заявку</a>");
+}

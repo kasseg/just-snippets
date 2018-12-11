@@ -1,0 +1,9 @@
+//Действия после создания заявки и после измненения типа BMPL отзыва by Anatoliy Gundarov
+include "bmpl/BMPL_types.sil";
+for (BMPL_type cur_type in bmpl_types){
+    if(customfield_13113==cur_type.bmpl_type){
+        customfield_10002=cur_type.emailusers;
+        summary = cur_type.bmpl_type;
+        break;
+    }
+}

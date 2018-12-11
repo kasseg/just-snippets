@@ -1,0 +1,87 @@
+// Используется для выбора RSM или Head of KAM by Evgeniy Russkikh
+if (contains(summary,"Credit Limits. Federal clients") or contains(summary,"Credit Limits. Seasonal increasing Federal clients")){
+    if (!contains(description,"HoReCa")){
+        /*
+        struct Region {string[] stores; string rsm;}
+        Region Ural; Region West; Region South; Region Mow; Region Siberia; Region Center; Region Volga;
+        Center.stores = {"1022","1025","1036","1037","1039","1051","1052","1055","1056","1059","1063","1069","1202","1310","1317","1320","1336","1337"};
+        South.stores = {"1024","1026","1028","1042","1053","1058","1072","1082","1086","1094","1309"};
+        Siberia.stores= {"1044","1045","1046","1054","1057","1060","1066","1076","1083","1095","1304","1306","1311"};
+        Ural.stores={"1027","1029","1030","1031","1033","1035","1040","1047","1065","1071","1078","1088","1303"};
+        Mow.stores={"1010","1011","1012","1013","1014","1017","1018","1019","1048","1049","1061","1067","1073","1307","1308","1318","1356","1363","1444"};
+        West.stores={"1015","1016","1020"};
+        Volga.stores={"1021","1023","1032","1034","1038","1041","1043","1050","1064","1068","1070","1074","1357"};
+        Center.rsm = "vladimir.aldobaev";
+        South.rsm = "tasiya.gafarova";
+        Siberia.rsm= "artem.kiryanov";
+        Ural.rsm="Viktor.Klimov";
+        Mow.rsm="Svetlana.Loginova";
+        West.rsm="matsak.sakanyan";
+        Volga.rsm="Vyacheslav.Samorukov";
+        
+        number startPos=matchEnd(description, "GM#/ТЦ №");
+        string subdescr=substring(description,startPos,-1);
+        number endPos=indexOf(subdescr, "\n");
+        string storeNumber=substring(subdescr, 2, endPos-2);
+        
+        //string storeNumber = ldapUserRecord("metroStoreNumber", "(sAMAccountName=" + reporter+ ")");
+        //storeNumber=substring(storeNumber, length(storeNumber)-4,length(storeNumber));
+        Region[] all_regions = {Ural,West,Center,South,Siberia,Mow,Volga};
+        
+        for(Region current_region in all_regions){
+            for(string store in current_region.stores){
+             if(store==storeNumber){
+             customfield_10100=current_region.rsm;
+             }
+            }
+           }
+           */
+           customfield_10100="irina.pervushina";
+    } else {
+        customfield_10100="Mariya.Soltanova";
+    }
+} else if (contains(summary,"Credit Limits. Fasol clients")){
+       /* struct FasolRegion {string[] stores; string manager;}
+        FasolRegion Region1; FasolRegion Region2; FasolRegion Region3; FasolRegion Region4; FasolRegion Region5;
+        Region1.stores = {"1010","1011","1014","1017","1018","1022","1025","1036","1039","1051","1056","1059","1061","1063","1068","1069","1202","1308","1310","1318","1320","1336","1337","1356"};
+        Region2.stores = {"1015","1016","1020","1357"};
+        Region3.stores= {"1024","1026","1028","1042","1053","1058","1072","1082","1086","1094","1309","1340"};
+        Region4.stores={"1021","1023","1029","1030","1032","1033","1034","1035","1038","1040","1041","1043","1047","1050","1052","1064","1065","1070","1071","1074"};
+        Region5.stores={"1012","1013","1019","1027","1031","1037","1044","1045","1046","1048","1049","1054","1055","1057","1060","1066","1067","1073","1076","1078","1083","1088","1095","1303","1304","1306","1307","1311","1317"};
+        Region1.manager = "yana.burlyaeva";
+        Region2.manager = "vladimir.gutsalov";
+        Region3.manager= "ekaterina.nikitenko";
+        Region4.manager="kristina.ryzhova";
+        Region5.manager="dmitry.sulimov";
+        
+        number startPos=matchEnd(description, "GM#/ТЦ №");
+        string subdescr=substring(description,startPos,-1);
+        number endPos=indexOf(subdescr, "\n");
+        string storeNumber=substring(subdescr, 2, endPos-2);
+        //string issueReporter=getUser(reporter).username;
+        //string storeNumber = ldapUserRecord("metroStoreNumber", "(sAMAccountName=" + issueReporter+ ")");
+        //storeNumber=substring(storeNumber, length(storeNumber)-4,length(storeNumber));
+        FasolRegion[] all_regions = {Region1,Region2,Region3,Region4,Region5};
+        for(FasolRegion current_region in all_regions){
+            for(string store in current_region.stores){
+                if(store==storeNumber){
+                customfield_10100=current_region.manager;
+                }
+                //написать отклонялку для 1196
+            }
+        }*/
+    
+    
+} else if (contains(summary,"Credit Limits. FSD")){
+    if (contains(description,"FSD Moscow")){
+        customfield_10100="Olga.Boyko";
+    } else if (contains(description,"FSD Spb")){
+        customfield_10100="aleksandr.ledenev";
+    } else {
+        customfield_10100="Yuliya.Khusainova";
+    }
+}  else if (contains(summary,"Credit Limits. Tender clients") or contains(summary,"Credit Limits. Tender committee")){
+    customfield_10100={"a.semenova","evgeniya.cheloshkina"};
+} else if (contains(summary,"Credit Limits. E-commerce clients")){
+    customfield_10100="Svetlana.Loginova";
+}

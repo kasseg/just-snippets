@@ -1,0 +1,81 @@
+// Определяет первый шаг роутинга и отправляет на него
+if (contains(description,"Действие лимита до")){
+     summary+=" Seasonal";
+}
+if (contains(description,"Запрашиваемый диапазон кредитного лимита")){
+    number startPos=matchEnd(description, "Запрашиваемый диапазон кредитного лимита");
+    string subdescr=substring(description,startPos,-1);
+    number endPos=indexOf(subdescr, "\n");
+    string moneyRange=substring(subdescr, 2, endPos-2);
+    summary+=" ("+moneyRange+")";
+}
+customfield_10002+={"Anastasiya.Grigoryan","irina.suchkova","yanina.novikova","margarita.mukhina","e.shevchenko01"};//казначейство
+customfield_10002+="Natalya.Iskandarova";//Аудитор
+//Включение в список участников Панова Артёма, если автор - его сотрудник (IT92362)
+string[] panovPeople={"dmitriy.izraylit", "elizaveta.tyukalova", "aleksey.galkin01", "ekaterina.kiseleva01", "vladimir.bolonin", "roman.rokhmanov", "pavel.salamakhin", "irina.zabrodina", "egor.medvedev", "andrey.melentev", "aleksandr.mikhaylov", "vladislav.miroshin", "mariya.barsukova01", "alena.gureva", "sergey.ryabov", "polina.vardaya", "konstantin.fedotov", "anna.smolyak", "andrey.kostov", "yuliya.gerber", "alyona.bobrova", "Zhanna.Yagovkina", "sergey.shepilov", "artyom.Panov"};
+if (arrayElementExists(panovPeople, reporter)){
+    customfield_10002+="artyom.panov";
+    watchers+="artyom.panov";
+}
+
+//Пилот автоматического отклонения заявок по новым клиентам пилотных ТЦ (1036,1066,1072) с запрашиваемыми условиями до 150 000, включительно
+boolean pilotRule=false;
+string store=substring(description, matchEnd(description, "GM#/ТЦ №")+2, -1);
+store=substring(store, 0, indexOf(store, "\n")-2);
+if ((store == "1066" or store == "1072") and (contains(summary,"Credit Limits. FSD") or contains(summary,"Credit Limits. Regular clients"))){
+    string limit=substring(description, matchEnd(description, "Запрашиваемый кредитный лимит, RUR")+2, -1);
+    number reqLimit=substring(limit, 0, indexOf(limit, "\n")-2);
+    string clientType=substring(description, matchEnd(description, "Client/Клиент")+2, -1);
+    clientType=substring(clientType, 0, indexOf(clientType, "\n")-2);
+    if (reqLimit<=150000 and clientType=="Новый"){
+        autotransition("Rejected", key, true,true,true);
+        addJSDComment(key, "remoteuser", "Новому клиенту, с запрашиваемыми условиями до 150 000, включительно, необходимо предложить оформить бизнес карту Райффайзенбанка для предоставления кредитных условий.\nhttps://www.raiffeisen.ru/business/rko/metro/all/request/", true);
+        pilotRule=true;
+    }
+} 
+//End------------------------------------------------------------------------------------
+    if ((contains(summary,"Credit Limits. Regular clients") or contains(summary,"Credit Limits. Seasonal increasing Regular clients")  or contains(summary,"Credit Limits. Fasol clients")) and !pilotRule){
+        if (contains(summary,"Credit Limits. Fasol clients")){
+            //customfield_10002+="aleksandr.prokhorov";
+            //watchers+="aleksandr.prokhorov";
+            autotransition("SM Approve", key, true,true,true);
+        } else {
+            if (contains(description,"до 50 000") or contains(description,"от 50 001 до 200 000")){
+                autotransition("Security Approve", key, true,true,true);
+            }
+            if (contains(description,"от 200 001 до 500 000") or contains(description,"от 500 001 до 999 999")){
+                autotransition("SM Approve", key, true,true,true);
+            }
+        }
+    } else if (contains(summary,"Credit Limits. Federal clients") or contains(summary,"Credit Limits. FSD") or contains(summary,"Credit Limits. Seasonal increasing Federal clients") or contains(summary,"Credit Limits. Credit committee")){
+        /*if (contains(summary,"Credit Limits. Fasol clients")){
+            customfield_10002+="aleksandr.prokhorov";
+            watchers+="aleksandr.prokhorov";
+        }*/
+        autotransition("Security HO", key, true,true,true);
+    } else if (contains(summary,"Credit Limits. Prepayment")){
+        autotransition("Contract management group", key, true,true,true);
+    } else if (contains(summary,"Credit Limits. Tender clients") or contains(summary,"Credit Limits. Tender committee")){
+        if (reporter=="a.semenova"){
+            autotransition("Security HO", key, true,true,true);
+        } else {
+            autotransition("Analytics", key, true,true,true);
+        }
+    } else if (contains(summary,"Credit Limits. Transfer / decreasing credit limit") or contains(summary,"Credit Limits. СЕНСУС")){
+        autotransition("Tresuary HO", key, true,true,true);
+    } else if (contains(summary,"Credit Limits. E-commerce clients")){
+        if (contains(description,"до 200 000")){
+            autotransition("Security HO", key, true,true,true);
+        }
+        if (contains(description,"от 200 001 до 500 000")){
+            autotransition("Analytics", key, true,true,true);
+        }
+        if (contains(description,"от 500 001 до 999 999")){
+            autotransition("Security HO", key, true,true,true);
+        }
+    } else if (contains(summary,"Cash&Carry prepayment") or contains(summary,"HVS (ПРЕДОПЛАТА)")){
+        autotransition("Contract management group", key, true,true,true);
+    } else if (!pilotRule){
+        autotransition("Rejected", key, true,true,true);
+        sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "("+key+") криво создана ","https://jira.r4.madm.net/browse/"+key);
+    }

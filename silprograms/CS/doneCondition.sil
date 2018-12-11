@@ -1,0 +1,6 @@
+//доступно для завершения для Т. Семеновой by Evgeniy Russkikh
+if (currentUser() == "tatiana.semenova" or currentUser() == "admin-er" or currentUser() == "admin-ag"){
+    return true;    
+} else {
+    return false;
+}

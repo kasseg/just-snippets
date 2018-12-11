@@ -1,0 +1,22 @@
+//Валидатор при создании заявки by Evgeniy Russkikh
+string [] okUsers={
+    "sergey.bazhora",
+    "ivan.zaklinskiy",
+    "vitaliy.chemm",
+    "Elena.Zharovceva",
+    "kseniya.rakhimova",
+    "margarita.makzhanova",
+    "tatiana.semenova",
+    "darya.chelyubeeva",
+    "olga.myagkaya",
+    "vera.yasineckaya",
+    "alisa.astakhova",
+    "natalya.pivovarova",
+    "marina.shabeko",
+    "elena.malyavkina",
+    "admin-er"
+};
+string issueReporter=getUser(reporter).username;
+if (!arrayElementExists(okUsers,issueReporter)){
+    return false, "У Вас нет доступа к созданию данного типа заявок";
+}

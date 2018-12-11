@@ -1,0 +1,3 @@
+string[] args = {key};
+interval varInterval = "30s";
+runJobIn("CMREQ/IPForm_commentHandler_SCHEDULED.sil", args, varInterval);

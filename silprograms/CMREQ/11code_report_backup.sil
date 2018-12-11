@@ -1,0 +1,19 @@
+string issueReporter=getUser(reporter).username;
+string jql="project=\"Customer Manager Requests\" ";
+string [] cmreqKeys=selectIssues(jql);
+string letter="<table border=\"1\"><tr><th>ТЦ Обращения</th><th>ТЦ Клиента</th><th>Объединенные клиенты (номер|тип|наименование)</th><th>Фактический адрес</th><th>Дата создания</th><th>Автор</th><th>Утверждающий</th><th>Номер заявки</th></tr>";
+string bigRow="";
+for(string oneKey in cmreqKeys){
+    string [] descrArrayByRows=split(oneKey.description, "\r\n");
+    string descrTableHtml="<table border=\"1\">";
+    for (number i = 1; i <arraySize(descrArrayByRows); i = i + 1){
+        descrTableHtml+="<tr><td>";
+        descrArrayByRows[i]=substring(descrArrayByRows[i],1,length(descrArrayByRows[i])-1);
+        descrArrayByRows[i]=replace(descrArrayByRows[i], "|", "</td><td>");
+        descrTableHtml+=descrArrayByRows[i]+"</td></tr>";
+    }
+    descrTableHtml+="</table>";
+    bigRow+="<tr><td>"+oneKey.customfield_10702+"</td><td>"+oneKey.customfield_12108+"</td><td>"+descrTableHtml+"</td><td>"+oneKey.customfield_12311+"</td><td>"+oneKey.created+"</td><td>"+userFullName(reporter)+"</td><td>"+userFullName(oneKey.customfield_10100)+"</td><td>"+oneKey+"</td></tr>";
+}
+letter+=bigRow+"</table>";
+sendEmail("admin-er", "", "Отчет по объединениям 11 кодом","Были созданы следующие заявки на объединение:<br>"+letter);

@@ -1,0 +1,20 @@
+//Утверждающим устанавливает Store Manager ТЦ, к котому принадлежит Автор by Evgeniy Russkikh
+include "General_excludeListOfApprovers";//подключение списка исключений
+string issueReporter=getUser(reporter).username;
+string [] approvers;
+string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+if (contains(toLower(userPath),"st1491-sip")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+    approvers=ldapUserList({"sAMAccountName"},"(&(description=*Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1491 - Everybody,OU=ST1491-SIP,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+    storeNum="RU.3466.00001491";
+} else if (contains(toLower(userPath),"st1492-svt")){//проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+    approvers=ldapUserList({"sAMAccountName"},"(&(description=*Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1492 - Everybody,OU=ST1492-SVT,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+    storeNum="RU.3466.00001492";
+} else {
+    approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber="+storeNum+")(!(description=*Assistant*))(!(description=*Deputy*))(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+}
+if(isNull(approvers) && isNotNull(storeNum)){
+    storeNum=substring(storeNum, length(storeNum)-4, -1);
+    approvers=s%storeNum%.storeManager;
+}
+customfield_10100=approvers;

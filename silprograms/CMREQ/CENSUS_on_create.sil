@@ -1,0 +1,3 @@
+//при создании заявки перевод дальше на согласование
+customfield_10002+={"andrey.semirenko","olga.denisova","Maria.Drabkina"};
+autotransition("DM APPROVE", key,true,true,true);

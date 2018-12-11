@@ -1,0 +1,48 @@
+string issueReporter=getUser(reporter).username;
+string descriptionUser=toLower(ldapUserAttr("description", "(sAMAccountName="+issueReporter+")","r4 domain LDAP"));
+
+if (contains(summary,"Cash&Carry prepayment") or summary=="HVS (ПРЕДОПЛАТА)" or userInGroup("MCC RU - APP - Jira_CMREQ_CreditLimits", issueReporter) or issueReporter=="a.semenova"){    
+    if (description=="errorStorelength"){
+        return false, "Номер ТЦ введён в неверном формате";
+    }else if (description=="error"){
+        return false, "Не заполнены все поля";
+    } else if (description=="errorwrongRange"){
+        return false, "Выбранный диапазон кредитного лимита не соответствует введенному запрашиваемому лимиту";
+    } else if (description=="errorClientlength"){
+        return false, "Номер клиента введён в неверном формате";
+    } else if (description=="errorClientAndStore"){
+        return false, "Номер ТЦ и номер клиента не совпадают";
+    } else if (description=="errorLowLimit"){
+        return false, "Запрошен слишком маленький лимит. Минимально 5-значные числа.";
+    } else if (description=="errorDelaylength"){
+        return false, "Минимальная отсрочка должна быть двухзначным числом";
+    } else if (description=="errorINN"){
+        return false, "ИНН введен в неверном формате";
+    } else if (description=="errorKPP"){
+        return false, "КПП введен в неверном формате";
+    }  else if (description=="errorNoSeason"){
+        return false, "Не введена дата сезонного увеличения";
+    } else if (description==""){
+        return false, "Empty description";
+    } else if (description=="errorTable"){
+        return false, "Необходимо заполнить все ячейки таблицы";
+    } else if (description=="errorNoTable"){
+        return false, "Необходимо создать и заполнить таблицу";
+    } else if (description=="errorCardholder"){
+        return false, "Необходимо внести порядковый номер как минимум одного держателя карты";
+    //} else if (contains(descriptionUser,"operator") and summary!="Cash&Carry prepayment"){
+      //  return false, "Нет доступа к созданию данного типа заявок";
+    } else {
+        number startPos=matchEnd(description, "GM#/ТЦ №");
+        string subdescr=substring(description,startPos,-1);
+        number endPos=indexOf(subdescr, "\n");
+        string storeNum=substring(subdescr, 2, endPos-2);
+        if (chop(storeNum, 1)!="1" and storeNum!="0000"){
+            return false, "Не допустимый номер ТЦ, верный формат: 1ХХХ";
+        } else if (((summary=="HVS (ПРЕДОПЛАТА)" || summary=="Cash&Carry prepayment") && (storeNum=="1491" || storeNum=="1492")) || storeNum=="1196"){
+            return false, "Не допустимый номер ТЦ";
+        }
+    }
+} else {
+    return false, "Нет доступа к созданию данного типа заявок";
+}

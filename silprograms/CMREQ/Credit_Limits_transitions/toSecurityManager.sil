@@ -1,0 +1,38 @@
+//Утверждающим устанавливает Security Manager ТЦ, к котому принадлежит Автор by Evgeniy Russkikh
+include "General_excludeListOfApprovers";//подключение списка исключений
+number startPos=matchEnd(description, "GM#/ТЦ №");
+string subdescr=substring(description,startPos,-1);
+number endPos=indexOf(subdescr, "\n");
+string storeNum=substring(subdescr, 2, endPos-2);
+string [] approvers;
+if (storeNum=="1491"){
+    approvers=ldapUserList({"sAMAccountName"},"(&(description=Security Manager*)(memberOf=CN=MCC RU ST1491 - Everybody,OU=ST1491-SIP,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+} else if (storeNum=="1492"){
+    approvers=ldapUserList({"sAMAccountName"},"(&(description=Security Manager*)(memberOf=CN=MCC RU ST1492 - Everybody,OU=ST1492-SVT,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+} else {
+    approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(|(description=*Security Manager*)(metroJobTitle=Security Manager)))","r4 domain LDAP");
+}
+if(isNull(approvers) && isNotNull(storeNum)){ //Если в данном ТЦ не найден SecMan, то надо заглянуть в список исключений
+    approvers=s%storeNum%.SecurityManager;
+    if (isNull(userEmailAddress(s%storeNum%.SecurityManager)) && s%storeNum%.SecurityManager!=""){ //Если ИО найдено, но у него нет email - найти номер ТЦ ИО
+        storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +s%storeNum%.SecurityManager+ ")","r4 domain LDAP");
+        storeNum=substring(storeNum, length(storeNum)-4, -1);
+    }
+}
+customfield_10100=approvers;
+customfield_10100+=s%storeNum%.SecurityGMBX;//добавить ГПЯ Security, чтобы пришла отбивка. Т.к. у самих Security Manager'ов нет личной почты
+
+
+
+/*
+string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +reporter+ ")","r4 domain LDAP");
+if (isNull(storeNum)){
+    storeNum=ldapUserAttr("metroStoreNumber", "(mail="+userEmailAddress(reporter)+")","r4 domain LDAP");//- Возможно более стабильный вариант, т.к. логин возвращаемый переменной reporter редко косячит. Но емэил есть далеко не у всех
+}
+string [] approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber="+storeNum+")(|(description=*Security Manager*)(metroJobTitle=Security Manager)))","r4 domain LDAP");
+if(isNull(approvers) && isNotNull(storeNum)){
+    storeNum=substring(storeNum, length(storeNum)-4, -1);
+    approvers=s%storeNum%.SecurityManager;
+}
+customfield_10100=approvers;*/
+

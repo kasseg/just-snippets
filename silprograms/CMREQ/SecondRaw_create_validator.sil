@@ -1,0 +1,17 @@
+//Валидатор создания заявки Активация клиентов вторсырья by Evgeniy Russkikh
+//return false, "Данная завявка еще в разработке";
+
+string issueReporter=getUser(reporter).username;
+if (issueReporter!="admin-ag" && issueReporter!="admin-er" && issueReporter!="pavel.ashpetov" && issueReporter!="irina.semenova" && issueReporter!="evgeniya.neplokhova"){
+    return false, "Нет доступа к созданию данной заявки.";
+} else if (description=="errorStorelength"){
+    return false, "Номер ТЦ введён в неверном формате";
+}else if (description=="error"){
+    return false, "Не заполнены все поля";
+} else if (description=="errorClientlength"){
+    return false, "Номер клиента введён в неверном формате";
+} else if (description=="errorINN"){
+    return false, "ИНН введен в неверном формате";
+} else if (description=="errorKPP"){
+    return false, "КПП введен в неверном формате";
+}

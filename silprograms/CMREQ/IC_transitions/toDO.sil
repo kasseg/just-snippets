@@ -1,0 +1,5 @@
+if (summary=="IC. Changes in the OLF"){
+    autotransition("Bonus Settlement Level 2", key, true,true,true);
+} else {
+    autotransition("Done", key, true,true,true);
+}

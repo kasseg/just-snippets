@@ -1,0 +1,14 @@
+//Валидатор создания заявки "подтверждение 11 кодом" by Evgeniy Russkikh
+string issueReporter=getUser(reporter).username;
+if (userInGroup("MCC RU - Acquisition", issueReporter) 
+|| userInGroup("MCC RU - Franchising Specialist", issueReporter) 
+|| issueReporter=="admin-er"
+or userInGroup("MCC RU - APP - Jira_CMREQ_CreditLimits", issueReporter)){
+if (description=="noreason"){
+    return false, "Не указана причина";
+}else if (description=="error"){
+    return false, "Не заполнены данные всех клиентов";
+}
+} else {
+    return false, "Создавать данный тип заявки могут Customer Manager, Sales Manager, Franchise Specialists";
+}

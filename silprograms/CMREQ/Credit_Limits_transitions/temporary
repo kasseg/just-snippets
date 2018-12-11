@@ -1,0 +1,26 @@
+//Утверждающим устанавливает Store Manager ТЦ, к котому принадлежит Автор by Evgeniy Russkikh
+include "General_excludeListOfApprovers";//подключение списка исключений
+number startPos=matchEnd(description, "GM#/ТЦ №");
+string subdescr=substring(description,startPos,-1);
+number endPos=indexOf(subdescr, "\n");
+string storeNum=substring(subdescr, 2, endPos-2);
+//string [] approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+string [] approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(!(description=*Assistant*))(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+if(isNull(approvers) && isNotNull(storeNum)){
+    approvers=s%storeNum%.storeManager;
+}
+customfield_10100=approvers;
+
+
+///////-----
+
+//Утверждающим устанавливает Security Manager ТЦ, к котому принадлежит Автор by Evgeniy Russkikh
+number startPos=matchEnd(description, "GM#/ТЦ №");
+string subdescr=substring(description,startPos,-1);
+number endPos=indexOf(subdescr, "\n");
+string storeNum=substring(subdescr, 2, endPos-2);
+string [] approvers=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNum+")(|(description=*Security Manager*)(metroJobTitle=Security Manager)))","r4 domain LDAP");
+if(isNull(approvers) && isNotNull(storeNum)){
+    approvers=s%storeNum%.SecurityManager;
+}
+customfield_10100=approvers;

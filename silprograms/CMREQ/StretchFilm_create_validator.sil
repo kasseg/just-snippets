@@ -1,0 +1,15 @@
+//валидатор создания заявки by Evgeniy Russkikh
+string issueReporter=getUser(reporter).username;
+string job=toLower(ldapUserAttr("metroJobTitle", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP"));
+if (isNull(job)) {
+    job=toLower(ldapUserAttr("description", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP"));
+}
+if (contains(job,"administrative specialist") 
+    or userInGroup("MCC RU - Store Manager Assistant",issueReporter)
+    or userInGroup("MCC RU - APP - Jira_CMREQ_IPForm",issueReporter)){
+if (description=="error"){
+    return false, "Не заполнены необходимы поля (отмечены звёздочкой)";
+} else if (description=="errorReason"){
+    return false, "Не указана причина дополнительного заказа";
+}
+} else return false, "Заявка доступна АУТЦ и Административным специалистам";
