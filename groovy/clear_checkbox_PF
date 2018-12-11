@@ -1,0 +1,8 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.event.type.EventDispatchOption
+ 
+def customFieldManager = ComponentAccessor.getCustomFieldManager()
+def cf = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Согласование оценки'}
+issue.setCustomFieldValue(cf, null);
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)
