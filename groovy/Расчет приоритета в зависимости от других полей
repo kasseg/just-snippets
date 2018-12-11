@@ -1,0 +1,31 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.issue.MutableIssue
+import static com.atlassian.jira.component.ComponentAccessor.customFieldManager
+
+def customFieldManager = getCustomFieldManager()
+def cf = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Приоритет RSS и FE'}
+def result;
+if (issue.issueTypeObject.name=='Инцидент'){
+    def cfCritic = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Критичность проблемы'}
+    String cfCriticValue=issue.getCustomFieldValue(cfCritic);
+    def cfUserCount = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Количество пользователей, у которых наблюдается проблема'}
+    String cfUserCountValue=issue.getCustomFieldValue(cfUserCount);
+    if (cfCriticValue=='Можно работать'){
+        result='Можно работать'
+    } else if (cfCriticValue=='Сложно работать'){
+        result='Сложно работать'
+    } else if (cfCriticValue=='Остановка работы' && cfUserCountValue=='<30%'){
+        result='Сложно работать'
+    } else {
+        result='Остановка работы'
+    }
+} else {
+    result='Можно работать'
+}
+def fieldConfig = cf.getRelevantConfig(issue)
+def value = ComponentAccessor.optionsManager.getOptions(fieldConfig)?.find { it.toString() == result }
+issue.setCustomFieldValue(cf, value);
+
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)  
