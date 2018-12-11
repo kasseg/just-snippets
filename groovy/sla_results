@@ -1,0 +1,194 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.changehistory.ChangeHistoryManager
+import com.atlassian.jira.issue.history.ChangeItemBean
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.servicedesk.api.sla.info.SlaInformationService
+import com.atlassian.servicedesk.api.util.paging.SimplePagedRequest
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import java.util.*
+import java.text.SimpleDateFormat
+import java.sql.Timestamp
+import java.util.Date;
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+import java.time.Instant
+import java.time.Duration
+import com.onresolve.scriptrunner.runner.customisers.WithPlugin
+@WithPlugin("com.atlassian.servicedesk")
+//def issue = event.issue as Issue
+//MutableIssue issueToUpdate = (MutableIssue) issue;
+def date1 = new Timestamp(new Date().getTime())
+log.debug date1
+String currentDateTime = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aa").format(date1);
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+String fieldName = 'Team';
+ChangeHistoryManager changeHistoryManager = ComponentAccessor.getChangeHistoryManager()
+
+List<ChangeItemBean> changeItems
+changeItems = changeHistoryManager.getChangeItemsForField(issue, fieldName)
+if (changeItems.size()> 0) {
+    changeItems.sort{it.getCreated()}.last().getCreated()
+}
+log.debug changeItems
+String teamvalue=changeItems[changeItems.size()-1].fromString
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+def cf = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'sla results'}
+String result=issue.getCustomFieldValue(cf);
+def SLAcf = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Время до первого отклика'}
+//def SLAcfValue=issue.getCustomFieldValue(SLAcf);
+// date/time formatter will be used to format date attributes
+boolean overdued;
+def slaServ = ComponentAccessor.getOSGiComponentInstanceOfType(SlaInformationService)
+def pageRequest = new SimplePagedRequest(0, 50)
+def slaQuery=slaServ.newInfoQueryBuilder().pagedRequest(pageRequest).issue(issue.getId()).customField(SLAcf).build()
+String slaOfIssue=slaServ.getInfo(currentUser,slaQuery)
+log.debug issue
+log.debug slaOfIssue
+int timeSpent=Integer.parseInt(slaOfIssue.substring(slaOfIssue.lastIndexOf("elapsedTime")+12,slaOfIssue.lastIndexOf(", remainingTime")))/60000
+    log.debug "last team time spent: $timeSpent"
+
+int spentHours=timeSpent/60
+int spentMinutes=timeSpent%60
+String spentFormatted=""
+if (spentHours<10){
+    spentFormatted+="0$spentHours:"
+} else {
+    spentFormatted+="$spentHours:"
+}
+if (spentMinutes<10){
+    spentFormatted+="0$spentMinutes"
+} else {
+    spentFormatted+="$spentMinutes"
+}
+int slaGoal=Integer.parseInt(slaOfIssue.substring(slaOfIssue.lastIndexOf("goalDuration")+13,slaOfIssue.lastIndexOf(", elapsedTime")))/60000
+int slaGoalHours=slaGoal/60
+int slaGoalMinutes=slaGoal%60
+String slaGoalFormatted=""
+if (slaGoalHours<10){
+    slaGoalFormatted+="0$slaGoalHours:"
+} else {
+    slaGoalFormatted+="$slaGoalHours:"
+}
+if (slaGoalMinutes<10){
+    slaGoalFormatted+="0$slaGoalMinutes"
+} else {
+    slaGoalFormatted+="$slaGoalMinutes"
+}
+def remainingTime=slaOfIssue.substring(slaOfIssue.lastIndexOf("remainingTime")+14)
+remainingTime=Integer.parseInt(remainingTime.substring(0,remainingTime.indexOf("}")))
+if (remainingTime<0){
+    overdued=true;
+} else {
+    overdued=false;
+}
+
+def SLAcfResolution = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Время до резолюции'}
+slaQuery=slaServ.newInfoQueryBuilder().pagedRequest(pageRequest).issue(issue.getId()).customField(SLAcfResolution).build()
+String slaOfResolution=slaServ.getInfo(currentUser,slaQuery)
+log.debug slaOfResolution
+int timeSpentResolution=Integer.parseInt(slaOfResolution.substring(slaOfResolution.lastIndexOf("elapsedTime")+12,slaOfResolution.lastIndexOf(", remainingTime")))/60000
+int spentResolutionHours=timeSpentResolution/60
+int spentResolutionMinutes=timeSpentResolution%60
+String spentResolutionFormatted=""
+if (spentResolutionHours<10){
+    spentResolutionFormatted+="0$spentResolutionHours:"
+} else {
+    spentResolutionFormatted+="$spentResolutionHours:"
+}
+if (spentResolutionMinutes<10){
+    spentResolutionFormatted+="0$spentResolutionMinutes"
+} else {
+    spentResolutionFormatted+="$spentResolutionMinutes"
+}
+int slaResolutionGoal=Integer.parseInt(slaOfResolution.substring(slaOfResolution.lastIndexOf("goalDuration")+13,slaOfResolution.lastIndexOf(", elapsedTime")))/60000
+int slaResolutionGoalHours=slaResolutionGoal/60
+int slaResolutionGoalMinutes=slaResolutionGoal%60
+String slaResolutionGoalFormatted=""
+if (slaResolutionGoalHours<10){
+    slaResolutionGoalFormatted+="0$slaResolutionGoalHours:"
+} else {
+    slaResolutionGoalFormatted+="$slaResolutionGoalHours:"
+}
+if (slaResolutionGoalMinutes<10){
+    slaResolutionGoalFormatted+="0$slaResolutionGoalMinutes"
+} else {
+    slaResolutionGoalFormatted+="$slaResolutionGoalMinutes"
+}
+
+boolean overduedResolution;
+def remainingTimeResolution=slaOfResolution.substring(slaOfResolution.lastIndexOf("remainingTime")+14)
+remainingTimeResolution=Integer.parseInt(remainingTimeResolution.substring(0,remainingTimeResolution.indexOf("}")))
+if (remainingTimeResolution<0){
+    overduedResolution=true;
+} else {
+    overduedResolution=false;
+}
+
+def issueAssignee=issue.assignee
+if (issueAssignee){
+    issueAssignee = issueAssignee.getUsername()
+} else {
+    issueAssignee = "Unassigned"
+}
+
+	log.debug "last team goal: $slaGoal"
+    log.debug "last team: $teamvalue"
+    log.debug "overdued: $overdued"
+log.debug "slaGoalFormatted: $slaGoalFormatted"
+log.debug "spentFormatted: $spentFormatted"
+log.debug "slaResolutionGoalFormatted: $slaResolutionGoalFormatted"
+log.debug "spentResolutionFormatted: $spentResolutionFormatted"
+log.debug "overduedResolution: $overduedResolution"
+log.debug "issueAssignee: $issueAssignee"
+ if (result){
+	//result+= ",${timeSpent}min=$teamvalue=$overdued";
+     //если уже есть записи, смотрим была ли запись по команде и проверяем самый длинный отрезок.
+     def highlights = result.split(',')
+    //log.debug "Всего записано команд: "+highlights.size()
+    boolean teamAlreadyWas= false
+    String results="";
+    highlights.each{
+        def highlight=it.split('=')
+        log.debug "team ${highlight[0]}"
+        log.debug "slaGoal ${highlight[1]}"
+        log.debug "spent ${highlight[2]}"
+        log.debug "overdued ${highlight[3]}"
+        def highlightTimes = highlight[2].split(':')
+        if (highlight[0]==teamvalue){
+            log.debug "Team found"
+            if (spentHours>Integer.parseInt(highlightTimes[0]) || (spentHours==Integer.parseInt(highlightTimes[0]) && spentMinutes>Integer.parseInt(highlightTimes[1]))){
+            	log.debug "proshlo bolshe vremeni"
+            	results+="$teamvalue=$slaGoalFormatted=$spentFormatted=$overdued=$slaResolutionGoalFormatted=$spentResolutionFormatted=$overduedResolution=$issueAssignee=$currentDateTime"
+            } else {
+                log.debug "proshlo menshe vremeni"
+                results+=highlight[0]+"="+highlight[1]+"="+highlight[2]+"="+highlight[3]+"=$slaResolutionGoalFormatted=$spentResolutionFormatted=$overduedResolution=$issueAssignee=$currentDateTime";
+            }            
+        } else {
+            results+=highlight[0]+"="+highlight[1]+"="+highlight[2]+"="+highlight[3]+"="+highlight[4]+"="+highlight[5]+"="+highlight[6]+"="+highlight[7]+"="+highlight[8];
+            log.debug "not found"
+        }
+        if (highlight[0]==teamvalue){
+         teamAlreadyWas=true
+    }
+        results+=","
+    }
+     if (!teamAlreadyWas){
+         results+= "$teamvalue=$slaGoalFormatted=$spentFormatted=$overdued=$slaResolutionGoalFormatted=$spentResolutionFormatted=$overduedResolution=$issueAssignee=$currentDateTime,";
+     }
+    //if (results){
+        result=results.substring(0, results.length() - 1)
+    //}
+} else {
+    result= "$teamvalue=$slaGoalFormatted=$spentFormatted=$overdued=$slaResolutionGoalFormatted=$spentResolutionFormatted=$overduedResolution=$issueAssignee=$currentDateTime";
+}
+log.debug "new CF value: $result"
+issue.setCustomFieldValue(cf, result);
+
+ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)   
+
