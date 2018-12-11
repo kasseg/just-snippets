@@ -1,0 +1,8 @@
+import com.atlassian.jira.component.ComponentAccessor
+def cfManager = ComponentAccessor.customFieldManager
+def cf = cfManager.getCustomFieldObject((Long) 10216) // 10216 = Согласование оценки
+if (issue.getCustomFieldValue(cf) == null) {
+ return false
+ } else {
+ return true
+ }
