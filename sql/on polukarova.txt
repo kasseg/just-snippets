@@ -1,0 +1,16 @@
+SELECT distinct  i.Id
+      ,Pri.[Folio]	 
+    ,i.InvoiceDate
+	,i.PaymentDate
+	,i.InvoiceMetroId
+	,i.InvoiceNumber
+	,i.AmountToBePaid
+	,i.ClosingDocumentsAmount
+	,c.NameRu as counterparty
+  FROM [Server].[ProcInst] Pri  
+  join [METROCC.RU.EDOCS.DB].[dbo].[Invoice] i on i.ProcId=pri.ID 
+  join [METROCC.RU.EDOCS.DB].[dbo].Counterparty c on c.id=i.CounterpartyId
+  join [K2prd].[Server].[WorklistSlot] ws on ws.ProcInstID=pri.id
+  join [K2prd].[Server].[Actioner] auc on auc.ID=ws.ActionerID
+  where auc.ActionerName = 'K2:R4\elena.polukarova' and ws.[status]=0
+  order by i.id

@@ -1,0 +1,18 @@
+SELECT distinct  i.Id
+      ,Pri.[Folio]
+	  ,ia.[ApproverDisplayName]
+    ,i.InvoiceDate
+	,i.PaymentDate
+	,i.InvoiceMetroId
+	,i.InvoiceNumber
+	,i.AmountToBePaid
+	,i.ClosingDocumentsAmount
+	,c.NameRu as counterparty
+  FROM [Server].[ProcInst] Pri
+  join [Server].[ActionActInstRights] Aai on aai.ProcInstID = pri.id
+  join [Server].[Act] a on a.id = aai.ActID
+  join [METROCC.RU.EDOCS.DB].[dbo].[Invoice] i on i.ProcId=pri.ID
+  join [METROCC.RU.EDOCS.DB].[dbo].[InvoiceApprover] ia on ia.[InvoiceId]=i.id
+  join [METROCC.RU.EDOCS.DB].[dbo].Counterparty c on c.id=i.CounterpartyId
+  where a.Name ='IA05-Store Accountant verification' and ia.[ApproverDisplayName] like '%Expenses Specialist%'
+  order by i.id
