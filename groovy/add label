@@ -1,0 +1,14 @@
+import com.atlassian.jira.bc.issue.label.LabelService
+import com.atlassian.jira.bc.issue.label.LabelService.AddLabelValidationResult
+import com.atlassian.jira.component.ComponentAccessor
+
+def authenticationContext = ComponentAccessor.getJiraAuthenticationContext()
+def user = authenticationContext.getLoggedInUser()
+def labelService = ComponentAccessor.getComponent(LabelService)
+
+["Переоткрыта"].each {String labelName ->
+    AddLabelValidationResult validationResult = labelService.validateAddLabel(user, issue.id, labelName)
+    if (!validationResult.errorCollection.hasAnyErrors()) {
+        labelService.addLabel(user, validationResult, false)
+    }
+}
