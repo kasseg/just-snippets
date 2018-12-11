@@ -1,0 +1,89 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.changehistory.ChangeHistoryManager
+import com.atlassian.jira.issue.history.ChangeItemBean
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.event.type.EventDispatchOption
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import java.util.*
+import java.text.SimpleDateFormat
+import java.sql.Timestamp
+import java.util.Date;
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+import java.time.Instant
+import java.time.Duration
+//def issue = event.issue as Issue
+//MutableIssue issueToUpdate = (MutableIssue) issue;
+String fieldName = 'Team';
+ChangeHistoryManager changeHistoryManager = ComponentAccessor.getChangeHistoryManager()
+
+List<ChangeItemBean> changeItems
+changeItems = changeHistoryManager.getChangeItemsForField(issue, fieldName)
+if (changeItems.size()> 0) {
+    changeItems.sort{it.getCreated()}.last().getCreated()
+}
+String teamvalue=changeItems[changeItems.size()-1].fromString
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+def cf = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'sla results'}
+String result=issue.getCustomFieldValue(cf);
+def SLAcf = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Время до первого отклика'}
+//def SLAcfValue=issue.getCustomFieldValue(SLAcf);
+
+// date/time formatter will be used to format date attributes
+boolean overdued;
+if (SLAcfValue && (SLAcfValue as String).size() > 0) {
+   	Instant startDate = Instant.parse( SLAcfValue.ongoingSLAData.startTime as String );
+    Instant stopDate= Instant.parse( SLAcfValue.ongoingSLAData.thresholdData.get().calculatedAt as String );
+    int timeSpent = Duration.between(startDate, stopDate).toMinutes();
+    if ((SLAcfValue.ongoingSLAData.thresholdData.get().remainingTime.get() as int)>0){
+        overdued=false;
+    } else {
+        overdued=true;
+    }
+    log.debug timeSpent
+    log.debug teamvalue
+    log.debug overdued
+ if (result){
+	//result+= ",${timeSpent}min=$teamvalue=$overdued";
+     //если уже есть записи, смотрим была ли запись по команде и проверяем самый длинный отрезок.
+     def highlights = result.split(',')
+    //log.debug "Всего записано команд: "+highlights.size()
+    boolean teamAlreadyWas= false
+    String results="";
+    highlights.each{
+        def highlight=it.split('=')
+        log.debug highlight[0]
+        log.debug highlight[1]
+        log.debug highlight[2]
+        if (highlight[1]==teamvalue && highlight[0].findAll( /\d+/ )*.toInteger()[0]<timeSpent){
+            //results+=newTime+"="+newTeam+"="+newGoal;
+            results+="${timeSpent}min=$teamvalue=$overdued"
+            log.debug "found"
+        } else {
+            results+=highlight[0]+"="+highlight[1]+"="+highlight[2];
+            log.debug "not found"
+        }
+        if (highlight[1]==teamvalue){
+         teamAlreadyWas=true
+    }
+        results+=","
+    }
+     if (!teamAlreadyWas){
+         results+= "${timeSpent}min=$teamvalue=${overdued},";
+     }
+    //if (results){
+        result=results.substring(0, results.length() - 1)
+    //}
+} else {
+    result= "${timeSpent}min=$teamvalue=$overdued";
+}
+log.debug result
+issue.setCustomFieldValue(cf, result);
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)   
+}

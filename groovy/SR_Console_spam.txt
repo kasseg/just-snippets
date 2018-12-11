@@ -1,0 +1,183 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.changehistory.ChangeHistoryManager
+import com.atlassian.jira.issue.history.ChangeItemBean
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.jira.issue.CustomFieldManager
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import java.util.*
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.sql.Timestamp
+import java.util.Date;
+import java.time.Instant
+import com.onresolve.scriptrunner.runner.customisers.WithPlugin
+import com.atlassian.servicedesk.api.sla.info.SlaInformationService
+import com.atlassian.servicedesk.api.util.paging.SimplePagedRequest
+@WithPlugin("com.atlassian.servicedesk")
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+MutableIssue isskey = ComponentAccessor.getIssueManager().getIssueObject('SD-66')
+/*
+String fieldName = 'Team';
+
+ChangeHistoryManager changeHistoryManager = ComponentAccessor.getChangeHistoryManager()
+
+List<ChangeItemBean> changeTeams
+changeTeams = changeHistoryManager.getChangeItemsForField(isskey, fieldName)
+if (changeTeams.size()> 0) {
+    changeTeams.sort{it.getCreated()}.last().getCreated()
+}
+log.debug changeTeams
+Instant startDate = Clock.system(ZoneId.of("Europe/Paris")).instant();
+log.debug "startDate = ${changeTeams[changeTeams.size()-1].created}"
+
+
+fieldName = 'status';
+List<ChangeItemBean> changeStatuses
+changeStatuses = changeHistoryManager.getChangeItemsForField(isskey, fieldName)
+if (changeStatuses.size()> 0) {
+    changeStatuses.sort{it.getCreated()}.last().getCreated()
+}
+log.debug "endDate = ${changeStatuses[changeStatuses.size()-1].created}"
+log.debug changeStatuses*/
+def customFieldManager = ComponentAccessor.getCustomFieldManager()
+def SLAcf = customFieldManager.getCustomFieldObjects(isskey).find {it.name == 'Время до резолюции'}
+boolean overdued;
+def slaServ = ComponentAccessor.getOSGiComponentInstanceOfType(SlaInformationService)
+def pageRequest = new SimplePagedRequest(0, 50)
+def slaQuery=slaServ.newInfoQueryBuilder().pagedRequest(pageRequest).issue(isskey.getId()).customField(SLAcf).build()
+String slaOfIssue=slaServ.getInfo(currentUser,slaQuery)
+log.debug slaOfIssue
+/*def customFieldManager = ComponentAccessor.getCustomFieldManager()
+def SLAcf = customFieldManager.getCustomFieldObjects(isskey).find {it.name == 'Заявка влияет на закрытие периода'}
+String SLAcfValue=isskey.getCustomFieldValue(SLAcf);
+log.debug SLAcfValue
+if (!SLAcfValue?.trim()){
+   log.debug "1" 
+} else {
+    log.debug "2" 
+}*/
+/*def customFieldManager = ComponentAccessor.getCustomFieldManager()
+log.debug isskey
+def slaCF = customFieldManager.getCustomFieldObject("customfield_10302")
+def slaServ = ComponentAccessor.getOSGiComponentInstanceOfType(SlaInformationService)
+def pageRequest = new SimplePagedRequest(0, 50)
+def slaQuery=slaServ.newInfoQueryBuilder().pagedRequest(pageRequest).issue(isskey.getId()).customField(slaCF).build()
+String slaOfIssue=slaServ.getInfo(currentUser,slaQuery)
+log.debug slaOfIssue
+int elapsedTime=Integer.parseInt(slaOfIssue.substring(slaOfIssue.lastIndexOf("elapsedTime")+12,slaOfIssue.lastIndexOf(", remainingTime")))/60000
+log.debug elapsedTime
+int elapsedHours=elapsedTime/60
+int elapsedMinutes=elapsedTime%60
+log.debug elapsedHours
+log.debug elapsedMinutes
+def remainingTime=slaOfIssue.substring(slaOfIssue.lastIndexOf("remainingTime")+14)
+remainingTime=Integer.parseInt(remainingTime.substring(0,remainingTime.indexOf("}")))
+if (remainingTime<0){
+    log.debug "prosrochen"
+} else {
+    log.debug "ok"
+}
+String resultik=""
+if (elapsedHours<10){
+    resultik+="0$elapsedHours:"
+} else {
+    resultik+="$elapsedHours:"
+}
+if (elapsedMinutes<10){
+    resultik+="0$elapsedMinutes"
+} else {
+    resultik+="$elapsedMinutes"
+}
+log.debug resultik
+def cf = customFieldManager.getCustomFieldObjects(isskey).find {it.name == 'sla results'}
+String result=isskey.getCustomFieldValue(cf);
+log.debug result
+String teamvalue="RSS"
+boolean overdued=false
+if (result){
+	//result+= ",${timeSpent}min=$teamvalue=$overdued";
+     //если уже есть записи, смотрим была ли запись по команде и проверяем самый длинный отрезок.
+     def highlights = result.split(',')
+    //log.debug "Всего записано команд: "+highlights.size()
+    boolean teamAlreadyWas= false
+    String results="";
+    highlights.each{
+        def highlight=it.split('=')
+        log.debug "time ${highlight[0]}"
+        log.debug "team ${highlight[1]}"
+        log.debug "overdued ${highlight[2]}"
+        def highlightTimes = highlight[0].split(':')
+        int elHours=1
+        int elMins=38        
+        if (highlight[1]==teamvalue){
+            if (elHours>Integer.parseInt(highlightTimes[0]) || (elHours==Integer.parseInt(highlightTimes[0]) && elapsedMinutes>Integer.parseInt(highlightTimes[1]))){
+            log.debug "proshlo bolshe vremeni"
+            results+="$resultik=$teamvalue=$overdued"
+            } else {
+                log.debug "proshlo menshe vremeni"
+                results+=highlight[0]+"="+highlight[1]+"="+highlight[2];
+            }
+            //results+=newTime+"="+newTeam+"="+newGoal;
+            
+            log.debug "found"
+        } else {            
+            log.debug "not found"
+            results+=highlight[0]+"="+highlight[1]+"="+highlight[2];
+        }
+        if (highlight[1]==teamvalue){
+         teamAlreadyWas=true
+    }
+        results+=","
+    }
+     if (!teamAlreadyWas){
+         results+= "$resultik=$teamvalue=$overdued,";
+     }
+    //if (results){
+        result=results.substring(0, results.length() - 1)
+    //}
+} else {
+    result= "$resultik=$teamvalue=$overdued";
+}
+log.debug isskey*/
+//def slaInfo = slaServ.SlaInformationQuery().pagedRequest(pageRequest).isskey.getId()
+   //def slaInfo = slaServ.getInfo(currentUser,).pagedRequest(pageRequest).isskey.getId()
+/*def result;
+
+def cf = customFieldManager.getCustomFieldObjects(isskey).find {it.name == 'Время до первого отклика'}
+    def cfValue=isskey.getCustomFieldValue(cf);
+int remainingTime = cfValue.ongoingSLAData.thresholdData.get().remainingTime.get()/60000
+String startDate = cfValue.ongoingSLAData.startTime//.getTime()
+String calcAt = cfValue.ongoingSLAData.thresholdData.get().calculatedAt//.getTime()
+DateTimeFormatter format = DateTimeFormatter.ofPattern("MMM d yyyy  hh:mm a");
+if ((cfValue.ongoingSLAData.thresholdData.get().remainingTime.get() as int) <0){
+        log.debug "bolshe"
+} else {
+    log.debug "menshe"
+}
+int remainingHours= remainingTime/60
+int remainingMinutes= remainingTime%60
+log.debug cfValue	
+log.debug startDate
+log.debug calcAt
+//log.debug remainingTime
+//log.debug remainingHours
+//log.debug remainingMinutes
+//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+import java.time.Instant
+import java.time.Duration
+Instant instant1 = Instant.parse( cfValue.ongoingSLAData.startTime as String );
+Instant instant2= Instant.parse( calcAt );
+int timeSpent = Duration.between(instant1, instant2).toMinutes();
+log.debug timeSpent
+//log.debug Duration.between(instant1, instant2).toMinutes();
+//sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+//def cf2 = ComponentAccessor.getCustomFieldManager().getCustomFieldObject("Время до первого отклика");
+//String v = cf.getCustomFieldType().getStringFromSingularObject(cf.getValue(isskey))
+//log.debug v*/

@@ -1,0 +1,102 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.customfields.option.Option
+import com.onresolve.jira.groovy.user.FormField
+if (getActionName() == "Передать") {
+    FormField teamField = getFieldByName('Team')
+    FormField radioClosingPeriod = getFieldByName("Заявка влияет на закрытие периода")
+    FormField radioWorkaround = getFieldByName("Временное решение")
+    FormField radioWorkaroundDescription = getFieldByName("Описание временного решения")
+    FormField radioDailyReport = getFieldByName("Проблема с дневным отчетом")
+    FormField radioProduct = getFieldByName("Проблема с продуктом") 
+    FormField bluebookVersion = getFieldByName("Версия приложения Bluebook")
+    FormField browser = getFieldByName("Браузер")
+    FormField androidVersion = getFieldByName("Модель устройства, версия Andriod")
+    //Прячет и показывает поля, в зависимости от команды
+    if (teamField.getValue() == "SalesWorks technical"){
+        radioClosingPeriod.setHidden(false); fieldResetValue("Заявка влияет на закрытие периода",false); radioClosingPeriod.setRequired(true);       
+        radioWorkaround.setHidden(false); fieldResetValue("Временное решение",false); radioWorkaround.setRequired(true); 
+        radioWorkaroundDescription.setHidden(false); radioWorkaroundDescription.setRequired(true); 
+        radioDailyReport.setHidden(true); fieldResetValue("Проблема с дневным отчетом",true); radioDailyReport.setRequired(false); 
+        radioProduct.setHidden(true); fieldResetValue("Проблема с продуктом",true); radioProduct.setRequired(false);       
+        bluebookVersion.setHidden(true); fieldResetValue("Версия приложения Bluebook",true); bluebookVersion.setRequired(false);
+        fieldHandler("Браузер", "text"/*,true*/,false,true)
+    } else if (teamField.getValue() == "RSS"){
+       radioClosingPeriod.setHidden(true); fieldResetValue("Заявка влияет на закрытие периода",true); radioClosingPeriod.setRequired(false);  
+       radioWorkaround.setHidden(true); fieldResetValue("Временное решение",true); radioWorkaround.setRequired(false); 
+       radioWorkaroundDescription.setHidden(true); radioWorkaroundDescription.setRequired(false); 
+       radioWorkaroundDescription.setFormValue(underlyingIssue.getCustomFieldValue(customFieldManager.getCustomFieldObject(getFieldByName("Описание временного решения").getFieldId())))
+       radioDailyReport.setHidden(true); fieldResetValue("Проблема с дневным отчетом",true); radioDailyReport.setRequired(false); 
+       radioProduct.setHidden(true); fieldResetValue("Проблема с продуктом",true); radioProduct.setRequired(false); 
+       bluebookVersion.setHidden(true); fieldResetValue("Версия приложения Bluebook",true); bluebookVersion.setRequired(false);
+       fieldHandler("Браузер", "text"/*,true*/,false,true)
+    } else if (teamField.getValue() == "FE"){
+       radioClosingPeriod.setHidden(true); fieldResetValue("Заявка влияет на закрытие периода",true); radioClosingPeriod.setRequired(false);  
+       radioWorkaround.setHidden(true); fieldResetValue("Временное решение",true); radioWorkaround.setRequired(false); 
+       radioWorkaroundDescription.setHidden(true); radioWorkaroundDescription.setRequired(false); 
+       radioWorkaroundDescription.setFormValue(underlyingIssue.getCustomFieldValue(customFieldManager.getCustomFieldObject(getFieldByName("Описание временного решения").getFieldId())))
+       radioDailyReport.setHidden(false); fieldResetValue("Проблема с дневным отчетом",false); radioDailyReport.setRequired(true); 
+       radioProduct.setHidden(false); fieldResetValue("Проблема с продуктом",false); radioProduct.setRequired(true); 
+       bluebookVersion.setHidden(true); fieldResetValue("Версия приложения Bluebook",true); bluebookVersion.setRequired(false);
+       fieldHandler("Браузер", "text"/*,true*/,false,true)
+    } else if (teamField.getValue() == "Bluebook technical"){
+        radioClosingPeriod.setHidden(true); fieldResetValue("Заявка влияет на закрытие периода",true); radioClosingPeriod.setRequired(false);  
+        radioWorkaround.setHidden(true); fieldResetValue("Временное решение",true); radioWorkaround.setRequired(false); 
+        radioWorkaroundDescription.setHidden(true); radioWorkaroundDescription.setRequired(false); 
+        radioWorkaroundDescription.setFormValue(underlyingIssue.getCustomFieldValue(customFieldManager.getCustomFieldObject(getFieldByName("Описание временного решения").getFieldId())))
+        radioDailyReport.setHidden(true); fieldResetValue("Проблема с дневным отчетом",true); radioDailyReport.setRequired(false); 
+        radioProduct.setHidden(true); fieldResetValue("Проблема с продуктом",true); radioProduct.setRequired(false); 
+        bluebookVersion.setHidden(false); /*fieldResetValue("Версия приложения Bluebook",true);*/ bluebookVersion.setRequired(true);
+        fieldHandler("Браузер", "text"/*,true*/,true,false)
+    }
+}
+def fieldResetValue(String fieldName, boolean reset) {
+  /*def customFieldManager = ComponentAccessor.getCustomFieldManager()
+  def optionsManager = ComponentAccessor.getOptionsManager()
+  def field = getFieldByName(fieldName)
+  def fieldObject = customFieldManager.getCustomFieldObject(field.getFieldId())
+  def config = fieldObject.getRelevantConfig(getIssueContext())
+  def options = optionsManager.getOptions(config)
+  def resetOption
+  if (reset){
+      if (!(underlyingIssue.getCustomFieldValue(fieldObject) as String)?.trim()){
+      	field.setFormValue(-1)
+      } else {
+      	resetOption = options.find {it.value == (underlyingIssue.getCustomFieldValue(fieldObject) as String)}
+      	field.setFormValue(resetOption.optionId)
+      }            
+  } else {
+  	resetOption = options.find {it.value == "Нет"}
+  	field.setFormValue(resetOption.optionId)
+  }   */     
+}
+
+def fieldHandler(String fieldName, String fieldType, /*boolean reset, */boolean isRequired, boolean isHidden) {
+  def customFieldManager = ComponentAccessor.getCustomFieldManager()
+  def optionsManager = ComponentAccessor.getOptionsManager()
+  def field = getFieldByName(fieldName)
+  def fieldObject = customFieldManager.getCustomFieldObject(field.getFieldId())
+  def config = fieldObject.getRelevantConfig(getIssueContext())
+  def options = optionsManager.getOptions(config)
+  def resetOption
+  if (fieldType=="select"){
+      if (!(underlyingIssue.getCustomFieldValue(fieldObject) as String)?.trim()){
+      	field.setFormValue(-1)
+      } else {
+      	resetOption = options.find {it.value == (underlyingIssue.getCustomFieldValue(fieldObject) as String)}
+      	field.setFormValue(resetOption.optionId)
+      }
+  } else if (fieldType=="text"){
+      field.setFormValue(underlyingIssue.getCustomFieldValue(fieldObject))
+  }
+  if (isRequired){
+     field.setRequired(true)
+  } else {
+     field.setRequired(false)
+  }
+    
+  if (isHidden){
+    field.setHidden(true)
+  } else {
+  	  field.setHidden(false)
+  }
+}

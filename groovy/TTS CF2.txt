@@ -1,0 +1,66 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.changehistory.ChangeHistoryManager
+import com.atlassian.jira.issue.history.ChangeItemBean
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.jira.issue.CustomFieldManager
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import java.util.*
+   import java.text.SimpleDateFormat
+import java.sql.Timestamp
+import java.util.Date;
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+
+MutableIssue isskey = ComponentAccessor.getIssueManager().getIssueObject('SD-16')
+// get CustomFieldManager instance
+String fieldName = 'Team';
+
+ChangeHistoryManager changeHistoryManager = ComponentAccessor.getChangeHistoryManager()
+
+List<ChangeItemBean> changeItems
+changeItems = changeHistoryManager.getChangeItemsForField(isskey, fieldName)
+if (changeItems.size()> 0) {
+    changeItems.sort{it.getCreated()}.last().getCreated()
+}
+else {
+    //return isskey.getCreated()
+}
+log.debug changeItems[changeItems.size()-1].fromString
+String teamvalue=changeItems[changeItems.size()-1].fromString
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+//def cf = customFieldManager.getCustomFieldObject("customfield_10324")
+//isskey.setCustomFieldValue(cf, "12312312");
+def cf = customFieldManager.getCustomFieldObjects(isskey).find {it.name == 'sla results'}
+String result=isskey.getCustomFieldValue(cf);
+
+def ttsField = customFieldManager.getCustomFieldObject("customfield_10305")
+// get custom field value object
+def ttsFieldValue = isskey.getCustomFieldValue(ttsField)
+// date/time formatter will be used to format date attributes
+def formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
+// all attributes will be stored to result variable
+//def count = ""
+// TTS custom field returns list, let's iterate
+int timeSpent;
+boolean overdued;
+if (ttsFieldValue && ttsFieldValue.size() > 0) {
+   ttsFieldValue.each {
+       String slaName = it.slaName
+       if (slaName=="Время реакции"){
+           int slaValueAsMinutes = it.slaValue
+           int timeLeftTillSla = it.timeToSla // if less than 0, overdue
+           if (timeLeftTillSla<0){
+               overdued=true;
+           }
+           double timeLeftInMinutes=timeLeftTillSla/60000;
+           timeSpent=slaValueAsMinutes-timeLeftInMinutes;
+       }
+     }
+}
+result= "${timeSpent}min=$teamvalue=$overdued";
+result.toString()
+log.debug result

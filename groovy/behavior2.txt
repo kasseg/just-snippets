@@ -1,0 +1,31 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.customfields.option.Option
+import com.onresolve.jira.groovy.user.FormField
+
+if (getActionName() == "Передать") {
+    
+    /*radioHandler("Заявка влияет на закрытие периода")
+    radioHandler("Временное решение")
+    radioHandler("Проблема с продуктом")
+    radioHandler("Проблема с дневным отчетом") */   
+}
+def radioHandler(String fieldName) {
+  def customFieldManager = ComponentAccessor.getCustomFieldManager()
+  def optionsManager = ComponentAccessor.getOptionsManager()
+   def radioField = getFieldByName(fieldName)
+        def radioFieldObject = customFieldManager.getCustomFieldObject(radioField.getFieldId()) // Pick list Field that dictates other fields on form based on its value
+        def config = radioFieldObject.getRelevantConfig(getIssueContext())
+        def options = optionsManager.getOptions(config)
+        /*def optionsToShow=["Да", "Нет"];
+        def optionsMap = options.findAll {
+            it.value in optionsToShow // list of options you want to show
+        }.collectEntries {
+            [
+                    (it.optionId.toString()) : it.value
+            ]
+        }    
+        radioField.setFieldOptions(optionsMap)*/
+        def defaultOption = options.find {it.value == "Нет"}
+
+        radioField.setFormValue(defaultOption.optionId)
+ }

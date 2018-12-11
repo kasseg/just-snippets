@@ -1,0 +1,57 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.link.IssueLinkManager
+import com.atlassian.jira.issue.link.IssueLink
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.event.issue.IssueEvent
+import com.atlassian.jira.project.Project 
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.bc.project.component.ProjectComponent
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+def log = Logger.getLogger("testing")
+log.setLevel(Level.DEBUG)
+def customFieldManager = ComponentAccessor.getCustomFieldManager()
+def issueManager = ComponentAccessor.getIssueManager()
+def sourceType = event.getIssueLink().getSourceObject().getIssueType().name
+def destType = event.getIssueLink().getDestinationObject().getIssueType().name
+def task
+def bug
+if (sourceType == "Task"){
+    task=event.getIssueLink().getSourceObject().getKey()
+} else if (sourceType == "Bug"){
+    bug=event.getIssueLink().getSourceObject().getKey()
+}
+if (destType == "Task"){
+    task=event.getIssueLink().getDestinationObject().getKey()
+} else if (destType == "Bug"){
+    bug=event.getIssueLink().getDestinationObject().getKey()
+}
+log.debug "source: $sourceType"
+log.debug "dest: $destType"
+log.debug "task: $task"
+log.debug "bug: $bug"
+if (task && bug){
+    def bugObject = issueManager.getIssueObject(bug)
+    def epicLink = customFieldManager.getCustomFieldObjectByName("Epic Link")
+    def epic = issueManager.getIssueObject(task).getCustomFieldValue(epicLink);
+    log.debug "epic: $epic"
+    List<ProjectComponent> epicComponents = epic.getComponents()
+    log.debug "epic components: $epicComponents"
+    if (epicComponents){
+        def project = bugObject.getProjectObject()
+        def projectComponentManager = ComponentAccessor.getProjectComponentManager()
+        bugObject.setComponent(epicComponents)        
+        log.debug "Компоненты добавлены"
+    }
+    def epicLables = epic.getLabels()
+    log.debug "epic labels: $epicLables"
+    if (epicLables){
+        bugObject.setLabels(epicLables)
+        log.debug "Метки добавлены"
+    }
+    def user = ComponentAccessor.getJiraAuthenticationContext().loggedInUser
+    def im = ComponentAccessor.getIssueManager()
+    im.updateIssue(user, bugObject, EventDispatchOption.ISSUE_UPDATED, false)
+} else {
+    log.debug "Нет таска или бага"
+}
