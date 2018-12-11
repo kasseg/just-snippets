@@ -1,0 +1,8 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.customfields.option.Option
+import com.onresolve.jira.groovy.user.FormField
+
+def customFieldManager = ComponentAccessor.getCustomFieldManager()
+def optionsManager = ComponentAccessor.getOptionsManager()
+def field = getFieldByName("Телефон")
+field.setFormValue("700-700-7")
