@@ -1,0 +1,71 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.servicedesk.api.requesttype.RequestTypeService
+import com.onresolve.scriptrunner.runner.customisers.WithPlugin
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+@WithPlugin("com.atlassian.servicedesk")
+def log = Logger.getLogger("testing")
+log.setLevel(Level.DEBUG)
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject('SD-106')
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser() //Получаем текущего пользователя (создателя)
+def requestTypeService = ComponentAccessor.getOSGiComponentInstanceOfType(RequestTypeService)
+def reqQ = requestTypeService.newQueryBuilder().issue(issue.id).build()
+def reqT = requestTypeService.getRequestTypes(currentUser, reqQ)
+def requestType = reqT.right.results[0].getName() //Получаем название услуги
+log.debug issue
+log.debug requestType
+def teamToAssign="1Л"
+if (requestType=="Письмо"){//Если заявка пришла по почте, смотрим тему письма
+    log.debug issue.summary
+    //1с, crm, invest = сразу на команду соответствующую
+    if (issue.summary.toLowerCase().contains("1c") || issue.summary.toLowerCase().contains("1с")) {//Англ и рус буква С
+        teamToAssign="1С"
+    } else if (issue.summary.toLowerCase().contains("crm")){
+        teamToAssign="CRM"
+    } else if (issue.summary.toLowerCase().contains("invest")){
+        teamToAssign="Invest"
+    }
+} else {
+    /*
+    если выбран сервис Directum, то заявка автоматом падает в очередь Directum (минуя очередь 1Л),
+    1С, ЖКХ, ЖКХ Стэк — в 1С,
+    CRM, Etalon.pro, Expert.etalon.pro — CRM,
+    Oracle Hyperion — Hyperion,
+    Invest — Invest,
+    Корпоративный портал — Портал
+    */
+    def serviceActivity = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Service-Activity'}
+    Map serviceActivityValue=issue.getCustomFieldValue(serviceActivity) as Map
+	String service = serviceActivityValue.get(null)
+    log.debug serviceActivityValue
+    log.debug service
+    switch (service) {
+            case "Дорабатываемое ПО. СЭД Directum":  teamToAssign = "Directum";
+                     break;
+            case "Дорабатываемое ПО. 1C":
+            case "Дорабатываемое ПО. ЖКХ СТЭК":
+            case "Дорабатываемое ПО. ЖКХ Мегаполис":  teamToAssign = "1С";
+                     break;       
+            case "Дорабатываемое ПО. CRM":
+            case "Дорабатываемое ПО. Etalon.pro":
+            case "Дорабатываемое ПО. Expert.etalon.pro":  teamToAssign = "CRM";
+                     break;
+            case "Дорабатываемое ПО. Oracle Hyperion (бюджетное управление)":  teamToAssign = "Hyperion";
+                     break;
+            case "Дорабатываемое ПО. Invest":  teamToAssign = "Invest";
+                     break;
+            case "Дорабатываемое ПО. Корпоративный портал portal.etalongroup.com": teamToAssign = "Портал";
+                     break;            
+        }
+}
+log.debug teamToAssign
+
+def cfTeam = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Team'} 
+def fieldConfig = cfTeam.getRelevantConfig(issue)
+def value = ComponentAccessor.optionsManager.getOptions(fieldConfig)?.find { it.toString() == assignTeam }
+issue.setCustomFieldValue(cfTeam, value); // Устанавливаем значение поля Team в соответствии с ответственной команды
+ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)  //Сохраняем изменения
