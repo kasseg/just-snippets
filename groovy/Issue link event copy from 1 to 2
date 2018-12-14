@@ -1,0 +1,62 @@
+import com.atlassian.jira.issue.fields.CustomField
+import com.atlassian.jira.issue.link.IssueLinkManager
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.link.IssueLink
+import com.atlassian.jira.issue.Issue
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+def log = Logger.getLogger("test")
+log.setLevel(Level.DEBUG)
+log.debug event.getIssueLink().getSourceObject().getIssueType().name
+log.debug event.getIssueLink().getDestinationObject().getIssueType().name
+def bug
+def testing
+if (event.getIssueLink().getSourceObject().getIssueType().name=="Bug"){
+    bug=event.getIssueLink().getSourceObject().getKey()
+}
+if (event.getIssueLink().getSourceObject().getIssueType().name=="Testing"){
+    testing=event.getIssueLink().getSourceObject().getKey()
+}
+if (event.getIssueLink().getDestinationObject().getIssueType().name=="Bug"){
+    bug=event.getIssueLink().getDestinationObject().getKey()
+}
+if (event.getIssueLink().getDestinationObject().getIssueType().name=="Testing"){
+    testing=event.getIssueLink().getDestinationObject().getKey()
+}
+log.debug "bug: $bug"
+log.debug "testing: $testing"
+if (bug && testing){
+    def bugObj=ComponentAccessor.getIssueManager().getIssueObject(bug)
+    def testObj=ComponentAccessor.getIssueManager().getIssueObject(testing)
+    def cfm = ComponentAccessor.getCustomFieldManager()
+    def changeHolder = new DefaultIssueChangeHolder()
+    def component = testObj.getComponents()
+    bugObj.setComponent(component)
+    log.debug ( "Компоненты в тестинге:" + component)
+    def label = testObj.getLabels()
+    bugObj.setLabels(label)
+    log.debug ( "Метки в тестинге:" + label)
+    def fixVersions = testObj.getFixVersions()
+    bugObj.setAffectedVersions(fixVersions)
+    log.debug ( "Fix Version в тестинге:" + fixVersions)
+    def priority = testObj.getPriority()
+    bugObj.setPriority(priority)
+    log.debug ( "Priority в тестинге:" + priority)
+    def cfmm = ComponentAccessor.getCustomFieldManager()
+    def cf = cfmm.getCustomFieldObject('customfield_13401')
+    def value = testObj.getCustomFieldValue(cf)
+    bugObj.setCustomFieldValue(cf, value)
+    log.debug ( "Группы специалистов в тестинге:" + value)
+    def analyst = cfmm.getCustomFieldObject('customfield_10514')
+    def valueAnalyst = testObj.getCustomFieldValue(analyst)
+    bugObj.setCustomFieldValue(analyst, valueAnalyst)
+    log.debug ( "Аналитег в тестинге:" + valueAnalyst)
+    def user = ComponentAccessor.getJiraAuthenticationContext().loggedInUser
+    def im = ComponentAccessor.getIssueManager()
+    im.updateIssue(user, bugObj, EventDispatchOption.ISSUE_UPDATED, false)
+} else {
+    log.debug ( "Не полный набор типов задач")
+}
