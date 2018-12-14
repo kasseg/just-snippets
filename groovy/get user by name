@@ -1,0 +1,3 @@
+import ...ComponentAccessor
+def um = ComponentAccessor.getUserManager()
+def user = um.getUserByName('user2')
