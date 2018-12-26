@@ -1,0 +1,80 @@
+import com.atlassian.fugue.Option
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.servicedesk.api.ServiceDeskManager
+import com.atlassian.servicedesk.api.organization.OrganizationService
+import com.atlassian.servicedesk.api.organization.OrganizationsQuery
+import com.atlassian.servicedesk.api.util.paging.LimitedPagedRequest
+import com.atlassian.servicedesk.api.util.paging.LimitedPagedRequestImpl
+import com.onresolve.scriptrunner.runner.customisers.PluginModule
+import com.onresolve.scriptrunner.runner.customisers.WithPlugin
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+@WithPlugin("com.atlassian.servicedesk")
+def log = Logger.getLogger("debug")
+log.setLevel(Level.DEBUG)
+
+@PluginModule
+ServiceDeskManager serviceDeskManager
+
+@PluginModule
+OrganizationService organizationService
+
+MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject('SD-168')
+
+def currentUser = ComponentAccessor.getUserManager().getUserByName('robot')// ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+def reporterUser = issue.reporter
+def serviceDeskProject = serviceDeskManager.getServiceDeskForProject(issue.projectObject)
+log.debug reporterUser
+// if the project is not a Service Desk one then do nothing
+if (serviceDeskProject.isLeft()) {
+    log.debug "${serviceDeskProject?.left()?.get()}"
+    return
+}
+
+def serviceDeskId = serviceDeskProject?.right()?.get()?.id as Integer
+log.debug serviceDeskId
+// get the available organizations for that project
+def organizationsQuery = new OrganizationsQuery() {
+    @Override
+    Option<Integer> serviceDeskId() {
+
+        return new Option.Some<Integer> (serviceDeskId)
+    }
+
+    @Override
+    LimitedPagedRequest pagedRequest() {
+        return new LimitedPagedRequestImpl(0, 50, 100)
+    }
+}
+
+// get all the organizations configured for that project
+def organizationsToAdd = organizationService.getOrganizations(currentUser, organizationsQuery)?.right()?.get()?.results
+log.debug "all organizations in project: $organizationsToAdd"
+
+organizationsToAdd.each{
+    def organizationA = it// organizationsInProjectResult.right().get().results.find {it.name == "OrgA"}
+    log.debug it.name
+
+
+    def usersInOrganizationQuery = organizationService.newUsersInOrganizationQuery().customerOrganization(it).build()
+
+    def usersInOrganization = organizationService.getUsersInOrganization(currentUser, usersInOrganizationQuery)
+    
+    if (usersInOrganization.isLeft()) {
+        log.error usersInOrganization.left().get()
+        return
+    } else {
+    	log.debug usersInOrganization.right().get().results
+        if (usersInOrganization.right().get().results.contains(reporterUser)){
+            organizationsToAdd=it
+        }        
+    }
+}
+log.debug "reporter's organization: $organizationsToAdd"
+// get the Organizations custom field
+def cf = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName("Organizations")
+// finally update the organizations custom field
+//cf.updateValue(null, issue, new ModifiedValue(issue.getCustomFieldValue(cf), organizationsToAdd), new DefaultIssueChangeHolder())
