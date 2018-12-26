@@ -22,8 +22,8 @@ ServiceDeskManager serviceDeskManager
 @PluginModule
 OrganizationService organizationService
 
-MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject('SD-168')
-
+MutableIssue issue = issue
+log.debug issue
 def currentUser = ComponentAccessor.getUserManager().getUserByName('robot')// ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
 def reporterUser = issue.reporter
 def serviceDeskProject = serviceDeskManager.getServiceDeskForProject(issue.projectObject)
@@ -75,6 +75,6 @@ organizationsToAdd.each{
 }
 log.debug "reporter's organization: $organizationsToAdd"
 // get the Organizations custom field
-def cf = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName("Organizations")
+def cf = ComponentAccessor.getCustomFieldManager().getCustomFieldObjectByName("Организации")
 // finally update the organizations custom field
-//cf.updateValue(null, issue, new ModifiedValue(issue.getCustomFieldValue(cf), organizationsToAdd), new DefaultIssueChangeHolder())
+cf.updateValue(null, issue, new ModifiedValue(issue.getCustomFieldValue(cf), [organizationsToAdd]), new DefaultIssueChangeHolder())
