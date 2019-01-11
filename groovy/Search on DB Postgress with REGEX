@@ -13,7 +13,7 @@ import org.apache.log4j.Level
 def log = Logger.getLogger("com.acme.CreateSubtask")
 log.setLevel(Level.DEBUG)
 CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
-MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject('SD-3177')
+MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject('SD-3178')
 
 log.debug issue
 
@@ -41,12 +41,12 @@ def sqlStmt = """
     	SELECT "RECORDID"
         FROM "AO_9F39CD_TLFIELDVALUE"
         where "RECORDID" IN (SELECT * FROM sameCompUsers)
-        AND "FIELDCODE" = 'contacts_field_c8997145-a563-44ef-8ce5-412fa9565e6d' AND "FIELDVALUELONG"='true'
+        AND "FIELDCODE" = 'contacts_field_c8997145-a563-44ef-8ce5-412fa9565e6d' AND "FIELDVALUELONG" = 'true'
     )
     
     SELECT     "FIELDVALUELONG" as val
     FROM       "AO_9F39CD_TLFIELDVALUE"
-    where "RECORDID" IN (SELECT * FROM sameCompUsers)
+    where "RECORDID" IN (SELECT * FROM supervisors)
     AND "FIELDCODE" = 'contact_login'
 """
 List<String> supervisors = new ArrayList<String>();
