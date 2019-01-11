@@ -1,0 +1,95 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.fields.CustomField
+import com.atlassian.jira.user.ApplicationUser
+import com.atlassian.jira.event.type.EventDispatchOption
+import groovy.sql.Sql
+import org.ofbiz.core.entity.ConnectionFactory
+import org.ofbiz.core.entity.DelegatorInterface
+import java.sql.Connection
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject('SD-3177')
+
+log.debug issue
+
+
+log.debug "Reporter is: ${issue.reporter.getUsername()}"
+def reporterCompany = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Компания'}
+String reporterCompanyValue=issue.getCustomFieldValue(reporterCompany);
+if (reporterCompanyValue){
+    reporterCompanyValue=reporterCompanyValue.substring(reporterCompanyValue.lastIndexOf('(')+1,reporterCompanyValue.lastIndexOf(')'))
+}
+log.debug "reporterCompanyValue: $reporterCompanyValue"
+def delegator = (DelegatorInterface) ComponentAccessor.getComponent(DelegatorInterface)
+String helperName = delegator.getGroupHelperName("default")
+
+log.debug "regex: (^|[^\\d])$reporterCompanyValue(\$|[^\\d])"
+
+def sqlStmt = """
+	WITH sameCompUsers AS(
+    	SELECT "RECORDID"
+        FROM "AO_9F39CD_TLFIELDVALUE"
+        where "FIELDCODE" = 'contacts_field_6f457599-778d-4e7c-a493-ed457316a6ae'
+        AND "FIELDSELECTVALUELONG" ~ '(^|[^\\d])$reporterCompanyValue(\$|[^\\d])'
+    )
+    , supervisors AS (
+    	SELECT "RECORDID"
+        FROM "AO_9F39CD_TLFIELDVALUE"
+        where "RECORDID" IN (SELECT * FROM sameCompUsers)
+        AND "FIELDCODE" = 'contacts_field_c8997145-a563-44ef-8ce5-412fa9565e6d' AND "FIELDVALUELONG"='true'
+    )
+    
+    SELECT     "FIELDVALUELONG" as val
+    FROM       "AO_9F39CD_TLFIELDVALUE"
+    where "RECORDID" IN (SELECT * FROM sameCompUsers)
+    AND "FIELDCODE" = 'contact_login'
+"""
+List<String> supervisors = new ArrayList<String>();
+supervisors = getSQLresult(sqlStmt)
+if (supervisors.contains(issue.reporter.getUsername())) {
+                supervisors.remove(issue.reporter.getUsername())
+            }
+log.debug supervisors
+
+def requestParticipants = ComponentAccessor.getCustomFieldManager().getCustomFieldObject(10201)
+List <ApplicationUser> users = []
+if (issue.getCustomFieldValue(requestParticipants)){
+	users = issue.getCustomFieldValue(requestParticipants)	
+}
+if (supervisors) { 
+    supervisors.each{
+        users.add(ComponentAccessor.getUserManager().getUserByName(it))
+    }
+    
+}
+log.debug users
+
+/*if (users){
+	issue.setCustomFieldValue(requestParticipants, users);
+	def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+	ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false) 
+}*/
+
+def getSQLresult(String sqlStmt) {  
+    def delegator = (DelegatorInterface) ComponentAccessor.getComponent(DelegatorInterface)
+	String helperName = delegator.getGroupHelperName("default")
+    Connection conn = ConnectionFactory.getConnection(helperName)
+    Sql sql = new Sql(conn)
+    List<String> result = new ArrayList<String>();
+    try {
+        sql.eachRow(sqlStmt) {
+            if (!result.contains(it.val)) {
+                result.add(it.val)
+            }            
+        }
+    }
+    finally {
+        sql.close()
+    }
+    return result
+}
