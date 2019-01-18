@@ -1,0 +1,112 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.issue.customfields.manager.OptionsManager
+class Store
+{
+    public String login; 
+  	public String name; 
+    public String region;  
+    public boolean freshLine;
+    public String manager;
+  
+    public Store(String login, String name, String region, boolean freshLine, String manager) {
+        this.login = login;
+        this.name = name;
+        this.region = region;
+      	this.freshLine = freshLine;
+      	this.manager = manager;
+    }
+ }
+def allStores = [];
+Store storeA1 = new Store("storeA1","Магазин А1","Регион А",true,"user2"); allStores<<storeA1
+Store storeA2 = new Store("storeA2","Магазин А2","Регион А",false,"user2"); allStores<<storeA2
+Store storeB1 = new Store("storeB1","Магазин Б1","Регион Б",false,"user2"); allStores<<storeB1
+Store storeB2 = new Store("storeB2","Магазин Б2","Регион Б",true,"user2"); allStores<<storeB2
+//Store adler2 = new Store("adler2","Рив Гош Адлер-2 ПЛАЗА","регионы",true,"kreps "); allStores<<adler2
+
+//MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject('SD-2')
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+
+String searchFor
+String modeStatus = "Регион А"
+switch(modeStatus) {
+    case "Регион А":        
+    case "Регион Б":
+        searchFor="region"
+        break;
+    case "Магазины":
+        searchFor="name"
+        break;
+  	case "Все":
+        searchFor="everything"
+        break;
+  	case "Fresh":
+        searchFor="freshLine"
+        break;
+}
+log.error String.valueOf(allStores.get(0)."$searchFor")
+def cf = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Магазины'}
+List<String> cfStoresValue =issue.getCustomFieldValue(cf).collect{it.getValue()}
+log.error "В тикете выбрано: $cfStoresValue"
+List<String> storesToCreate = new ArrayList<String>();
+List<String> managers = new ArrayList<String>();
+allStores.each{
+  if (cfStoresValue.contains("Все")){
+  storesToCreate.add(it.login)
+  } else {
+    if (cfStoresValue.contains("Регион А") && it.region=="Регион А" && !storesToCreate.contains(it.login)){
+      storesToCreate.add(it.login)
+      managers.add(it.manager)
+    }
+    if (cfStoresValue.contains("Регион Б") && it.region=="Регион Б" && !storesToCreate.contains(it.login)){
+      storesToCreate.add(it.login)
+      managers.add(it.manager)
+    }
+    if (cfStoresValue.contains("Фрэш") && it.freshLine && !storesToCreate.contains(it.login)){
+      storesToCreate.add(it.login)
+      managers.add(it.manager)
+    }
+    if (cfStoresValue.contains(it.name) && !storesToCreate.contains(it.login)){
+      storesToCreate.add(it.login)
+      managers.add(it.manager)
+    }
+  }
+} 
+//Создание подзадач
+def constantManager = ComponentAccessor.getConstantsManager()
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+def issueFactory = ComponentAccessor.getIssueFactory()
+def subTaskManager = ComponentAccessor.getSubTaskManager()
+def issueManager = ComponentAccessor.getIssueManager()
+def userManager = ComponentAccessor.getUserManager()
+def watcherManager = ComponentAccessor.getWatcherManager()
+def manager = userManager.getUserByName("user2")
+for (int i=0;i<storesToCreate.size();i++){
+//storesToCreate.each{
+   MutableIssue newSubTask = issueFactory.getIssue()
+   newSubTask.setSummary(issue.getSummary())
+   newSubTask.setDescription(issue.getDescription())
+   newSubTask.setReporter(issue.getReporter())
+   newSubTask.setComponent(issue.getComponents())
+   newSubTask.setLabels(issue.getLabels())
+   newSubTask.setPriority(issue.getPriority())
+   newSubTask.setDueDate(issue.getDueDate())
+   //newSubTask.setSecurityLevelId(issue.getSecurityLevelId()) - Security Level подзадач всегда копируется из родительской задачи и не может отличаться от него
+   def parentWatchers = watcherManager.getWatchersUnsorted(issue)
+   newSubTask.setAssigneeId(storesToCreate.get(i))
+   newSubTask.setParentObject(issue)
+   newSubTask.setProjectObject(issue.getProjectObject())
+   newSubTask.setIssueTypeId(constantManager.getAllIssueTypeObjects().find{it.getName() == "Подзадача"}.id)
+   def newIssueParams = ["issue" : newSubTask] as Map<String,Object>
+   issueManager.createIssueObject(currentUser, newIssueParams)
+   subTaskManager.createSubTaskIssueLink(issue, newSubTask, currentUser)
+   if (!parentWatchers.contains(userManager.getUserByName(managers.get(i)))){
+     parentWatchers.add(userManager.getUserByName(managers.get(i)))
+   }
+   parentWatchers.each{
+         watcherManager.startWatching(it, newSubTask)
+   }
+   log.info "Issue $newSubTask with summary ${newSubTask.summary} created"
+}
