@@ -1,0 +1,7 @@
+import com.atlassian.jira.issue.comments.CommentManager
+import com.atlassian.jira.issue.comments.MutableComment
+import com.atlassian.jira.component.ComponentAccessor
+def commentManager = ComponentAccessor.getCommentManager()
+def addedComment = event.getComment()
+addedComment.setBody(addedComment.getBody().replaceAll("!data:image.*!", ""))
+commentManager.update(addedComment, false)
