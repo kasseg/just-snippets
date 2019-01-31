@@ -1,0 +1,8 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.event.type.EventDispatchOption
+
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+String descrWithoutCodes = issue.description.replaceAll("!data:image.*!", "");
+issue.setDescription(descrWithoutCodes)
+ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)  
