@@ -1,0 +1,32 @@
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import com.atlassian.jira.bc.user.UserService
+import com.atlassian.jira.component.ComponentAccessor
+
+def userService = ComponentAccessor.getComponent(UserService)
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+
+
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+def yo = """tatyana.legion.ussur@gmail.com;Федурина Татьяна
+rustem@keydeal.ru;Барсов Рустем
+300-2034@mail.ru;Ляхов Игорь"""
+log.debug yo
+def yo2 = yo.split('\n')
+yo2.each{
+    log.debug it
+    def loginAndFullName = it.split(';')
+    UserService.CreateUserRequest createUserRequest = UserService.CreateUserRequest
+	  .withUserDetails(currentUser, loginAndFullName.getAt(0), "password123", loginAndFullName.getAt(0), loginAndFullName.getAt(1))
+	  .withNoApplicationAccess()
+      .sendNotification(false);
+    UserService.CreateUserValidationResult result = userService.validateCreateUser(createUserRequest)
+
+    if(result.isValid()) {
+        def newUser = userService.createUser(result)
+        def groupManager = ComponentAccessor.getGroupManager()
+        def developersGroup = groupManager.getGroup("sdep_customer")
+        groupManager.addUserToGroup(newUser, developersGroup)
+    }
+}
