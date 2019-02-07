@@ -1,0 +1,19 @@
+if (organizationsToAdd.name && reporterUser.username!="cityrst" && reporterUser.username!="rtowers"){
+String orgName = organizationsToAdd.name
+def um = ComponentAccessor.getUserManager()
+ 
+ApplicationUser user = issue.reporter
+String userDisplayName=user.getDisplayName()
+    if (!userDisplayName.matches(".*\\(.*\\)")){
+        def newData = new ApplicationUserBuilderImpl(user).displayName(userDisplayName +' ('+orgName+')').build()
+        um.updateUser(newData)
+        log.debug "Не было компании, дописали"
+    } else if (userDisplayName.matches(".*\\(.*\\)") && !userDisplayName.contains('('+orgName+ ')')){
+        userDisplayName=userDisplayName.replaceAll("\\(.*\\)","")
+        def newData = new ApplicationUserBuilderImpl(user).displayName(userDisplayName +'('+orgName+')').build()
+        um.updateUser(newData)
+        log.debug "Есть компания, но не та. Изменили"
+    } else {
+        log.debug "Та компания, не трогаем"
+    }
+}
