@@ -1,0 +1,42 @@
+import com.atlassian.jira.bc.issue.IssueService
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.IssueInputParametersImpl
+import com.atlassian.jira.issue.comments.CommentManager
+import com.atlassian.jira.issue.MutableIssue
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+List<MutableIssue> issues = new ArrayList<MutableIssue>();
+def links = ComponentAccessor.getIssueLinkManager().getInwardLinks(issue.getId())
+log.debug "inw: $links"
+links.each{
+    issues.add(it.getSourceObject())
+}
+links= ComponentAccessor.getIssueLinkManager().getOutwardLinks(issue.getId())
+links.each{
+    issues.add(it.getDestinationObject())
+}
+log.debug "out: $links"
+log.debug "iss: $issues"
+
+def actionUser = ComponentAccessor.getUserManager().getUserByName('robot')
+def resolutionComment = transientVars.get("comment")
+issues.each{
+    log.debug it
+    log.debug it.getIssueType().name
+    log.debug it.status
+    if ((it.getIssueType().name == "Инцидент" || it.getIssueType().name == "Консультация" || it.getIssueType().name == "Service Request") && it.status.name=="Решение ожидается") {
+        log.debug "true"
+        def issueManager = ComponentAccessor.issueManager
+        IssueService issueService = ComponentAccessor.getIssueService()
+        def actionId = 51 // change this to the step that you want the issues to be transitioned to
+        def transitionResult
+        def transitionValidationResult = issueService.validateTransition(actionUser, it.id, actionId,new IssueInputParametersImpl())
+        if (transitionValidationResult.isValid()) {
+            CommentManager commentMgr = ComponentAccessor.getCommentManager()
+            commentMgr.create(it, actionUser, resolutionComment, true)
+            transitionResult = issueService.transition(actionUser, transitionValidationResult)            
+        }
+	}
+}
