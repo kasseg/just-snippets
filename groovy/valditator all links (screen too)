@@ -1,0 +1,47 @@
+import com.atlassian.jira.issue.fields.IssueLinksSystemField
+import webwork.action.ActionContext
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.fields.IssueLinksSystemField
+import webwork.action.ActionContext
+import com.atlassian.jira.issue.MutableIssue
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+
+def fieldManager = ComponentAccessor.getFieldManager()
+
+def linksSystemField = fieldManager.getField("issuelinks") as IssueLinksSystemField
+
+def request = ActionContext.getRequest()
+def params = request.getParameterMap()
+def issueLinkingValue = linksSystemField.getRelevantParams(params) as IssueLinksSystemField.IssueLinkingValue
+List allLinks = new ArrayList();
+log.debug "allLinks 0: $allLinks"
+
+if (issueLinkManager.getInwardLinks(issue.getId()).size()==1){
+    allLinks.add(ComponentAccessor.getIssueLinkManager().getInwardLinks(issue.getId())[0].getSourceObject().getIssueType().name)
+} else if (issueLinkManager.getInwardLinks(issue.getId()).size()>1){
+    return false
+}
+if (issueLinkManager.getOutwardLinks(issue.getId()).size()==1){
+    allLinks.add(ComponentAccessor.getIssueLinkManager().getOutwardLinks(issue.getId())[0].getDestinationObject().getIssueType().name)
+} else if (issueLinkManager.getOutwardLinks(issue.getId()).size()>1){
+    return false
+}
+if (issueLinkingValue.linkedIssues.size()==1){
+    MutableIssue linkedIssue = ComponentAccessor.getIssueManager().getIssueObject(issueLinkingValue.linkedIssues[0])
+    allLinks.add(linkedIssue.getIssueType().name)
+} else if (issueLinkingValue.linkedIssues.size()>1){
+    return false
+}
+log.debug "allLinks: $allLinks"
+if (allLinks.size==1){
+    if (allLinks[0]=="Проблема" || allLinks[0]=="Service Request"){
+       return true 
+    } else {
+    return false
+    }
+} else {
+    return false
+}
