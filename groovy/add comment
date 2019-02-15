@@ -1,0 +1,9 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.comments.CommentManager
+import com.atlassian.jira.user.ApplicationUser
+
+ApplicationUser currentUser = ComponentAccessor.getJiraAuthenticationContext().loggedInUser
+
+CommentManager commentMgr = ComponentAccessor.getCommentManager()
+
+commentMgr.create(issue, currentUser, "comment body", true)
