@@ -1,0 +1,13 @@
+import com.atlassian.jira.issue.fields.IssueLinksSystemField
+import webwork.action.ActionContext
+import com.atlassian.jira.component.ComponentAccessor
+
+def fieldManager = ComponentAccessor.getFieldManager()
+
+def linksSystemField = fieldManager.getField("issuelinks") as IssueLinksSystemField
+
+def request = ActionContext.getRequest()
+def params = request.getParameterMap()
+def issueLinkingValue = linksSystemField.getRelevantParams(params) as IssueLinksSystemField.IssueLinkingValue
+
+(issueLinkManager.getInwardLinks(issue.getId()).size() || issueLinkManager.getOutwardLinks(issue.getId()).size() || issueLinkingValue.linkedIssues.size())
