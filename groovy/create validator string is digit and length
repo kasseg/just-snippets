@@ -1,0 +1,24 @@
+import com.atlassian.jira.component.ComponentAccessor
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import java.text.NumberFormat
+import java.text.ParsePosition
+
+def log = Logger.getLogger("debugging")
+log.setLevel(Level.ERROR)
+log.error cfValues['Код точки']
+if (cfValues['Код точки']){
+    //def cfManager = ComponentAccessor.customFieldManager
+    //def cfCode = cfManager.getCustomFieldObject((Long) 10661) // 10661 = Код точки
+    String cfCodeValue=cfValues['Код точки'] //issue.getCustomFieldValue(cfCode)
+    NumberFormat formatter = NumberFormat.getInstance();
+      ParsePosition pos = new ParsePosition(0);
+      formatter.parse(cfCodeValue, pos);      
+    if (cfCodeValue.length() == pos.getIndex() && cfCodeValue.length()>=15){
+        return true
+    } else {
+        return false
+    }
+} else{
+    return true
+}
