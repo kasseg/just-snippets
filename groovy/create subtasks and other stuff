@@ -1,0 +1,40 @@
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.issue.customfields.manager.OptionsManager
+import com.atlassian.jira.config.SubTaskManager
+  //Создание подзадач
+  issue.setAssignee(null);
+  ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false) 
+  def constantManager = ComponentAccessor.getConstantsManager()
+  def issueFactory = ComponentAccessor.getIssueFactory()
+  def issueManager = ComponentAccessor.getIssueManager()
+  def userManager = ComponentAccessor.getUserManager()
+  for (int i=0;i<subtaskAssignees.size();i++){
+     MutableIssue newSubTask = issueFactory.getIssue()
+     newSubTask.setSummary(issue.getSummary())
+     newSubTask.setDescription(issue.getDescription())
+     newSubTask.setReporter(issue.getReporter())
+     newSubTask.setComponent(issue.getComponents())
+     newSubTask.setLabels(issue.getLabels())
+     newSubTask.setPriority(issue.getPriority())
+     newSubTask.setDueDate(issue.getDueDate())
+     newSubTask.setSecurityLevelId(issue.getSecurityLevelId())
+     def parentWatchers = watcherManager.getWatchersUnsorted(issue)
+     newSubTask.setAssigneeId(subtaskAssignees.get(i))
+     newSubTask.setParentObject(issue)
+     newSubTask.setProjectObject(issue.getProjectObject())
+     newSubTask.setIssueTypeId(constantManager.getAllIssueTypeObjects().find{it.getName() == "Sub-task"}.id)
+     def newIssueParams = ["issue" : newSubTask] as Map<String,Object>
+     issueManager.createIssueObject(currentUser, newIssueParams)
+     subTaskManager.createSubTaskIssueLink(issue, newSubTask, currentUser)
+     if (!parentWatchers.contains(userManager.getUserByName(managersWatchers.get(i)))){
+       parentWatchers.add(userManager.getUserByName(managersWatchers.get(i)))
+     }
+     parentWatchers.each{
+           watcherManager.startWatching(it, newSubTask)
+     }
+  }
+}
