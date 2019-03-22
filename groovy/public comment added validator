@@ -1,0 +1,15 @@
+import groovy.json.JsonParserType
+import groovy.json.JsonSlurper
+
+def commentProperties = transientVars["commentProperty"] as String[]
+
+def isInternalComment = false
+
+if (commentProperties) {
+    def commentProperty = commentProperties.first()
+    def props = new JsonSlurper().setType(JsonParserType.LAX).parseText(commentProperty)
+
+    isInternalComment = props.find {it.key == "sd.public.comment"}?.get("value")?.get("internal")
+}
+
+return !isInternalComment.toBoolean() && transientVars["comment"]
