@@ -1,0 +1,33 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.fields.CustomField
+import com.atlassian.jira.user.ApplicationUser
+import com.atlassian.jira.event.type.EventDispatchOption
+import groovy.sql.Sql
+import org.ofbiz.core.entity.ConnectionFactory
+import org.ofbiz.core.entity.DelegatorInterface
+import java.sql.Connection
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.IssueInputParameters
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+MutableIssue isskey = ComponentAccessor.getIssueManager().getIssueObject('SD-3447')
+long timeSpent= 66780
+long spentHours=timeSpent/3600
+long spentMinutes=timeSpent%3600/60
+log.debug timeSpent
+log.debug spentHours
+log.debug spentMinutes
+def user =  ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+def issueService = ComponentAccessor.getIssueService()
+def issueInputParameters = issueService.newIssueInputParameters()
+issueInputParameters.setOriginalEstimate("${spentHours}h ${spentMinutes}m")
+ 
+def updateValidationResult = issueService.validateUpdate(user, isskey.getId(), issueInputParameters)
+def updateResult = issueService.update(user, updateValidationResult)
