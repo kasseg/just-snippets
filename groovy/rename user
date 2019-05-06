@@ -1,0 +1,12 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.bc.user.UserService
+def userService = ComponentAccessor.getComponent(UserService)
+def um = ComponentAccessor.getUserManager()
+def user = um.getUserByName('Vasya')
+def updateUser = userService.newUserBuilder(user).name("vasiliy").build()
+def updateUserValidationResult = userService.validateUpdateUser(updateUser)
+if (updateUserValidationResult.isValid()) {
+    userService.updateUser(updateUserValidationResult)
+} else {
+    log.warn "Update of ${user.name} failed: ${updateUserValidationResult.getErrorCollection().getErrors().entrySet().join(',')}\n"
+}
