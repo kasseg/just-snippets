@@ -1,0 +1,27 @@
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import groovy.json.JsonSlurper;
+import groovy.json.StreamingJsonBuilder;
+import org.apache.commons.codec.binary.Base64;
+//Debug 
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+//Body
+def body_req = [ "fields": ["customfield_10202": ["value" :"Teamlead"]]]
+
+//Create Index with Jiraicket Name
+def baseURL = "http://10.70.0.21:8080/rest/api/2/issue/SL-1";
+
+URL url;
+
+url = new URL(baseURL);
+
+HttpURLConnection connection = url.openConnection() as HttpURLConnection;
+connection.requestMethod = "PUT"
+connection.doOutput = true
+connection.setRequestProperty("Authorization", "Basic ZGFicmFtb3Y6empRb3M0QzJlV2hLQ0g1dQ==")
+connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8")
+connection.outputStream.withWriter("UTF-8") { new StreamingJsonBuilder(it, body_req) }
+connection.connect();
+
+log.info("URL="+url+"Status="+connection.getResponseCode() as String)
