@@ -1,0 +1,1 @@
+sendEmail(from, to, cc, "subject", "body", "", {"/jira/data/data/" + "Предложение банков (общее).pdf", "/jira/data/data/" + "Предложение банков (общее).docx"});
