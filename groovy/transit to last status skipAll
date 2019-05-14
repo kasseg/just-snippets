@@ -1,0 +1,48 @@
+import com.atlassian.jira.bc.issue.IssueService
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.changehistory.ChangeHistoryManager
+import com.atlassian.jira.issue.history.ChangeItemBean
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.issue.IssueInputParametersImpl
+import static com.atlassian.jira.workflow.TransitionOptions.Builder;
+
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import java.util.*
+   import java.text.SimpleDateFormat
+import java.sql.Timestamp
+import java.util.Date;
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+
+def changeItem = ComponentAccessor.getChangeHistoryManager().getChangeItemsForField(issue, 'status')?.last()
+//variable 'from' is the previous state, 'String' for String type
+def lastStatus = changeItem?.fromString
+IssueService issueService = ComponentAccessor.getIssueService()
+log.debug lastStatus
+def actionId
+def actionUser = ComponentAccessor.getUserManager().getUserByName('robot')
+switch (lastStatus) {
+            case "Согласование":  actionId = 111;
+                     break;
+            case "В работе":  actionId = 101;
+                     break;       
+            case "Оценка":  actionId = 121;
+                     break;
+        }
+log.debug actionId
+def transitionResult
+def issParams = new IssueInputParametersImpl()
+def trasitionOptions = new Builder().skipPermissions().skipValidators().setAutomaticTransition().skipConditions().build();
+def transitionValidationResult = issueService.validateTransition(actionUser, issue.id, actionId,issParams,trasitionOptions)
+if (transitionValidationResult.isValid()) {
+    transitionResult = issueService.transition(actionUser, transitionValidationResult) 
+    log.debug "yes"
+} else {
+    log.debug "no"
+
+}
