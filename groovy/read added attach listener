@@ -1,0 +1,26 @@
+//issue update event
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.attachment.FileSystemAttachmentDirectoryAccessor
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+log.debug("Listener triggered because of an issue update")
+def change = event?.getChangeLog()?.getRelated("ChildChangeItem").find {it.field == "Attachment"}
+if (change && change.newstring.toString().endsWith(".csv")) {
+    log.debug ("It is an attachment updated event do something here... $change")
+    def attDirAcc=ComponentAccessor.getComponent(FileSystemAttachmentDirectoryAccessor)
+    def output=""
+    def newOptions = []
+            def directory=attDirAcc.getAttachmentDirectory(event.issue)
+            def file = new File(directory,change.newvalue.toString())
+            def textFrom = file.text
+            log.debug textFrom
+            def lines = textFrom.split("\r\n")
+
+            lines.each{
+            log.debug it
+                newOptions+=it
+            }
+            log.debug newOptions
+}
