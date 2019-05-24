@@ -1,0 +1,36 @@
+import com.atlassian.jira.user.ApplicationUser
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.changehistory.ChangeHistoryManager
+import com.atlassian.jira.issue.history.ChangeItemBean
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.jira.issue.CustomFieldManager
+import static com.atlassian.jira.component.ComponentAccessor.customFieldManager
+import com.atlassian.jira.issue.attachment.FileSystemAttachmentDirectoryAccessor
+import groovy.sql.Sql
+import org.ofbiz.core.entity.ConnectionFactory
+import org.ofbiz.core.entity.DelegatorInterface
+import java.sql.Connection
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import java.util.*
+   import java.text.SimpleDateFormat
+import java.sql.Timestamp
+import java.util.Date;
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+
+def issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey("SD-3520")    
+def attDirAcc=ComponentAccessor.getComponent(FileSystemAttachmentDirectoryAccessor)
+def output=""
+issue.attachments.each{
+    log.debug it.filename
+    if (it.filename.endsWith(".txt") && it.mimetype == "text/plain"){
+        def directory=attDirAcc.getAttachmentDirectory(issue)
+        def file = new File(directory,it.id.toString())
+        def textFrom = file.text
+        log.debug textFrom
+    }
+}
