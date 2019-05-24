@@ -32,5 +32,22 @@ issue.attachments.each{
         def file = new File(directory,it.id.toString())
         def textFrom = file.text
         log.debug textFrom
+        def lines = textFrom.split("\r\n")
+        
+        lines.each{
+        log.debug it
+            newOptions+=it
+        }
+		log.debug newOptions
     }
 }
+
+def cf = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'multiselect'} 
+def fieldConfig = cf.getRelevantConfig(issue)
+def value = ComponentAccessor.optionsManager.getOptions(fieldConfig)?.findAll { it.value in newOptions }
+log.debug value
+/*issue.setCustomFieldValue(cf, value); 
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)*/
+//def changeHolder = new DefaultIssueChangeHolder();
+//cf.updateValue(null, issue, new ModifiedValue(issue.getCustomFieldValue(cf), value),changeHolder);
