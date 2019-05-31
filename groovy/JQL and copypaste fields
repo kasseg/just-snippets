@@ -1,0 +1,57 @@
+import com.atlassian.jira.user.ApplicationUser
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.changehistory.ChangeHistoryManager
+import com.atlassian.jira.issue.history.ChangeItemBean
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.ModifiedValue
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder
+import com.atlassian.jira.issue.CustomFieldManager
+//import static com.atlassian.jira.component.ComponentAccessor.customFieldManager
+import com.atlassian.jira.issue.attachment.FileSystemAttachmentDirectoryAccessor
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.issue.search.SearchProvider
+import com.atlassian.jira.jql.parser.JqlQueryParser
+import com.atlassian.jira.web.bean.PagerFilter
+
+import groovy.sql.Sql
+import org.ofbiz.core.entity.ConnectionFactory
+import org.ofbiz.core.entity.DelegatorInterface
+import java.sql.Connection
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+import java.util.*
+   import java.text.SimpleDateFormat
+import java.sql.Timestamp
+import java.util.Date;
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+
+//def issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey("SD-4972")    
+def jqlQueryParser = ComponentAccessor.getComponent(JqlQueryParser)
+def searchProvider = ComponentAccessor.getComponent(SearchProvider)
+def issueManager = ComponentAccessor.getIssueManager()
+
+// edit this query to suit
+def query = jqlQueryParser.parseQuery("type = Проблема")
+
+def results = searchProvider.search(query, currentUser, PagerFilter.getUnlimitedFilter())
+def customFieldManager = ComponentAccessor.getCustomFieldManager()
+log.debug("Total issues: ${results.total}")
+
+results.getIssues().each {documentIssue ->
+    log.debug(documentIssue.key)
+
+    // if you need a mutable issue you can do:
+    def issue = issueManager.getIssueObject(documentIssue.id)
+	def cfS = ["Дата ожидаемого исправления проблемы","Workaround","Версия ЦБД или ММ, на которой проблема воспроизводится","Номер Target Process","Номер релиза", "Дата экшена по проблеме","Инициатор проблемы","Проблема относится к", "Симптомы проблемы"]
+    cfS.each{ currentCF ->
+        def cf1 = customFieldManager.getCustomFieldObjects(issue).find {it.name == currentCF}
+    	def cf2 = customFieldManager.getCustomFieldObjects(issue).find {it.name == currentCF+'2'}
+        issue.setCustomFieldValue(cf1, issue.getCustomFieldValue(cf2)); 
+    }
+    ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)
+}
+//def changeHolder = new DefaultIssueChangeHolder();
+//cf.updateValue(null, issue, new ModifiedValue(issue.getCustomFieldValue(cf), value),changeHolder);
