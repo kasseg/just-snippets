@@ -1,0 +1,25 @@
+//динамический шаблон описания при смене типа задачи 
+(function($){
+
+var $descr = $('div.field-group textarea#description');
+
+if(JS_INCLUDER.params.issueTypeId == '1'){
+        $descr.val('asdasdasd');
+}
+
+if(JS_INCLUDER.params.issueTypeId == '2'){ 
+            if (AJS.$('input#summary').val() == ""){
+            AJS.$('input#summary').val("Итерация");  
+            }
+            //AJS.$('input#summary').val("Итерация");
+            $descr.val(`213`);
+}
+
+if(JS_INCLUDER.params.issueTypeId == '3'){                      
+      $descr.val('asdasd');
+}                
+
+if(JS_INCLUDER.params.issueTypeId == '1' || JS_INCLUDER.params.issueTypeId == '2' || JS_INCLUDER.params.issueTypeId == '3'){
+        $descr.val(' ');
+}
+})(AJS.$)
