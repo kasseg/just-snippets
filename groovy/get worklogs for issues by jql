@@ -1,0 +1,74 @@
+import com.atlassian.jira.user.ApplicationUser
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.config.SubTaskManager
+import com.atlassian.jira.issue.search.SearchProvider
+import com.atlassian.jira.jql.parser.JqlQueryParser
+import com.atlassian.jira.web.bean.PagerFilter
+import com.atlassian.jira.issue.worklog.Worklog
+import java.text.SimpleDateFormat;
+import com.atlassian.jira.issue.comments.CommentManager
+
+import java.util.Date;
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+
+def issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey("NJIRA-529")  
+def jqlQueryParser = ComponentAccessor.getComponent(JqlQueryParser)
+def searchProvider = ComponentAccessor.getComponent(SearchProvider)
+def issueManager = ComponentAccessor.getIssueManager()
+
+// edit this query to suit
+def query = jqlQueryParser.parseQuery("\"3_Родительский проект\" ~ PRJ-146")
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+def results = searchProvider.search(query, currentUser, PagerFilter.getUnlimitedFilter())
+def customFieldManager = ComponentAccessor.getCustomFieldManager()
+log.debug("Total issues: ${results.total}")
+def workLogManager = ComponentAccessor.getWorklogManager()
+def logsForIssue
+String gigantCOMMENT=""
+String gigantCOMMENT1=''
+String gigantCOMMENT2=''
+String gigantCOMMENT3=''
+String gigantCOMMENT4=''
+results.getIssues().each{
+    logsForIssue = workLogManager.getByIssue(it)
+	for (def worklog : logsForIssue)
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1 = sdf.parse("2018-01-01");
+        Date date2 = sdf.parse("2019-01-01");
+        if(worklog.getAuthorObject().emailAddress.endsWith('@yotateam.com') && worklog.getCreated().compareTo(date1) > 0 && worklog.getCreated().compareTo(date2) < 0){
+            if (gigantCOMMENT.size()>30000 && gigantCOMMENT1==''){
+                gigantCOMMENT1=gigantCOMMENT
+                gigantCOMMENT=""
+            } else if (gigantCOMMENT.size()>30000 && gigantCOMMENT2==''){
+                gigantCOMMENT2=gigantCOMMENT
+                gigantCOMMENT=""
+            } else if (gigantCOMMENT.size()>30000 && gigantCOMMENT3==''){
+                gigantCOMMENT3=gigantCOMMENT
+                gigantCOMMENT=""
+            } else if (gigantCOMMENT.size()>30000 && gigantCOMMENT4==''){
+                gigantCOMMENT4=gigantCOMMENT
+                gigantCOMMENT=""
+            }
+            gigantCOMMENT+= "${it.key};${worklog.getAuthorObject().emailAddress};${worklog.getTimeSpent()/60};${worklog.getCreated().toString()} \r\n"
+        }
+    }
+}
+CommentManager commentMgr = ComponentAccessor.getCommentManager()
+log.debug gigantCOMMENT.size()
+log.debug gigantCOMMENT1.size()
+log.debug gigantCOMMENT2.size()
+log.debug gigantCOMMENT3.size()
+log.debug gigantCOMMENT4.size()
+commentMgr.create(issue, currentUser, gigantCOMMENT1, false)
+commentMgr.create(issue, currentUser, gigantCOMMENT2, false)
+
+commentMgr.create(issue, currentUser, gigantCOMMENT3, false)
+
+commentMgr.create(issue, currentUser, gigantCOMMENT, false)
+
