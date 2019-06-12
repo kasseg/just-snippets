@@ -1,0 +1,64 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.issue.customfields.manager.OptionsManager
+import com.atlassian.jira.issue.AttachmentManager
+import java.sql.Timestamp
+import com.atlassian.jira.issue.comments.CommentManager
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+def um = ComponentAccessor.getUserManager()
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+def issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey("SUP-91") 
+def customFieldManager = ComponentAccessor.getCustomFieldManager()
+def cfEndCustomer = customFieldManager.getCustomFieldObject(10202)//Конечный заказчик
+def cfCustomer = customFieldManager.getCustomFieldObject(10200)//Заказчик
+def cfContact = customFieldManager.getCustomFieldObject(10201)//Контактное лицо
+def cfTendering = customFieldManager.getCustomFieldObject(10205)//Tendering
+def cfKAM = customFieldManager.getCustomFieldObject(10206)//KAM
+def cfProposal = customFieldManager.getCustomFieldObject(10204)//План-дата подготовки ТКП
+def cfFolder = customFieldManager.getCustomFieldObject(10203)//Папка
+
+def constantManager = ComponentAccessor.getConstantsManager()
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+def issueFactory = ComponentAccessor.getIssueFactory()
+def subTaskManager = ComponentAccessor.getSubTaskManager()
+def issueManager = ComponentAccessor.getIssueManager()
+def userManager = ComponentAccessor.getUserManager()
+AttachmentManager attachmentManager = ComponentAccessor.getAttachmentManager();
+   MutableIssue newTask = issueFactory.getIssue()
+def today = new java.sql.Timestamp(new Date().getTime())
+def shortComp=issue.getCustomFieldValue(cfCustomer) as String
+shortComp = shortComp.substring(shortComp.lastIndexOf('(')+1,shortComp.lastIndexOf(')'))
+log.debug shortComp
+def shortEndComp=issue.getCustomFieldValue(cfEndCustomer) as String
+shortEndComp = shortEndComp.substring(shortEndComp.lastIndexOf('(')+1,shortEndComp.lastIndexOf(')'))
+log.debug shortEndComp
+def subSummary = "RU-A-${today.getYear()-100}-$issue-01_${shortComp}_${shortEndComp}"
+   newTask.setSummary(subSummary)
+def subDescription = transientVars.get("comment") as String//commentMgr.getLastComment(issue).getBody() //
+   newTask.setDescription(subDescription)
+   newTask.setReporter(issue.getAssignee())
+   newTask.setPriority(issue.getPriority())
+   newTask.setDueDate(issue.getCustomFieldValue(cfProposal))
+   newTask.setCustomFieldValue(cfEndCustomer, issue.getCustomFieldValue(cfEndCustomer))
+   newTask.setCustomFieldValue(cfCustomer, issue.getCustomFieldValue(cfCustomer))
+   newTask.setCustomFieldValue(cfContact, issue.getCustomFieldValue(cfContact))
+   newTask.setCustomFieldValue(cfTendering, issue.getCustomFieldValue(cfTendering))
+   newTask.setCustomFieldValue(cfFolder, issue.getCustomFieldValue(cfFolder) as String)
+   newTask.setAssignee(issue.getCustomFieldValue(cfKAM))
+   newTask.setParentObject(issue)
+   newTask.setProjectObject(issue.getProjectObject())
+   newTask.setIssueTypeId(constantManager.getAllIssueTypeObjects().find{it.getName() == "Proposal"}.id)
+   
+   def newIssueParams = ["issue" : newTask] as Map<String,Object>
+   issueManager.createIssueObject(currentUser, newIssueParams)
+   subTaskManager.createSubTaskIssueLink(issue, newTask, currentUser)
+   attachmentManager.copyAttachments(issue, currentUser, newTask.key);
+  
+
