@@ -1,0 +1,17 @@
+import com.atlassian.jira.bc.issue.IssueService
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.IssueInputParametersImpl
+import com.atlassian.jira.issue.comments.CommentManager
+import com.atlassian.jira.issue.MutableIssue
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+def log = Logger.getLogger("com.acme.CreateSubtask")
+log.setLevel(Level.DEBUG)
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+def resolutionComment = transientVars.get("comment")
+if (resolutionComment){
+    def customFieldManager = ComponentAccessor.getCustomFieldManager()
+    def cf = customFieldManager.getCustomFieldObjects(issue).find {it.name == 'Resolve Comment'} 
+    issue.setCustomFieldValue(cf, resolutionComment);
+    ComponentAccessor.getIssueManager().updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)  //Сохраняем изменения
+}
