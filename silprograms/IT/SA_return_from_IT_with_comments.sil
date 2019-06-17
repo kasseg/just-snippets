@@ -1,0 +1,10 @@
+// send comment to related SA issue
+string [] relIssues= linkedIssues(key, "Relates");
+for (string relKey in relIssues) {
+    if (%relKey%.project=="SA") {
+        JComment SALastComment = getLastComment(key);
+        addComment(relKey, "remoteuser", SALastComment["text"]);
+        autotransition(261, relKey, true); // Перевод заявки в статус информация предоставлена
+    }
+}
+

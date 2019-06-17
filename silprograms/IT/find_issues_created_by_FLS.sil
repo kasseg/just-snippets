@@ -1,0 +1,20 @@
+// temp script denis.burdukovskiy@metro-cc.ru
+// find issues, created by FLS.
+// looks for issues, that has first Metro Team == FLS
+
+
+//string issuesfilter='project = "METRO - IT SUPPORT" AND ("Time to first response" != breached() OR "Time to first response" = breached()) AND created >= "2017/10/1"';
+string issuesfilter="project = 'METRO - IT SUPPORT' AND ('Time to first response' != breached() OR 'Time to first response' = breached()) AND created >= '2017/10/1' and 'Initial Metro Team' is EMPTY ";
+runnerLog("Start here", 0, "init_progressBar"); 
+string [] SelIss = selectIssues (issuesfilter);
+number index=1; 
+number sizeofresults=size(SelIss);
+for (string isc in SelIss) {
+//    string [] fields = getIssueFields(isc);
+    %isc%.customfield_13204="FLS";
+    
+    runnerLog(isc,index/sizeofresults*100); 
+    index++; 
+    
+}
+return ;

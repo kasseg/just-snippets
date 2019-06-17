@@ -1,0 +1,216 @@
+//редактирование задач по входящим звонкам by Anatoliy Gundarov
+
+include "main/Stores.sil";//подключение структуры ТЦ
+include "main/phone_structure.sil";//подключение структуры телефонов
+
+
+function getReporter(string current_store_group, string current_dept_group){
+    if(isNotNull(usersInGroups({current_store_group,current_dept_group}))){
+        return usersInGroups({current_store_group,current_dept_group});//список пользователей с обеими группами
+    }
+}
+
+function getUserListByStore(string[] store_group_for_QA_participants, string cur_store_group){// получение списка пользователей из списка групп для каждого ТЦ для 
+    string[] UserListByStore;
+    string[] user_list_all = {};
+    for(string cur_group in store_group_for_QA_participants){
+        string[] current_user_list = getReporter(cur_store_group,cur_group);   
+        if(isNotNull(current_user_list)){
+            UserListByStore = arrayUnion(UserListByStore,current_user_list); 
+        }
+    }
+    return  UserListByStore;
+}
+
+
+
+
+
+
+
+
+
+number userflag = 0;
+
+string dept_num = "";
+description = "";
+string current_store = "";
+string phone = trim(customfield_11601);
+string REGEX_HO4 = "[0-9]{4}";//выражение для 4х значных номеров
+string REGEX_STORE5 = "[0-9]{5}";//выражение для 5и значных номеров
+string REGEX_STORE5EXCEPTION = "7[0-9]{4}";
+string REGEX_STORE7 = "7[0-9]7[0-9]{4}";
+string REGEX_STORE6 = "7[0-9]{5}";//выражение для 6и значных номеров начинающихся на 7
+string REGEX_STORE12 = "7495502[0-9]{5}";
+string REGEX_STORE10 = "495502[0-9]{4}";
+string REGEX_KRK46 = "39127469[0-9]{2}";
+string REGEX_444 = "7495444[0-9]{2}";
+
+string username_tofind ="";
+
+string[] same_lastname_users;
+string[] first_names;
+string call_name = summary;
+string call_first_name;
+string call_lastname;
+JUser usr = "";
+string debug;
+if(matches(phone,REGEX_STORE6)){ //приведение 6и значного номера к 5и значному
+    phone = substring(phone,1,-1);
+}
+if(matches(phone,REGEX_STORE7)){ //приведение 10и значного номера к 5и значному
+    phone = replace(phone,"737","3");
+}
+if(matches(phone,REGEX_STORE10)){ //приведение 10и значного номера к 5и значному
+    phone = replace(phone,"495502","1");
+}
+if(matches(phone,REGEX_KRK46)){ //приведение 10и значного номера к 5и значному для 46
+    phone = replace(phone,"39127469","146");
+}
+if(matches(phone,REGEX_444)){ //приведение 9и значного номера к 5и значному 444
+    phone = replace(phone,"7495444","444");
+}
+if(matches(phone,REGEX_STORE12)){ //приведение 12и значного номера к 5и значному
+    phone = substring(phone,7,-1);
+}
+customfield_11601 = phone;
+
+if (matches(phone,(REGEX_HO4))==true||(matches(phone,(REGEX_STORE5))==true && matches(phone,(REGEX_STORE5EXCEPTION))==false)){//обработка 4х и 5и значных номеров для именных телефонов
+    if (matches(phone,(REGEX_HO4))==true){// IssueLocation для ЦО
+        customfield_10702 = "ЦО";
+    }
+    call_name = toLower(replace(call_name, "Входящий звонок от ", ""));
+    call_name = replace(call_name, "nekrasova tatiana", "khaplanova tatiana");
+    call_name = replace(call_name, "NEKRASOVA TATIANA", "khaplanova tatiana");
+    call_lastname = chop(call_name, indexOf(call_name, " "));//определение фамилии
+    call_first_name = replace(call_name, call_lastname + " ", "");//имя+телефон
+    call_first_name = chop(call_first_name, indexOf(call_first_name, " "));//определение имени
+    for (string lastname in usersInGroups({"MCC RU - All HO Users"})){//построение списка пользователей с одинаковой фамилией
+        if(matches(lastname,".*" + call_lastname + ".*")){
+            same_lastname_users = arrayAddElement(same_lastname_users, lastname);
+        }
+    }
+    if (arraySize(same_lastname_users)==1){//если нет однофамильцев, проставляется автор
+        usr = getUser(same_lastname_users);
+        reporter = usr.username;
+    }
+    if (arraySize(same_lastname_users)>1){//если есть однофамильцы
+        for(string same_lastname_user in same_lastname_users){
+            string user_first_name = chop(same_lastname_user, indexOf(same_lastname_user, "."));
+            if(matches(user_first_name, chop(toLower(call_first_name),3) + ".*")){//поиск среди однофамильцев пользователя по имени
+                first_names = arrayAddElement(first_names, same_lastname_user);
+            }
+        }
+        if(arraySize(first_names)==1){//если среди однофамильцев нет тёзок проставляется автор
+            usr = getUser(first_names);
+            reporter = usr.username;
+        }
+        else{
+        string dddd=first_names;
+            sendEmail("it-support@metro-cc.ru" , {"anatoliy.gundarov@metro-cc.ru"}, {}, "Однофамильцы", dddd);
+        }
+    }
+   // sendEmail("it-support@metro-cc.ru" , {"anatoliy.gundarov@metro-cc.ru"}, {}, "хуйня какая-то", debug);
+}
+
+if(matches(phone,(REGEX_STORE5))==true && matches(phone,(REGEX_STORE5EXCEPTION))==false){//обработка 5и значных номеров для телефонов отделов
+    number store_pref = chop(phone,3);//получение префикса ТЦ
+    dept_num = substring(phone, 3, 5);//получение номера отдела
+    for(Store cur_store in all_stores){//IssueLocation по префиксу
+        if(cur_store.phonepref==store_pref){
+            customfield_10702 = cur_store.name;
+            current_store = cur_store.storegroup;
+        }
+    }
+    
+    for(Store_phone current_department in allphones){
+        if(arrayElementExists(current_department.phone_number,dept_num)){//получение данных отдела по номеру телефона
+            
+            
+            
+            
+            
+            
+            
+            
+            
+           
+           
+           
+           
+           
+            string [] user_list2 = getUserListByStore(current_department.group,current_store);
+                string to__send = user_list2+"--------"+current_store+"--------";
+             //   sendEmail("it-support@metro-cc.ru" , {"anatoliy.gundarov@metro-cc.ru"}, {}, "Группы", to__send);
+           
+            for(string current_department_group in current_department.group){//перебор групп (доставка по регионам)
+                string [] groups = {current_store,current_department_group};
+                string [] user_list = usersInGroups(groups);//список пользователей с обеими группами
+            //    string to__send = user_list+"--------"+current_store+"--------";
+             //   sendEmail("it-support@metro-cc.ru" , {"anatoliy.gundarov@metro-cc.ru"}, {}, "Группы", to__send);
+                if(size(user_list)>0){
+                
+                    for(string current_user in user_list){
+                        if(!(arrayElementExists(named_exception,dept_num))){
+                            if(getUserDirectoryName(current_user) == "GroupMailboxes"){// поиск гпя
+                                usr = getUser(current_user);
+                                break;
+                            }
+                        }
+                        else{
+                            usr = getUser(current_user);
+                            break;
+                        }
+                    }   
+                    
+                }
+            }
+        break;
+        }
+    }
+    if (isNotNull(usr)){
+        reporter = usr.username;
+        if(reporter=="ekaterina.kazak"){
+            reporter = "elvira.zakiryarova";
+        }
+    }
+}
+
+
+// if(getUserDirectoryName(reporter) == "GroupMailboxes"){// поиск гпя
+//     string participants_jql = "project = IT AND reporter in ("+reporter+") ORDER BY created desc";
+//     number i = 0;
+//     string[] Issuee_keys_participants = selectIssues(participants_jql);
+//     string[] participants_to_add;
+//     if(size(Issuee_keys_participants)>0){
+//         for (string participant_cur_key in Issuee_keys_participants){
+//             if(size(%participant_cur_key%.customfield_10002)==1){
+//               participants_to_add = arrayAddElementIfNotExist(participants_to_add, %participant_cur_key%.customfield_10002);
+//             }
+//             if (i >= 3) {
+//                 break;
+//             }
+//             i=i+1;
+//         }
+//         if (arraySize(participants_to_add)>0){
+//             customfield_10002 =  participants_to_add;
+//         }
+//     }
+// }
+summary = replace(summary,"Входящий звонок от","Звонок от");
+
+if (contains(summary, "OPERATOR FINSERV")){
+      customfield_10702 = "MCoE (Самара)";
+}
+
+
+
+
+
+
+
+
+
+
+
+

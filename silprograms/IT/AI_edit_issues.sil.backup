@@ -1,0 +1,136 @@
+//подставление компоненты и метросервиса по ключевым словам.
+struct Change_data{string[] ch_component; string ch_service; string ch_prio;}
+Change_data change_data;
+
+string text_t_find = summary +" "+ description;
+string ended = "(а|ы|е|ой|я|ем|и|ю|у|ом)";
+
+string regex_printer = ".*принтер"+ended+"?\\s.*|.*плотт?ер"+ended+"?\\s.*|.*картридж"+ended+"?\\s.*";
+string regex_other = ".*катт?ер"+ended+"?\\s.*|.*логг?ер"+ended+"?\\s.*";
+string regex_monitor = ".*монитор"+ended+"\\s.*";
+string regex_mdls  = ".*мдлс\\s.*|.*mdls\\s.*|.*консолидаци"+ended+"?\\s.*|.*frip\\s.*|.*hawa\\s.*";
+string regex_webshop = ".*webshop\\s1097\\s?.*";
+string regex_jira = ".*jira\\s.*|.*джир"+ended+"?\\s.*|.*request\\s.*|.*реквест"+ended+"?\\s.*";
+string regex_soe = ".*\\ssoe\\s.*|.*\\sсое\\s.*|.*\\sсоя\\s.*";
+string regex_edoc = ".*e-?do(c|k)\\s.*|.*(и|е)-?док"+ended+"\\s.*";
+string regex_folder = ".*доступ"+ended+"?\\s.*папк"+ended+"?\\s.*|.*папк"+ended+"?\\s.*доступ"+ended+"?\\s.*";
+string regex_distribution = ".*(искл|доступ|добав|удал).*расс?ылк"+ended+"?\\s.*";
+string regex_medallia = ".*medall?ia\\s.*|.*медал?л(и|ь)"+ended+"?\\s.*";
+string regex_prestige = ".*prestige\\s.*|.*престиж"+ended+"?\\s.*|.*табел(ок|к("+ended+"?))\\s.*";
+string regex_iras = ".*\\siras\\s.*|.*\\ирас"+ended+"?\\s.*";
+string regex_sapfi = ".*sap\\sfi*";
+string regex_exempted = ".*exempted.*";
+string regex_p4p = ".*p4p\\s.*";
+string regex_pos = ".*(касс|ручн).*сканн?ер.*|.*сканер.*(касс|ручн).*|.*офд.*";
+string regex_mmc1 = ".*(sap|сап).*журнал"+ended+".*|.*журнал1.*";
+string regex_mmc2 = ".*(прогруз|удалить|задвоил).*инвойс"+ended+"?.*";
+string regex_egais = ".*егаис.*";
+string regex_dis = ".*\\s(dis|дис)\\s.*";
+string regex_cod = ".*\\s(cod|sod|сод)\\s.*";
+string regex_tms = ".*tms.*";
+string regex_wms = ".*wms.*";
+string regex_mercury = ".*(меркурий?|mercury).*";
+string regex_zebracardlabel = ".*зебр"+ended;
+string regex_pass = ".*([Сс]брос|[Вв]осстанов|[Нн]еверн|[Бб]локирова|[Сс]кин).*[Пп]арол.*|.*([Вв]осстанов|[Зз]аблокирова).*([Дд]оступ|[Уу]чет.*[Зз]апис).*";
+
+
+number matchregex = 0;
+
+string[] regexes = {regex_printer,regex_other,regex_monitor,regex_mdls,regex_webshop,
+regex_jira,regex_soe,regex_edoc,regex_folder,regex_distribution,regex_medallia,
+regex_prestige,regex_iras,regex_sapfi,regex_exempted,regex_p4p,regex_pos,regex_mmc1,
+regex_mmc2,regex_egais,regex_dis,regex_cod,regex_tms,regex_wms,regex_mercury,regex_zebracardlabel
+};
+
+string[] garbage_array = {".",",","!","?",";",":","\r","\n","_","  ","  "};
+for(string current_garbage in garbage_array){
+    text_t_find = replace(text_t_find,current_garbage, " ");
+}
+
+for(string current_regex in regexes){
+    if (matches(toLower(text_t_find), current_regex)){
+        break;
+    }
+    matchregex += 1;
+}
+
+switch(matchregex){
+    case 0:change_data = {"Printer","Workplaces > Printing Devices > Hardware","4"};
+    break;
+    case 1:change_data = {"Hardware other","Local IT Support > Hardware other","4"};
+    break;
+    case 2:change_data = {"Desktop","Local IT Support > Hardware other","4"};
+    break;
+    case 3:change_data = {"MDLS","Logistics > MDLS","3"};
+    break;
+    case 4:change_data = {"MCRM","CRM & Checkout > MCRM COD","2"};
+    break;
+    case 5:change_data = {"JIRA Service Desk","Admin & Dev > JIRA Service Desk","4"};
+    break;
+    case 6:change_data = {"MCRM","CRM & Checkout > MCRM SOE/OO2","4"};
+    break;
+    case 7:change_data = {"e-Doc","Admin & Dev > eDoc","4"};
+    break;
+    case 8:change_data = {"User Rights (Access)","Authorization Services > Access > Folders","4"};
+    break;
+    case 9:change_data = {"User Rights (Access)","Authorization Services > Access > Distribution lists","4"};
+    break;
+    case 10:change_data = {"Medallia","Authorization Services > Access > Applications","4"};
+    break;
+    case 11:change_data = {"Prestige","MMS > Prestige","4"};
+    break;
+    case 12:change_data = {"IRAS","Mobile Devices > Price Checker, PDT, IRAS, Terminal","4"};
+    break;
+     case 13:change_data = {"SAP FI","Finance > SAP FI","3"};
+    break;
+     case 14:change_data = {"SAP FI","Finance > MMS IC","3"};
+    break;
+     case 15:change_data = {"Price4Professionals","CRM & Checkout > Price4Professionals","4"};
+    break;
+     case 16:change_data = {"POS Hardware","IT Projects & Suppliers > POS Services > Stores Till","4"};
+    break;
+     case 17:change_data = {"Metro Main Cashier (MMC)","CRM & Checkout > MMC","3"};
+    break;
+     case 18:change_data = {"Metro Main Cashier (MMC)","CRM & Checkout > MMC","3"};
+    break;
+     case 19:change_data = {"Excise","Admin & Dev > EGAIS","4"};
+    break;
+     case 20:change_data = {"DIS","CRM & Checkout > DIS","4"};
+    break;
+     case 21:change_data = {"MCRM","CRM & Checkout > MCRM COD","4"};
+    break;
+     case 22:change_data = {"TMS","Logistics > TMS (Kewill)","4"};
+    break;
+     case 23:change_data = {"WMS","Warehouse Systems (WMS)","4"};
+    break;
+     case 24:change_data = {"MMS Store","MMS > Mercury","4"};
+    break;
+     case 25:change_data = {"JIRA Service Desk","MMS > Mercury","4"};
+    components = change_data.ch_component;
+    customfield_10103 = change_data.ch_service;
+    priority = change_data.ch_prio;
+    string mycom = "Шкаф продаётся. Воспользуйтесь ссылкой [Сброс пароля в приложения |https://confluence.r4.madm.net/pages/viewpage.action?pageId=13173768]\r\nЕсли статья не подходит, ответьте на письмо или на портале";
+    HttpRequest request;
+    
+    
+    string myurl = "https://jira.r4.madm.net/rest/cb-automation/latest/hooks/28fd0efe5c18d030de61bd9418be9a8827a034c1?issue=" +key;
+    httpGet(myurl, request);
+    
+    
+    
+    
+    
+    // addComment(key, "remoteuser", mycom );
+    // resolution = "Инструкция предоставлена";
+    // autotransition("Решить", key, true,true,true); 
+    // admReindexIssue(key);
+    break;
+}
+
+// if(isNotNull(change_data)){
+//     components = change_data.ch_component;
+//     customfield_10103 = change_data.ch_service;
+//     priority = change_data.ch_prio;
+//     admReindexIssue(key);
+// }
+

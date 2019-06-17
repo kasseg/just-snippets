@@ -1,0 +1,20 @@
+//denis.burdukovskiy@metro-cc.ru
+//временный скрипт для удаления всех лишних пользователей из локального каталога
+//"лишние" - которые есть в Mailboxes
+
+//получить из каталога 1 (Mailboxes) все записи
+string [] Mailboxes  = sql("JIRA_fls", "select lower_user_name from cwd_user where directory_id=10300");
+string [] LocalDirUsers  = sql("JIRA_fls", "select lower_user_name from cwd_user where directory_id=1");
+string [] onlyOneinLocal;
+string [] duplicates;
+
+for (string aLocalUser in LocalDirUsers) {
+    if (elementExists(Mailboxes, aLocalUser)){
+        duplicates += "'"+aLocalUser+"'"; //апострофы - чтобы потом удобнее переносить список
+    }
+    else{
+        onlyOneinLocal+=aLocalUser;
+    }
+}
+
+runnerLog(duplicates);

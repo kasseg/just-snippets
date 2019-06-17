@@ -1,0 +1,32 @@
+//by denis.burdukovskiy@metro-cc.ru 
+//возвращает список задач, у которых нет связанной задачи тип "Проблема"
+string [] withoutpr;
+string [] SelIss = selectIssues ("Project = IT and (priority=1 or priority=2) and issuetype in (Инцидент) and created >= startOfMonth()");
+for (string isc in SelIss) {
+    string [] linkedIssues = linkedIssues(isc);
+    string [] ret;
+    for (string issue in linkedIssues) {
+        string [] fields = getIssueFields(issue);
+        if (fields["issueType"] == "Проблема") {
+                ret += issue;
+        }
+    }
+    if (size(ret)==0) {
+        withoutpr +=isc;
+    }
+}
+return withoutpr;
+
+
+// ---- 
+//возвращает список задач, у которых есть связанная Проблема
+
+//string [] ret;
+//string [] linkedIssues = linkedIssues(argv[0]);
+//for (string issue in linkedIssues) {
+//  string [] fields = getIssueFields(issue);
+  //if (fields["issueType"] == "Проблема") {
+        //ret += issue;
+    //}
+//}
+//return ret;

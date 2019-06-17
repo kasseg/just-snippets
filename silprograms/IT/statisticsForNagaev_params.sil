@@ -1,0 +1,4 @@
+gadget_createRadioGroup("Date", {"Текущий месяц", "Предыдущий месяц", "Свободный интервал"}, "Текущий месяц", true, "За какой промежуток искать инциденты");
+gadget_createDatePicker("Start Date", currentDate(), false, "Если свободный интервал, то с какой даты инциденты");
+gadget_createDatePicker("End Date", currentDate(), false, "Если свободный интервал, то по какую дату инциденты");
+gadget_createMultiUserPicker("Users", "", false, "Выбрать для каких сотрудников выбирать статистику (можно указать сразу несколько). Оставить поле пустым, если для всего отдела");

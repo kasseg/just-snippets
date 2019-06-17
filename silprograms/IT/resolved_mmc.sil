@@ -1,0 +1,9 @@
+//перевод связанной задачи проекта FI в статус открыт
+string [] my_linked_issue_keys = linkedIssues(key);
+for(string linkedKey in my_linked_issue_keys){
+    if(%linkedKey%.type == "Invoices"){
+        if(%linkedKey%.status == "Wait Service"){
+            autotransition("Ответ получен", linkedKey, true, true, true);
+        }
+    }
+}

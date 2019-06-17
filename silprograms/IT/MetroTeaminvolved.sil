@@ -1,0 +1,27 @@
+//denis.burudkovskiy@metro-cc.run
+//возвращает список заявок, в которых  принимала участие заданная команда
+
+string metroteamvalue="Local IT Support";
+string issuesfilter=argv[0];
+string [] valueinhistory;
+
+string [] SelIss = selectIssues (issuesfilter);
+for (string isc in SelIss) {
+    string[] field_history;
+    field_history = fieldHistory(isc, "Metro Team");
+    if  (isNull(field_history)) {
+        string [] fields = getIssueFields(isc);
+        if (fields["customfield_11010"]==metroteamvalue) {
+                valueinhistory += isc;
+                runnerLog(isc);
+        }
+    }
+        else {
+            if (contains(field_history, metroteamvalue)) {
+                valueinhistory += isc;
+                runnerLog(isc);
+        }   
+     }  
+}
+
+return valueinhistory;

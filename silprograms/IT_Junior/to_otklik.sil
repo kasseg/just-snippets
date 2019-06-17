@@ -1,0 +1,10 @@
+//Ящик отправителя в тему задачи
+if (components=="email"){
+    if (isNotNull(customfield_10108)){
+        summary=customfield_10108;
+        customfield_10108="";
+    } else {
+        summary=userEmailAddress(reporter);
+    }
+    components="";
+}

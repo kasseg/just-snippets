@@ -1,0 +1,22 @@
+// denis.burdukovskiy@metro-cc.run
+// run through every day in interval to calculate user participation.
+
+string aUserName = "evgeniy.khodos"; // username
+date PeriodStart = "2018-04-01";
+date PeriodEnd = "2018-07-01";
+
+date aDate = PeriodStart;
+runnerLog("Date"+";"+aUserName);
+
+while (aDate <=PeriodEnd )
+{
+    string ShortDate = formatDate(aDate, "yyyy-MM-dd");
+    string aQuery = "project = it AND assignee changed to "+aUserName+ " during (" + ShortDate +","+ ShortDate +") by " +aUserName;
+    string [] SelIss = selectIssues (aQuery);
+    //runnerLog(ShortDate+";"+size(SelIss));  
+    runnerLog(size(SelIss));  
+    aDate=aDate+"1d";
+}
+
+return ;
+

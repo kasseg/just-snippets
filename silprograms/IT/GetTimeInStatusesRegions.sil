@@ -1,0 +1,98 @@
+// https://confluence.cprime.io/display/TR/Get+time+spent+in+certain+status+per+issue
+// РССП
+interval[] timespent; 
+interval totaltimespent = 0;
+
+function getStatusesTimeSpent(string issueKey) {
+    JFieldChange[] statusChanges = getFieldChanges(issueKey, "status");
+    interval FLSUserTimeSpent = 0;
+  
+    for(number j = 0; j<arraySize(statusChanges)-1; j++){
+        if ((statusChanges[j].oldVal=="Open"))  {
+            if (statusChanges[j].user=="evgeniy.epifanov" ||
+                statusChanges[j].user=="evgeniy.khmelevskiy" ||
+                statusChanges[j].user=="mikhail.krygin" ||
+                statusChanges[j].user=="ilya.poplutin" ||
+                statusChanges[j].user=="Dmitriy.Stroynov" ||
+                statusChanges[j].user=="dmitriy.suchkov" ||
+                statusChanges[j].user=="artur.yarikiyev" ||
+                statusChanges[j].user=="igor.avdeev" ||
+                statusChanges[j].user=="anton.dobrodeev" ||
+                statusChanges[j].user=="ilnaz.fahriev" ||
+                statusChanges[j].user=="vitaliy.kostromin" ||
+                statusChanges[j].user=="sergey.kozlov" ||
+                statusChanges[j].user=="mikhail.marchenko" ||
+                statusChanges[j].user=="konstantin.sidorenko" ||
+                statusChanges[j].user=="roman.skripitsyn" ||
+                statusChanges[j].user=="nikita.soin" ||
+                statusChanges[j].user=="andrey.sviridov" ||
+                statusChanges[j].user=="sergey.yakovlev" ||
+                statusChanges[j].user=="ilya.zavyalov" ||
+                statusChanges[j].user=="dmitriy.chertovskikh" ||
+                statusChanges[j].user=="evgeniy.evdokimov" ||
+                statusChanges[j].user=="aleksey.komratov" ||
+                statusChanges[j].user=="aleksey.kyrmygenov" ||
+                statusChanges[j].user=="vladimir.minenkov" ||
+                statusChanges[j].user=="artem.spravnikov" ||
+                statusChanges[j].user=="ivan.strokin" ||
+                statusChanges[j].user=="a.tkachenko" ||
+                statusChanges[j].user=="alexey.andronov" ||
+                statusChanges[j].user=="aleksandr.antropov" ||
+                statusChanges[j].user=="andrey.chesnokov" ||
+                statusChanges[j].user=="vladimir.khachatryan" ||
+                statusChanges[j].user=="sergey.kuzin" ||
+                statusChanges[j].user=="vladimir.lobanov" ||
+                statusChanges[j].user=="denis.lysenko" ||
+                statusChanges[j].user=="boris.savosko" ||
+                statusChanges[j].user=="roman.surin" ||
+                statusChanges[j].user=="dmitriy.vasilyev" ||
+                statusChanges[j].user=="k.vlasyevnin" ||
+                statusChanges[j].user=="aleksandr.zolotykh" ||
+                statusChanges[j].user=="dmitriy.anokin" ||
+                statusChanges[j].user=="sergey.bondar" ||
+                statusChanges[j].user=="oleg.gromov" ||
+                statusChanges[j].user=="roman.kustov" ||
+                statusChanges[j].user=="andrey.meshcheryakov" ||
+                statusChanges[j].user=="dmitriy.pakhomov" ||
+                statusChanges[j].user=="oleg.soshko" ||
+                statusChanges[j].user=="gleb.tutynin") {
+
+                    FLSUserTimeSpent =  FLSUserTimeSpent + statusChanges[j+1].changeDate-statusChanges[j].changeDate;
+                    timespent +=FLSUserTimeSpent;
+                    totaltimespent = totaltimespent + FLSUserTimeSpent;        
+                    
+                }
+            }
+    };
+    return FLSUserTimeSpent;
+}
+
+//interval timeSpent = getStatusesTimeSpent("IT-99374");
+//string[] selectedissues = selectIssuesByFilter("FLS operated issues total 2018fy","denis.burdukovskiy");
+//string[] selectedissues = selectIssues("project = 'METRO - IT SUPPORT' AND created >= '2017/01/1' AND created <= '2018/03/15'");
+string[] selectedissues = selectIssues("project = 'METRO - IT SUPPORT' AND created >= '2018/01/1' AND created <= '2018/03/15'");
+
+//string[] selectedissues = "IT-96036";
+
+for (string isc in selectedissues) {
+    interval ts=getStatusesTimeSpent(isc);
+    runnerLog(ts);
+    runnerLog(isc);
+}
+
+runnerLog("Всего потрачено времени на работу с заявками "+totaltimespent);
+runnerLog("Всего интервалов "+arraySize(timespent));
+runnerLog("Средне арифметический период работы "+totaltimespent/arraySize(timespent));
+// посчитать медиану
+        timespent = arraySort(timespent, false);
+        number myIndex = floor(arraySize(timespent)/2, 2);//индекс медианного значения
+        interval timespentmedian = arrayGetElement(timespent,myIndex);//медиана
+        runnerLog("Медиана работы "+timespentmedian);
+// конец подсчета медиана
+
+
+runnerLog("Всего заявок выбрано "+arraySize(selectedissues));
+
+return ;
+//return (size(selectedissues));
+//return (timeSpent+timeSpent2)/2; // will return a time interval for issue "DEMO-1"

@@ -1,0 +1,2 @@
+string results = sql("JIRA_fls", "update cwd_user set active=1 where USER_NAME='saf'");
+admClearCache();

@@ -1,0 +1,147 @@
+string format = "yyyy/MM/dd";
+string jql;
+struct Persontostat {string login; string[] issuekeys; date[] timeStart; date[] timeEnd; interval[] inAss; string[] issuekeysCorrected; interval[] inAssCorrected;}
+Persontostat nagaev = {"sergey.nagaev",{},{},{},{}};
+Persontostat ulyashinskiy = {"a.ulyashinskiy",{},{},{},{}};
+Persontostat vtorushin = {"daniil.vtorushin",{},{},{},{}};
+Persontostat Polubin = {"Igor.Polubin",{},{},{},{}};
+Persontostat velikaya = {"nina.velikaya",{},{},{},{}};
+Persontostat Krylov = {"Viktor.Krylov",{},{},{},{}};
+Persontostat ilyukhina = {"kseniya.ilyukhina",{},{},{},{}};
+Persontostat strogan = {"maksim.strogan",{},{},{},{}};
+Persontostat shvedova = {"natalya.shvedova",{},{},{},{}};
+Persontostat saushkin = {"oleg.saushkin",{},{},{},{}};
+string[] pipol = gadget_getMultiUserPickerValue(argv, "Users");
+Persontostat [] allTeamMembers={nagaev,ulyashinskiy,vtorushin,Polubin,velikaya,Krylov,ilyukhina,strogan,shvedova,saushkin};
+if (isNotNull(pipol)){
+    Persontostat [] allTeam=allTeamMembers;
+    for (Persontostat user in allTeam){
+        if (!arrayElementExists(pipol, user.login)){
+            allTeamMembers=deleteElement(allTeamMembers, user);
+        }
+    }
+}
+
+if (gadget_getSingleValue(argv, "Date")=="Текущий месяц"){
+    jql = "project = \"METRO - IT SUPPORT\" and status in (Resolved, Closed) and assignee was in (membersOf(\"MCC RU - Finance Applications Support Team\"), membersOf(\"MCC RU - Logistic Applications Support Team\")) AND resolutiondate >\""+ formatDate(startOfMonth(currentDate()), format)+"\" AND resolutiondate< \""+ formatDate(endOfMonth(currentDate()), format)+"\"";
+    runnerLog("Ищем инциденты с начала текущего месяца");
+} else if (gadget_getSingleValue(argv, "Date")=="Предыдущий месяц"){
+    date previousMonth;
+    if (month(currentDate())==1){
+        previousMonth=toDate(year(currentDate())-1,12,1);
+    } else {
+        previousMonth=toDate(year(currentDate()),month(currentDate())-1,1);
+    }
+    string PrevMonthStart=formatDate(startOfMonth(previousMonth), format);
+    string PrevMonthEnd=formatDate(endOfMonth(previousMonth), format);
+    jql = "project = \"METRO - IT SUPPORT\" and status in (Resolved, Closed) and assignee was in (membersOf(\"MCC RU - Finance Applications Support Team\"), membersOf(\"MCC RU - Logistic Applications Support Team\")) AND resolutiondate >\""+PrevMonthStart+"\" AND resolutiondate< \""+PrevMonthEnd+"\"";
+    runnerLog("Ищем инциденты с "+PrevMonthStart+" по "+PrevMonthEnd);
+} else {
+jql = "project = \"METRO - IT SUPPORT\" and status in (Resolved, Closed) and assignee was in (membersOf(\"MCC RU - Finance Applications Support Team\"), membersOf(\"MCC RU - Logistic Applications Support Team\")) AND resolutiondate >\""+ formatDate(gadget_getDateValue(argv, "Start Date"), format)+"\" AND resolutiondate< \""+ formatDate(gadget_getDateValue(argv, "End Date"), format)+"\"";
+runnerLog("Ищем инциденты с "+formatDate(gadget_getDateValue(argv, "Start Date"), format)+" по "+formatDate(gadget_getDateValue(argv, "End Date"), format));
+}
+string [] resolvedKeys=selectIssues(jql);
+runnerLog("Найдено "+ size(resolvedKeys)+" инцидентов");
+for (string resolvedKey in resolvedKeys) {
+    JFieldChange[] changes  = getFieldChanges(resolvedKey, "assignee");
+    for (Persontostat oneMember in allTeamMembers){
+        if (getUserByFullName(changes[0].oldVal).username==oneMember.login){
+            oneMember.timeStart+=resolvedKey.created;
+            oneMember.issuekeys+=resolvedKey;
+            break;
+        }
+    }
+    for (JFieldChange change in changes) {
+        string usernameNew=getUserByFullName(change.newVal).username;
+        for (Persontostat oneMember in allTeamMembers){
+            if (usernameNew==oneMember.login){
+                oneMember.timeStart+=change[1];
+                oneMember.issuekeys+=resolvedKey;
+                break;
+            }
+        }
+        string usernameOld=getUserByFullName(change.oldVal).username;
+        for (Persontostat oneMember in allTeamMembers){
+            if (usernameOld==oneMember.login){
+                oneMember.timeEnd+=change[1];
+                //oneMember.issuekeys+=resolvedKey;
+                break;
+            }
+        }
+    }
+    for (Persontostat oneMember in allTeamMembers){
+        if (getUser(resolvedKey.assignee).username==oneMember.login){
+            oneMember.timeEnd+=resolvedKey.resolutionDate;
+            //oneMember.issuekeys+=resolvedKey;
+            break;
+        }
+    }
+}
+
+for (Persontostat oneMember in allTeamMembers){
+    runnerLog("---------------------");
+    runnerLog("Статистика "+oneMember.login);
+    //number averageTime;
+    number averageInMinutes;
+    number averageInHours;
+    interval newResult;
+    interval summResult;
+    for(number i = 0; i < size(oneMember.timeStart); i = i + 1){
+        oneMember.inAss[i]=oneMember.timeEnd[i]-oneMember.timeStart[i];
+        
+        
+        //runnerLog("Потрачено "+oneMember.inAss[i]+" по тикету "+oneMember.issuekeys[i*2]);
+        JFieldChange[] changeStatuses  = getFieldChanges(oneMember.issuekeys[i], "status");
+        date newStart=oneMember.timeStart[i];
+        date newEnd;
+        interval newInterval;
+        newResult="";
+        for (JFieldChange changeStatus in changeStatuses) {
+            newInterval="";
+            if (oneMember.timeStart[i]<=changeStatus[1] and oneMember.timeEnd[i]>=changeStatus[1] and changeStatus.oldVal!="In Progress" and changeStatus.newVal=="Resolved"){
+                //newEnd=changeStatus[1];
+                //newInterval=newEnd-newStart;
+                newStart=changeStatus[1];
+                newEnd=changeStatus[1];
+                newInterval=newEnd-newStart;
+            }
+            
+            if (oneMember.timeStart[i]<=changeStatus[1] and oneMember.timeEnd[i]>=changeStatus[1] and changeStatus.oldVal=="In Progress" and (changeStatus.newVal=="Wait Customer" or changeStatus.newVal=="Resolved"
+                                        or changeStatus.newVal=="Wait Event" or changeStatus.newVal=="Wait HPSM")){
+                newEnd=changeStatus[1];
+                newInterval=newEnd-newStart;
+                 newStart=changeStatus[1];
+            }
+            
+            if (oneMember.timeStart[i]<=changeStatus[1] and oneMember.timeEnd[i]>=changeStatus[1] and changeStatus.newVal=="Open" and (changeStatus.oldVal=="Wait Customer" or changeStatus.oldVal=="Resolved" 
+                                        or changeStatus.oldVal=="Wait Event" or changeStatus.oldVal=="Wait HPSM")){
+                newStart=changeStatus[1];
+            }
+            if (oneMember.timeStart[i]<=changeStatus[1] and oneMember.timeEnd[i]>=changeStatus[1] and changeStatus.newVal=="Open" and changeStatus.oldVal=="In Progress"){
+                newEnd=changeStatus[1];
+                newInterval=newEnd-newStart;
+                newStart=changeStatus[1];
+            }
+            if (isNotNull(newInterval)){
+                newResult+=newInterval;
+            }
+        }
+        //runnerLog(newResult);
+        if (isNull(newResult)){
+            newResult=oneMember.inAss[i];
+        }
+        summResult+=newResult;
+        runnerLog("Потрачено "+oneMember.inAss[i]+" по тикету "+oneMember.issuekeys[i]+". После корректировки: "+newResult);
+        // КОРРЕКТИРОВКА!
+    }
+    
+    Persontostat temporaryUser = {"",{},{},{},{}};
+    
+    
+    
+    //struct Persontostat {string login; string[] issuekeys; date[] timeStart; date[] timeEnd; interval[] inAss; string[] issuekeysCorrected; interval[] inAssCorrected;}
+    averageInMinutes=trunc((summResult["WEEK"]*10080+summResult["DAY"]*1440+summResult["HOUR"]*60+summResult["MINUTE"])/size(oneMember.timeStart),2);//в минутах
+    averageInHours=trunc((summResult["WEEK"]*168+summResult["DAY"]*24+summResult["HOUR"]+summResult["MINUTE"]/60)/size(oneMember.timeStart),2);//в часах
+    runnerLog("Среднее время в минутах: "+averageInMinutes+" (на основе "+size(oneMember.timeStart)+ " инцидентов)");
+    runnerLog("Среднее время в часах: "+averageInHours+" (на основе "+size(oneMember.timeStart)+ " инцидентов)");
+}

@@ -1,0 +1,12 @@
+//by denis.burdukovskiy@metro-cc.ru 
+//возвращает список задач, у которых нет связей, 1 или 2 приоритет, статус Решен или Закрыт, за период 90 дней по дате создания от текущей даты
+string [] withoutlinks;
+string [] SelIss = selectIssues ("Project = IT AND (priority = 1 OR priority = 2) AND issuetype in (Инцидент) AND created >= startOfday(-90d) and 'Metro Service' in ('Logistics > Import Manager Portal', 'Logistics > LVS', 'Logistics > MDLS', 'Logistics > MSLS', 'Logistics > TMS (Kewill)', 'Logistics > UFM', 'Logistics > UFM Listing Request') and status in (Resolved, Closed)");
+//string [] SelIss = selectIssues ("Project = IT AND (priority = 1 OR priority = 2) AND issuetype in (Инцидент) AND created >= startOfday(-90d) and status in (Resolved, Closed)");
+for (string isc in SelIss) {
+    string [] linkedIssues = linkedIssues(isc);
+    if (size(linkedIssues) == 0) {
+        withoutlinks += isc;
+    }
+}
+return withoutlinks;

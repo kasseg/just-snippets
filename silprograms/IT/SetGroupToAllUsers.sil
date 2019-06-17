@@ -1,0 +1,16 @@
+//denis.burdukovskiy@metro-cc.ru
+//присвоить группу jirasd-allusers-portal всем пользователям 
+
+struct ADMailboxes {
+  string directory_id;
+  string lower_user_name;
+  number active;
+}
+ 
+//получить из каталога AD (10000), MGL (10400) и R2 (10500) все записи
+ADMailboxes [] results = sql("JIRA_fls", "select directory_id, lower_user_name, active from cwd_user where (directory_id=10000 or directory_id=10500 or directory_id=10400)");
+
+for (ADMailboxes aUser in results) {
+    runnerLog(aUser.lower_user_name+" - "+addUserToGroup(aUser.lower_user_name, "jirasd-allusers-portal")); // добавляем  группу
+}
+

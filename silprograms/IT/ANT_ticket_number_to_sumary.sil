@@ -1,0 +1,34 @@
+JComment lastcom = getLastComment(key);
+string comtext = lastcom["text"];
+int index1;
+if (contains(comtext,"присвоен номер")){
+    if (contains(comtext,"@ant-tech.ru")){
+        index1 = indexOf(comtext, "присвоен номер")+16;
+        comtext = substring(comtext, index1,-1);
+        index1 = indexOf(comtext, ".")-1;
+        comtext = substring(comtext, 0,index1);
+        summary += " " + comtext;
+        sendEmail("it-support@metro-cc.ru", "support@ant-tech.ru", {}, "из Jira ("+key+") присвоен номер Ант "+comtext,"Заявке из Jira ("+key+")присвоен номер Ант "+comtext);
+    }
+}
+comtext = replace(comtext, "\n", " ");
+comtext = replace(comtext, "\r", " ");
+string REGEX_ANTOR = "Номер заявки [0-9]{7}";
+if(matches(comtext,".*"+REGEX_ANTOR+".*")){
+    number stop_index = matchEnd(comtext, ".*"+REGEX_ANTOR);
+    string text_to_summary = substring(comtext, stop_index - 7,stop_index+1);
+    summary+= " " + text_to_summary;
+}
+
+
+
+// if (contains(comtext,"номер заявки")){
+//     if (contains(comtext,"@ant-tech.ru")){
+//         index1 = indexOf(comtext, "присвоен номер")+16;
+//         comtext = substring(comtext, index1,-1);
+//         index1 = indexOf(comtext, ".")-1;
+//         comtext = substring(comtext, 0,index1);
+//         summary += " " + comtext;
+//       //  sendEmail("it-support@metro-cc.ru", "support@ant-tech.ru", {}, "из Jira ("+key+") присвоен номер Ант "+comtext,"Заявке из Jira ("+key+")присвоен номер Ант "+comtext);
+//     }
+// }

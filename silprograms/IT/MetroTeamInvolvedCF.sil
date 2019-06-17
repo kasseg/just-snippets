@@ -1,0 +1,58 @@
+// denis.burdukovskiy@metro-cc.ru 
+// обновить значение поля Metro Team Involved * (суммарное время работы команды с заявкой в секундах )
+// customfield_14120 = Local IT Support Involved
+//string theissue = "TEST-1076";
+
+string theissue = key;
+JFieldChange[] MetroTeamChanges = getFieldChanges(theissue, "customfield_11010");
+if (MetroTeamChanges=="") { //Если изменений поля нет - добавить в массив изменений Metro Team текущее значение
+    JFieldChange MetroTeamInitial =  {"", %theissue%.created, "Metro Team", "", %theissue%.customfield_11010};
+    MetroTeamChanges = addElement(MetroTeamChanges, MetroTeamInitial); 
+}
+
+JFieldChange[] StatusChanges = getFieldChanges(theissue, "status");
+JFieldChange StatusInitial = {"", %theissue%.created, "status", "", "Open"};
+StatusChanges = addElement(StatusChanges,StatusInitial); //Добавить в массив изменений статуса заявки исходный статус (Open)
+
+JFieldChange[] changes = arraysConcat(MetroTeamChanges,StatusChanges);
+changes = arrayStructSort(changes, "changeDate");   //общий, отсортированный по дате,  массив изменений полей Metro Team и Статус
+number totaltimecounter=0;
+boolean StatusIsOk=false;
+boolean MetroTeamIsOk=false;
+
+for (number i = 0; i<size(changes); i=i+1 ) {
+    
+    JFieldChange thechange = changes[i];
+    runnerLog(thechange);
+    if (thechange.field=="Metro Team") {
+        if (thechange.newVal=="Local IT Support") {
+            MetroTeamIsOk=true;              // Команда изменилась на Local IT Support - то что нужно
+        }
+        else {
+            MetroTeamIsOk=false;    
+        }
+    }
+    if (thechange.field=="status") {
+        if ((thechange.newVal=="Open") or (thechange.newVal=="In Progress")) {
+            StatusIsOk = true;               // Статус изменился на Открыт или В работе - то что нужно
+        }
+        else {
+            StatusIsOk = false;
+        }
+    }
+
+    if (MetroTeamIsOk and StatusIsOk) { //изменение удовлетворяет требованиям - считаем интервал
+        if (i+1<size(changes)) {
+            interval timedelta = changes[i+1].changeDate - changes[i].changeDate;
+            totaltimecounter += timedelta["TOMILLIS"];
+        }
+    }
+}
+
+if (totaltimecounter !=0) {
+    %theissue%.customfield_14120 = totaltimecounter/1000;
+}
+
+//string[] hh = fieldHistory(theissue, "status");
+return;
+

@@ -1,0 +1,4 @@
+//Если создатель задачи - FLS, выставляет поле MetroTeam = FLS by Evgeniy Russkikh
+if (userInGroup("MCC RU - FLS", assignee)){
+    customfield_11010="FLS";
+}

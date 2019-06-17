@@ -1,0 +1,25 @@
+//denis.burudkovskiy@metro-cc.run
+//заполнить значение поля Metro Team History
+
+string issuesfilter="project = TEST and issuetype=Инцидент";
+string [] SelIss = selectIssues (issuesfilter);
+string MTHvalue;
+for (string isc in SelIss) {
+    string[] field_history;
+    field_history = fieldHistory(isc, "Metro Team");
+    if  (isNull(field_history) and (%isc%.customfield_11010 != "")) {
+        MTHvalue = isc.created;
+        MTHvalue += "|"+isc.customfield_11010;
+        %isc%.customfield_14116 = MTHvalue;
+        runnerLog(isc+" "+ MTHvalue);
+    } 
+    else {
+        MTHvalue=field_history;
+        %isc%.customfield_14116 = MTHvalue;
+        runnerLog(isc+" "+MTHvalue);
+    }
+    admReindexIssue(isc) ;
+
+}
+
+return;

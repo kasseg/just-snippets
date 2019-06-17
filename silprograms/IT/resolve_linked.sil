@@ -1,0 +1,38 @@
+string childissue;
+JComment lastcom = getLastComment(key);
+string comtext = lastcom["text"];
+string [] attachs;
+string comtextParsing=comtext;
+string comtextParsing2;
+//ниже цикл находит в тексте комментария скриншоты, выделяет оттуда имена файлов и добавляет их в массив
+while (indexOf(comtextParsing,"!image")!=-1 || indexOf(comtextParsing,"!screenshot")!=-1){
+    if (indexOf(comtextParsing,"!image")!=-1){
+    comtextParsing2=substring(comtextParsing,indexOf(comtextParsing,"!image")+1,-1);
+    } else comtextParsing2=substring(comtextParsing,indexOf(comtextParsing,"!screenshot")+1,-1);
+    comtextParsing2=substring(comtextParsing2,0,indexOf(comtextParsing2,"!"));
+    if (indexOf(comtextParsing2,"|thumbnail")!=-1){
+        comtextParsing2=substring(comtextParsing2,0,indexOf(comtextParsing2,"|thumbnail"));
+    } 
+    attachs+=comtextParsing2;
+    comtextParsing=substring(comtextParsing,indexOf(comtextParsing,comtextParsing2),-1);
+}
+JIssueLink[] AllLinkedIssues = getIssueLinksDetail(key);
+if (arraySize(AllLinkedIssues)>0){
+    for(JIssueLink currentlink in AllLinkedIssues){
+        if(currentlink.description=="causes" and (currentlink.issue.issueType=="Инцидент" or currentlink.issue.issueType=="Запрос / Эскалация") and currentlink.issue.status!="Closed" and currentlink.issue.status!="Resolved"){
+            childissue = currentlink.issue;
+//            %childissue%.components = components;
+            %childissue%.resolution = resolution;
+            %childissue%.customfield_10103 = customfield_10103; //Metro_service
+            %childissue%.customfield_11010 = customfield_11010; // Metro_team
+            if (arraySize(attachs)>0){ //если в комменте есть вложения-скрины, копирует эти вложения в дочерние задачи
+                for (string attach in attachs){
+                    copyAttachment(key, attach, currentlink.issue);
+                }
+            }
+            addComment(currentlink.issue, "remoteuser", comtext);
+            autotransition("Решить", currentlink.issue,true,true,true) ;
+          
+        }
+    }
+}

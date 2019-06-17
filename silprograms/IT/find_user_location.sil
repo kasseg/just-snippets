@@ -1,0 +1,342 @@
+//очистка Sender Email Address при письмах от Metro Helper по просьба Андрея Придатко из ТХД. by Denis Burdukovskiy
+if (customfield_10108=="thd@mgi.com.ru") {
+    customfield_10108="";
+}
+
+string issueReporter=getUser(reporter).username;
+ 
+if (customfield_10702=="" or customfield_10702=="FLS" or customfield_10702==11451){
+
+if (userInGroup("MCC RU - mbx - southplatform", issueReporter)){
+    customfield_10702="1416 Ростов-на-Дону (платформа)";
+} else if (userInGroup("MCC RU - Shared Center", issueReporter)){
+    customfield_10702="HR Shared Center (Ярославль)";
+ } else if (userInGroup("MCC RU SMR - MCoE", issueReporter)){
+     customfield_10702="MCoE (Самара)";
+    
+ } else if (userInGroup("MCC RU - Call Center SPB ", issueReporter)){
+     customfield_10702="1016 Санкт-Петербург";
+ } else if (userInGroup("MCC RU MOW - Contact Center Supervisor", issueReporter)){
+     customfield_10702="1011 Москва";
+} else if (issueReporter=="shop-service"){
+    customfield_10702="1097 E-Commerce (virtual)";
+} else if (issueReporter=="listing"){
+    customfield_10702="ЦО";
+} else {
+    string reporterstore;
+     
+    string userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+    if (isNull(userCompany)){
+        userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","mgl domain LDAP");
+    }
+    
+    if (isNotNull(userCompany)){
+            if (userCompany=="3466") //если пользователь из  MCC, утверждение на его руководителя и соотв транзакция.
+            {
+                reporterstore=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+                reporterstore=substring(reporterstore, length(reporterstore)-4, length(reporterstore));
+                
+            } else if (userCompany=="3113"){ //если пользователь из MGL - утверждение на Ларину и соотв транзакция.
+                reporterstore="1198";
+            }
+    } else { //если у пользователя нет metrocompanyCode, то его либо нет в r4 вообще, либо это ГПЯ
+                if (!contains(toLower(userFullName(reporter)), "store")){
+                    reporterstore="FLS";
+                    //addJSDComment(key, "remoteuser", "Невозможно определить месторасположение автора, локация выставляется FLS", false, false);
+                } else {
+                    number start=matchEnd(toLower(userFullName(reporter)), ".*store");
+                    number stop=length(userFullName(reporter));
+                    reporterstore=substring(userFullName(reporter),start,stop);
+                    reporterstore=substring(reporterstore,0,indexOf(reporterstore, " "));
+                    reporterstore=replace(reporterstore,",","");
+                    if (length(reporterstore)==2){
+                        reporterstore="10"+reporterstore;
+                    }
+                }
+            }
+   
+    if (reporterstore=="1010"){
+        customfield_10702="1010 Москва";
+        } else if (reporterstore=="1011"){
+        customfield_10702="1011 Москва";
+        } else if (reporterstore=="1012"){
+        customfield_10702="1012 Москва";
+        } else if (reporterstore=="1013"){
+        customfield_10702="1013 Москва";
+        } else if (reporterstore=="1014"){
+        customfield_10702="1014 Москва";
+        } else if (reporterstore=="1015"){
+        customfield_10702="1015 Санкт-Петербург";
+        } else if (reporterstore=="1016"){
+        customfield_10702="1016 Санкт-Петербург";
+        } else if (reporterstore=="1017"){
+        customfield_10702="1017 Москва";
+        } else if (reporterstore=="1018"){
+        customfield_10702="1018 Москва";
+        } else if (reporterstore=="1019"){
+        customfield_10702="1019 Москва";
+        } else if (reporterstore=="1020"){
+        customfield_10702="1020 Санкт-Петербург";
+        } else if (reporterstore=="1021"){
+        customfield_10702="1021 Нижний Новгород";
+        } else if (reporterstore=="1022"){
+        customfield_10702="1022 Ярославль";
+        } else if (reporterstore=="1023"){
+        customfield_10702="1023 Казань";
+        } else if (reporterstore=="1024"){
+        customfield_10702="1024 Ростов-на-Дону";
+        } else if (reporterstore=="1025"){
+        customfield_10702="1025 Воронеж";
+        } else if (reporterstore=="1026"){
+        customfield_10702="1026 Краснодар";
+        } else if (reporterstore=="1027"){
+        customfield_10702="1027 Уфа";
+        } else if (reporterstore=="1028"){
+        customfield_10702="1028 Волгоград";
+        } else if (reporterstore=="1029"){
+        customfield_10702="1029 Екатеринбург";
+        } else if (reporterstore=="1030"){
+        customfield_10702="1030 Екатеринбург";
+        } else if (reporterstore=="1031"){
+        customfield_10702="1031 Челябинск";
+        } else if (reporterstore=="1032"){
+        customfield_10702="1032 Самара";
+        } else if (reporterstore=="1033"){
+        customfield_10702="1033 Тюмень";
+        } else if (reporterstore=="1034"){
+        customfield_10702="1034 Тольятти";
+        } else if (reporterstore=="1035"){
+        customfield_10702="1035 Пермь";
+        } else if (reporterstore=="1036"){
+        customfield_10702="1036 Рязань";
+        } else if (reporterstore=="1037"){
+        customfield_10702="1037 Тула";
+        } else if (reporterstore=="1038"){
+        customfield_10702="1038 Саратов";
+        } else if (reporterstore=="1039"){
+        customfield_10702="1039 Липецк";
+        } else if (reporterstore=="1040"){
+        customfield_10702="1040 Киров";
+        } else if (reporterstore=="1041"){
+        customfield_10702="1041 Ульяновск";
+        } else if (reporterstore=="1042"){
+        customfield_10702="1042 Ставрополь";
+        } else if (reporterstore=="1043"){
+        customfield_10702="1043 Набережные Челны";
+        } else if (reporterstore=="1044"){
+        customfield_10702="1044 Новосибирск";
+        } else if (reporterstore=="1045"){
+        customfield_10702="1045 Омск";
+        } else if (reporterstore=="1046"){
+        customfield_10702="1046 Красноярск";
+        } else if (reporterstore=="1047"){
+        customfield_10702="1047 Оренбург";
+        } else if (reporterstore=="1048"){
+        customfield_10702="1048 МО пос. Томилино";
+        } else if (reporterstore=="1049"){
+        customfield_10702="1049 Москва";
+        } else if (reporterstore=="1050"){
+        customfield_10702="1050 Нижний Новгород";
+        } else if (reporterstore=="1051"){
+        customfield_10702="1051 Курск";
+        } else if (reporterstore=="1052"){
+        customfield_10702="1052 Пенза";
+        } else if (reporterstore=="1053"){
+        customfield_10702="1053 Ростов-на-Дону";
+        } else if (reporterstore=="1054"){
+        customfield_10702="1054 Новокузнецк";
+        } else if (reporterstore=="1055"){
+        customfield_10702="1055 Калуга";
+        } else if (reporterstore=="1056"){
+        customfield_10702="1056 Брянск";
+        } else if (reporterstore=="1057"){
+        customfield_10702="1057 Барнаул";
+        } else if (reporterstore=="1058"){
+        customfield_10702="1058 Астрахань";
+        } else if (reporterstore=="1059"){
+        customfield_10702="1059 Иваново";
+        } else if (reporterstore=="1060"){
+        customfield_10702="1060 Новосибирск";
+        } else if (reporterstore=="1061"){
+        customfield_10702="1061 МО д.Черная Грязь";
+        } else if (reporterstore=="1062"){
+        customfield_10702="1062 Сочи (офис)";
+        } else if (reporterstore=="1063"){
+        customfield_10702="1063 Тверь";
+        } else if (reporterstore=="1064"){
+        customfield_10702="1064 Самара";
+        } else if (reporterstore=="1065"){
+        customfield_10702="1065 Екатеринбург";
+        } else if (reporterstore=="1066"){
+        customfield_10702="1066 Томск";
+        } else if (reporterstore=="1067"){
+        customfield_10702="1067 МО г.Балашиха";
+        } else if (reporterstore=="1068"){
+        customfield_10702="1068 Калининград";
+        } else if (reporterstore=="1069"){
+        customfield_10702="1069 Смоленск";
+        } else if (reporterstore=="1070"){
+        customfield_10702="1070 Чебоксары";
+        } else if (reporterstore=="1071"){
+        customfield_10702="1071 Ижевск";
+        } else if (reporterstore=="1072"){
+        customfield_10702="1072 Краснодар";
+        } else if (reporterstore=="1073"){
+        customfield_10702="1073 МО г.Подольск";
+        } else if (reporterstore=="1074"){
+        customfield_10702="1074 Казань";
+        } else if (reporterstore=="1076"){
+        customfield_10702="1076 Кемерово";
+        }  else if (reporterstore=="1077"){
+        customfield_10702="1077 МО г.Одинцово";
+        }  else if (reporterstore=="1078"){
+        customfield_10702="1078 Магнитогорск";
+        } else if (reporterstore=="1082"){
+        customfield_10702="1082 Ростов-на-Дону";
+        } else if (reporterstore=="1083"){
+        customfield_10702="1083 Иркутск";
+        } else if (reporterstore=="1086"){
+        customfield_10702="1086 Пятигорск";
+        } else if (reporterstore=="1088"){
+        customfield_10702="1088 Стерлитамак";
+        } else if (reporterstore=="1094"){
+        customfield_10702="1094 Новороссийск";
+        } else if (reporterstore=="1095"){
+        customfield_10702="1095 Красноярск";
+        } else if (reporterstore=="1198"){
+        customfield_10702="1198 Ногинск (платформа MGL)";                             
+        } else if (reporterstore=="1202"){
+        customfield_10702="1202 Вологда";                             
+        } else if (reporterstore=="1303"){
+        customfield_10702="1303 Нижний Тагил";
+        } else if (reporterstore=="1304"){
+        customfield_10702="1304 Омск";
+        } else if (reporterstore=="1306"){
+        customfield_10702="1306 Сургут";
+        } else if (reporterstore=="1307"){
+        customfield_10702="1307 МО г.Ногинск";
+        } else if (reporterstore=="1308"){
+        customfield_10702="1308 Москва";
+        } else if (reporterstore=="1309"){
+        customfield_10702="1309 Волжский";
+        } else if (reporterstore=="1310"){
+        customfield_10702="1310 Воронеж";
+        } else if (reporterstore=="1311"){
+        customfield_10702="1311 Новосибирск";
+        } /*else if (reporterstore=="1314"){
+        customfield_10702="BLA1314";
+        } */else if (reporterstore=="1317"){
+        customfield_10702="1317 Серпухов";
+        } else if (reporterstore=="1318"){
+        customfield_10702="1318 Лобня";
+        } else if (reporterstore=="1320"){
+        customfield_10702="1320 Владимир";
+        }/*else if (reporterstore=="1321"){
+        customfield_10702="BLA1321";
+        }*/else if (reporterstore=="1322"){
+        customfield_10702="1322 МО д.Апаринки";
+        }else if (reporterstore=="1336"){
+        customfield_10702="1336 Орёл";
+        }else if (reporterstore=="1337"){
+        customfield_10702="1337 Белгород";
+        }else if (reporterstore=="1340"){
+        customfield_10702="1340 Владикавказ";
+        }else if (reporterstore=="1342"){
+        customfield_10702="1342 Краснодар";
+        }else if (reporterstore=="1356"){
+        customfield_10702="1356 Москва";
+        }else if (reporterstore=="1357"){
+        customfield_10702="1357 Архангельск";
+        }else if (reporterstore=="1444"){
+        customfield_10702="1444 МО г.Котельники";
+        }else if (reporterstore=="1491"){
+        customfield_10702="1491 Симферополь";
+        }else if (reporterstore=="1492"){
+        customfield_10702="1492 Севастополь";
+        }else if (reporterstore=="FLS"){
+        customfield_10702="FLS";
+        }else if (reporterstore=="1990"){
+        customfield_10702="FLS";
+        if(type == "Командировка"){
+                customfield_10702="ЦО";
+            }
+        }else if (reporterstore=="1090"){
+        customfield_10702="ЦО";
+        
+        }else customfield_10702="FLS";
+        if(type == "Командировка"){
+            if(isNull(reporterstore)){
+                customfield_10702="ЦО";
+            }
+        }
+    }
+}
+ 
+    
+//Добавление логина отправителя письма в партисипанты (берется header джемхом из письма)
+if (issueType=="Инцидент"){
+    if (customfield_12200){
+        runnerLog("ne nado nichevo");
+    } else {
+        if (isNotNull(customfield_12201) and toLower(issueReporter)!=toLower(trim(customfield_12201))){
+            customfield_10002+=toLower(trim(customfield_12201));
+        }
+    }
+}
+//поиск номера телефона в задачах созданных по письму на основе истории запросов
+//автора by Anatoliy Gundarov
+    
+if(customfield_11601==""){// поиск внутреннего номера в описании
+    string str_desc = description;
+    str_desc = replace(str_desc,"\r"," ");
+    str_desc = replace(str_desc,"\n"," ");
+     str_desc = replace(str_desc,")"," ");
+    str_desc = replace(str_desc,"("," ");
+    string regex = ".*ext.*[0-9]{5}.*";
+    if(matches(str_desc,regex)==true){
+        string regexEnd = ".*ext.{0,3}[0-9]{5}";
+        number endIndex = matchEnd(str_desc, regexEnd);
+        number startIndex = endIndex-5;
+        if(startIndex>0 && endIndex>0){
+            customfield_11601 = substring(str_desc,startIndex,endIndex);
+            string debugext = debugext + startIndex +"\r\n"+ endIndex +"\r\n"+ substring(str_desc,startIndex,endIndex);
+          //  sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"}, {""}, "Ext.", debugext);
+        }
+    }
+}
+   
+if(!reporter=="remoteuser" && !arraySize(getLinkedIssues(key, "Relates"))==0){
+    string myjql = "project = IT AND Phone is not EMPTY AND request-channel-type != JIRA AND reporter in ("+ reporter +") ORDER BY created desc";
+    if(customfield_11601==""){
+        
+        string [] keys = selectIssues(myjql);
+        if (arraySize(keys)>0){
+            string key_phone = keys[0];
+            customfield_11601=%key_phone%.customfield_11601;
+        }
+    }
+}
+
+//линкование задачи с HPSM номером в загололвке к задаче с таким 
+string REGEX_HPSM = ".*IM[0-9]{8}.*";
+string REGEX_HPSM_END = ".*IM[0-9]{8}";
+if(matches(summary,REGEX_HPSM)){ 
+   number endindex = matchEnd(summary,REGEX_HPSM_END);
+   string hpsm_number = substring(summary,endindex-10,endindex);
+   if(matches(hpsm_number,REGEX_HPSM)){
+       string myjqlhpsm = "project = IT AND 'HPSM No.' ~ " + hpsm_number;
+       string[] Issuee_keys_hpsm = selectIssues(myjqlhpsm);
+       string hpsm_key = arrayGetElement(Issuee_keys_hpsm, 0);
+       linkIssue(%hpsm_key%.key,key, "Problem/Incident");
+       components = %hpsm_key%.components;
+       customfield_10103 = %hpsm_key%.customfield_10103;
+       customfield_11010 = %hpsm_key%.customfield_11010;
+       addJSDComment(%hpsm_key%.key, "remoteuser", description, false);
+    } 
+}
+
+
+
+
+
+

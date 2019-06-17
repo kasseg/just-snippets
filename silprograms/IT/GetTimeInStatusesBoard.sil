@@ -1,0 +1,58 @@
+// https://confluence.cprime.io/display/TR/Get+time+spent+in+certain+status+per+issue
+interval[] timespent; 
+interval totaltimespent = 0;
+
+
+function getStatusesTimeSpent(string issueKey) {
+    JFieldChange[] statusChanges = getFieldChanges(issueKey, "status");
+    interval FLSUserTimeSpent = 0;
+  
+    for(number j = 0; j<arraySize(statusChanges)-1; j++){
+        if ((statusChanges[j].oldVal=="Open") and (statusChanges[j].newVal=="In Progress"))  {
+//            if (statusChanges[j].user=="daniil.bass" || statusChanges[j].user=="ivan.shitov" || statusChanges[j].user=="sergey.pimenov" || statusChanges[j].user=="andrey.bushev" || statusChanges[j].user=="sergey.medvedev") {
+//            if (userInGroup("MCC RU - FLS", statusChanges[j].user) and (statusChanges[j].user!="denis.burdukovskiy")) {
+
+                FLSUserTimeSpent =  FLSUserTimeSpent + statusChanges[j+1].changeDate-statusChanges[j].changeDate;
+                timespent +=FLSUserTimeSpent;
+                totaltimespent = totaltimespent + FLSUserTimeSpent;        
+            
+//                }
+            }
+                    
+    };
+    return FLSUserTimeSpent;
+}
+
+//interval timeSpent = getStatusesTimeSpent("IT-99374");
+//string[] selectedissues = selectIssuesByFilter("FLS operated issues total 2018fy","denis.burdukovskiy");
+string query="filter=14900";
+string[] selectedissues = selectIssues(query);
+//string[] selectedissues = "IT-96036";
+
+for (string isc in selectedissues) {
+    interval ts=getStatusesTimeSpent(isc);
+//        if (ts!=0) {
+//            timespent +=ts;
+//            totaltimespent = totaltimespent + ts;        
+//        }
+}
+
+number spenthours = totaltimespent;
+runnerLog(query);
+runnerLog("Всего потрачено времени на работу с заявками "+totaltimespent);
+runnerLog("Всего потрачено времени на работу с заявками (часы)"+ spenthours/1000/60/60);
+runnerLog("Часов на заявку"+ spenthours/1000/60/60/arraySize(selectedissues));
+
+runnerLog("Всего интервалов "+arraySize(timespent));
+runnerLog("Средне арифметический период работы "+totaltimespent/arraySize(timespent));
+// посчитать медиану
+        timespent = arraySort(timespent, false);
+        number myIndex = floor(arraySize(timespent)/2, 2);//индекс медианного значения
+        interval timespentmedian = arrayGetElement(timespent,myIndex);//медиана
+        runnerLog("Медиана работы "+timespentmedian);
+// конец подсчета медиана
+runnerLog("Всего заявок выбрано "+arraySize(selectedissues));
+
+return ;
+//return (size(selectedissues));
+//return (timeSpent+timeSpent2)/2; // will return a time interval for issue "DEMO-1"

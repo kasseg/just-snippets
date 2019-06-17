@@ -1,0 +1,59 @@
+// denis.burdukovskiy@metro-cc.ru 
+// обновить значение поля Metro Team Involved * (суммарное время работы команды с заявкой в секундах )
+// customfield_14120 = Local IT Support Involved
+// string theissue = "TEST-1060";
+
+string theissue = key;
+JFieldChange[] MetroTeamChanges  = getFieldChanges(theissue, "customfield_11010");
+JFieldChange[] StatusChanges  = getFieldChanges(theissue, "status");
+JFieldChange[] changes = arraysConcat(MetroTeamChanges,StatusChanges);
+changes = arrayStructSort(changes, "changeDate");
+number totaltimecounter=0;
+boolean StatusIsOk=false;
+boolean MetroTeamIsOk=false;
+if ( %theissue%.customfield_11010=="Local IT Support") { MetroTeamIsOk=true;}
+
+//if (status == "Resolved") { StatusIsOk=true; }
+
+for (number i = 0; i<size(changes); i=i+1 ) {
+    JFieldChange thechange = changes[i];
+    if (thechange.field=="Metro Team") {
+        if (thechange.newVal=="Local IT Support") {
+            MetroTeamIsOk=true;              // Команда изменилась на Local IT Support - то что нужно
+            //number MTindex = arrayFind(MetroTeamChanges, thechange);        //позиция в массиве измений Metro Team
+        }
+        else {
+            MetroTeamIsOk=false;    
+        }
+    }
+    if (thechange.field=="status") {
+        if ((thechange.newVal=="Open") or (thechange.newVal=="In Progress")) {
+            StatusIsOk = true;               // Статус изменился на Открыт или В работе - то что нужно
+//            number Statusindex = arrayFind(StatusChanges, thechange);       // позиция в массиве изменений статуса
+        }
+        else {
+            StatusIsOk = false;
+        }
+    }
+
+    if (MetroTeamIsOk and StatusIsOk) { //изменение удовлетворяет требованиям - считаем интервал
+        if (thechange.field=="Metro Team") {
+//            runnerLog(thechange);
+        }
+        if (thechange.field=="status") {
+//            runnerLog(thechange);
+        }
+        if (i+1<size(changes)) {
+            interval timedelta = changes[i+1].changeDate - changes[i].changeDate;
+            totaltimecounter += timedelta["TOMILLIS"];
+            
+        }
+    }
+}
+
+if (totaltimecounter !=0) {
+    %theissue%.customfield_14120 = totaltimecounter/1000;
+}
+
+return ;
+

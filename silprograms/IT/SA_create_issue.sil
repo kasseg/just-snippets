@@ -1,0 +1,28 @@
+// create issue in SA project
+
+string newSAissue = createIssue("SA","", "Service Task", summary);
+%newSAissue%.customfield_13400=customfield_13400; // inv.number
+%newSAissue%.customfield_10702=customfield_10702; // issue location
+%newSAissue%.customfield_13207=customfield_13207; // diagnostics done 
+%newSAissue%.customfield_13419=customfield_13419; // device location
+%newSAissue%.customfield_13421=customfield_13421; // Podmena
+%newSAissue%.description=description; // Description
+%newSAissue%.customfield_11601=customfield_11601; // Phone
+
+//%newSAissue%.customfield_13207 += "\n\nВложения из исходной заявки:\n";
+
+//for (string attname in attachments ){
+//    string fullpath = getAttachmentPath(key, attname); //get full server pathname to attach. eg. D:\Atlassian\Application Data\JIRA\data\attachments\TEST\10000\TEST-205\316362
+//    number attachidposition = lastIndexOf(fullpath,"\\")+1;
+//    number attachid= substring (fullpath,attachidposition,length(fullpath)); //get attach id
+//    string attachlink = getJIRABaseUrl()+"/secure/attachment/" + attachid ;
+//    //%newSAissue%.customfield_13207 =  %newSAissue%.customfield_13207 + "[" + attname + "|" + attachlink + "]" + "\n" ;
+//    %newSAissue%.customfield_13207 =  %newSAissue%.customfield_13207 + attachlink + "/" + attname + "\n" ;
+//}
+
+%key%.assignee="";
+linkIssue(key, newSAissue, "Relates");
+
+//
+//JFieldChange last = lastFieldHistory(key);
+//summary=last.summary.oldVal;

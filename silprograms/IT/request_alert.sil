@@ -1,0 +1,32 @@
+include "it/regions";
+
+string task_description = description;
+int index1;
+number number_start = matchEnd(task_description, "Request : ")+1;
+number number_stop = number_start+6;
+string request_number = substring(task_description, number_start,number_stop);
+Region[] all_regions = {East,West,Center,South,Siberia,Mow};
+ if (summary=="Erequest Alert" and reporter=="remoteuser"){
+ index1 = indexOf(task_description, "Location:")+12;
+ task_description = substring(task_description, index1,-1);
+ index1 = indexOf(task_description, "ST")+1;
+ task_description = substring(task_description, index1,-1);
+ index1 = indexOf(task_description, "-");
+ task_description = substring(task_description, 0,index1);
+  if(length(task_description)==2){
+  task_description ="10"+task_description;}
+   for(Region current_region in all_regions){
+    for(string store in current_region.stores){
+     if(chop(store,4)==task_description){
+     customfield_10702=store;
+     customfield_10103="Workplaces > Desktop, Laptop > Hardware";
+     customfield_11010 = "Local IT Support";
+     reporter=current_region.reporter;
+     }
+    } 
+   }
+  
+  summary =summary+" " + request_number;
+  //description+="\r\n [erequest link|http://mow11app406.ru.r4.madm.net/erequest/fr_show?reqid="+request_number+"]";
+  description=replace(description, request_number, "["+request_number+"|http://mow11app406.ru.r4.madm.net/erequest/fr_show?reqid="+request_number+"]");
+ }

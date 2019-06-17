@@ -1,0 +1,19 @@
+//denis.burdukovskiy@metro-cc.ru
+//присвоить группу jirasd-customers всем "пользователям" - групповым почтовым ящикам (mailboxes в ActiveDirectory)
+//сделать все записи "пользователей" каталога Mailboxes активными
+//активирование учётных записей из скрипта не работает для нелокального хранилища пользователей, 
+//поэтому это делается через БД active=1 для всех пользователей каталога 10300 (JIRA должна быть остановлена в это время)
+
+struct ADMailboxes {
+  string directory_id;
+  string lower_user_name;
+  number active;
+}
+ 
+//получить из каталога 10300 (Mailboxes) все записи
+ADMailboxes [] results = sql("JIRA_fls", "select directory_id, lower_user_name, active from cwd_user where directory_id=10300");
+
+for (ADMailboxes aUser in results) {
+    runnerLog(aUser.lower_user_name+" - "+addUserToGroup(aUser.lower_user_name, "jirasd-customers")); // добавляем "пользователю" группу
+}
+

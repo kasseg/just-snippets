@@ -1,0 +1,9 @@
+// issue resolved in IT Project
+string [] relIssues= linkedIssues(key, "Relates");
+for (string relKey in relIssues) {
+    if (%relKey%.project=="SA") {
+        addComment(relKey, "remoteuser", "Заявка закрыта в IT");
+        %relKey%.labels += "Закрыта_в_IT";
+    }
+    
+}

@@ -1,0 +1,28 @@
+// Удалить, не потребовался. Denis.Burdukovskiy
+
+//return quantity of issues from JQL query, where Metro User Satisfaction mark done within certain DATE )
+//to be run only within JQL query (for example silJQL operator)
+
+//string issuesfilter="project = IT and created >= startOfDay(-1d) AND 'Metro User Satisfaction' is not EMPTY ";
+//date MUSdate = "2018-08-02";
+
+
+string issuesfilter = argv[0]; //JQL query
+date MUSdate = formatDate(argv[1], "yyyy-MM-dd"); //дата для поиска
+string [] desired_isses;
+
+string [] SelIss = selectIssues (issuesfilter);
+for (string isc in SelIss) {
+
+    JFieldChange[] MUSchanges  = getFieldChanges(isc, "customfield_11400"); 
+    date MUSchangesDate = formatDate(MUSchanges[0].changeDate, "yyyy-MM-dd");
+    
+    if (isNotNull(MUSchangesDate) and (MUSchangesDate == MUSdate)){
+//        runnerLog(MUSchangesDate);
+//        runnerLog(isc);
+        desired_isses +=isc;
+    }
+
+}
+
+return desired_isses;

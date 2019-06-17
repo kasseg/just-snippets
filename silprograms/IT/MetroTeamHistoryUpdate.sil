@@ -1,0 +1,9 @@
+// add information about new value of Metro Team custom field To Metro Team History custom field
+string dateformat = "yyyy.MM.dd - HH:mm:ss";
+if (customfield_14116 =="") {
+    customfield_14116 = customfield_11010 + " | " + formatDate(key.created, dateformat) + " | "; 
+}
+else {
+    customfield_14116 = customfield_14116 + " " + customfield_11010 + " | " + formatDate(currentDate(), dateformat) + " |";
+    
+};

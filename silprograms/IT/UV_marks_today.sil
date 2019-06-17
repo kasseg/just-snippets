@@ -1,0 +1,39 @@
+// denis.burdukovskiy@metro-cc.ru
+// Вывод номеров заявок, по которым оценка пользователем была проставлена сегодня (на основе даты комментария от User Vote)
+// version2 (реструктуризация)
+date uvcommentdate;
+string [] uv;
+string [] SelIss = selectIssues ("Project = IT and updated >= startOfDay() and cf[11400] is not EMPTY");
+for (string isc in SelIss) {
+    number [] allcomments = getAllCommentIds(isc);
+    for(number x in allcomments) {
+        string [] cmt = getCommentById(x);
+        uvcommentdate=cmt["created"];
+        if (startOfDay(uvcommentdate) == startOfDay(currentDate())) {
+            if (cmt["author"]=="remoteuser") {
+                if (contains(cmt["text"], "Оценка:")) {
+                    uv +=isc;    
+                }
+            }
+        }
+    }
+}
+return  uv;
+
+//v1
+//for (string isc in SelIss) {
+//    number [] allcomments = getAllCommentIds(isc);
+//    for(number x in allcomments) {
+        //string [] cmt = getCommentById(x);
+        //if ((cmt["author"]=="remoteuser") and (contains(cmt["text"], "Оценка:"))) {
+            //uvcommentdate=cmt["created"];
+            //if (startOfDay(uvcommentdate) == startOfDay(currentDate())) {
+                //uv +=isc;
+            //} else {
+                //runnerLog(isc); // дата комментария отличается от текущей даты
+            //}
+        //}
+    //}
+//}
+//return  uv;
+
