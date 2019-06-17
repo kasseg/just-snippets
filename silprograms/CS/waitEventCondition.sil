@@ -1,0 +1,7 @@
+//условия перевода в ожидание by Evgeniy Russkikh
+if ((currentUser() == "kseniya.rakhimova" or currentUser() == "admin-er" or currentUser() == "margarita.makzhanova" or currentUser() == "admin-ag")
+and (status!="Done" and status!="Cancelled" and status!="Wait Event")){
+    return true;    
+} else {
+    return false;
+}

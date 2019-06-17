@@ -1,0 +1,57 @@
+/*string k = "LEN-49";
+runnerLog(k.summary);
+runnerLog(k.description);
+string omniID = substring(k.description, indexOf(k.description, "<ObjectID>")+10, indexOf(k.description, "</ObjectID>"));
+runnerLog(omniID);
+string subject = substring(k.description, indexOf(k.description, "<Subject>")+9, indexOf(k.description, "</Subject>"));
+runnerLog(subject);
+string descr = substring(k.description, indexOf(k.description, "<Description>")+13, indexOf(k.description, "</Description>"));
+runnerLog(descr);
+string customer = substring(k.description, indexOf(k.description, "<Customer>")+10, indexOf(k.description, "</Customer>"));
+runnerLog(customer);
+string contactInfo = substring(k.description, indexOf(k.description, "<ContactInfo>")+13, indexOf(k.description, "</ContactInfo>"));
+runnerLog(contactInfo);
+string deadline = substring(k.description, indexOf(k.description, "<Deadline>")+10, indexOf(k.description, "</Deadline>"));
+runnerLog(deadline);
+string [] custom_fields_mapping = {"reporter",customer,"OMNI ID",omniID,"ContactInfo",contactInfo};
+string newIssue = createIssue(
+            "LEN",
+            "", //not sub-task
+            "Support",
+            subject,
+            "Medium",
+            descr,
+            {}, //no components
+            deadline,
+            "", // no estimate
+            "", //no security level
+            custom_fields_mapping
+           );
+runnerLog(newIssue);
+addComment(k, currentUser(), "Создана задача "+newIssue);
+string messageBody="&lt;ObjectID&gt;"+newIssue.#{OMNI ID}+"&lt;/ObjectID&gt;<br>&lt;ExternalID&gt;"+newIssue+"&lt;/ExternalID&gt;";
+sendEmail("kapone86@mail.ru", "CALL_DISPATCH_ACK", messageBody);
+*/
+string k = "LEN-56";
+runnerLog(k.summary);
+runnerLog(k.description);
+string omniID = substring(k.description, indexOf(k.description, "<ObjectID>")+10, indexOf(k.description, "</ObjectID>"));
+runnerLog(omniID);
+string externalID = substring(k.description, indexOf(k.description, "<ExternalID>")+12, indexOf(k.description, "</ExternalID>"));
+runnerLog(externalID);
+//string closureCode = substring(k.description, indexOf(k.description, "<ClosureCode>")+13, indexOf(k.description, "</ClosureCode>"));
+//runnerLog(closureCode);
+autotransition("OMNI_close", externalID, true,true,true);
+//externalID.res=closureCode;
+//admReindexIssue(externalID);
+//sendEmail("jira@digisky.ru","customer1", {}, "subject","body");
+//JEmailMessage email;
+//email.to = {"customer1"};
+//email.subject = "Email to Santa";
+//email.message = "Dear Santa, I want a train.";
+ 
+//sendEmail(email);
+/*В ответ наша система отправляет письмо с темой CALL_DISPATCH_ACK и параметрами:
+<ObjectID>id заявки OMNI</ObjectID> - Кастомное поле
+<ExternalID>id нашей заявки</ExternalID> - id заявки Jira
+*/

@@ -1,0 +1,35 @@
+/*
+&lt;
+&gt;
+*/
+string k = "LEN-55";
+// CLOSE EMAIL
+/*
+string omniID = k.#{OMNI ID};
+runnerLog(omniID);
+string resolutionText=getLastComment(k)["text"];
+runnerLog(resolutionText);
+string messageBody="&lt;ObjectID&gt;"+omniID+"&lt;/ObjectID&gt;<br>"
++ "&lt;ExternalID&gt;"+k+"&lt;/ExternalID&gt;<br>"
++ "&lt;ClosureCode&gt;"+k.res+"&lt;/ClosureCode&gt;<br>"
++ "&lt;Solution&gt;"+resolutionText+"&lt;/Solution&gt;";
+
+runnerLog(messageBody);
+sendEmail("kapone86@mail.ru", "CALL_CLOSURE_REQ", messageBody);
+*/
+//sendEmail("jira@digisky.ru","kapone86@mail.ru", {}, body);
+// IN PROIGRESS EMAIL
+/*string omniID = k.#{OMNI ID};
+runnerLog(omniID);
+string resolutionText=getLastComment(k)["text"];
+runnerLog(resolutionText);
+string messageBody="&lt;ObjectID&gt;"+omniID+"&lt;/ObjectID&gt;<br>"
++ "&lt;ExternalID&gt;"+k+"&lt;/ExternalID&gt;<br>"
++ "&lt;ExternalDeadline&gt;"+k.dueDate+"&lt;/ExternalDeadline&gt;";
+
+runnerLog(messageBody);
+sendEmail("kapone86@mail.ru", "CALL_PICKUP_ACK", messageBody);*/
+runnerLog(k.dueDate);
+string format = "dd-MMM-yyyy HH:mm:ss Z";
+runnerLog(formatDate(k.dueDate, format));
+runnerLog(formatDate(toTimeZone(k.dueDate,"GMT+0"), format));
