@@ -1,0 +1,33 @@
+//Действия при создании заявки
+description=replace(description, "\r\n\r\n", "\r\n");
+string issueReporter=getUser(reporter).username;
+string userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+if (isNotNull(userCompany)){
+    
+} else {
+    userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","mgl domain LDAP");
+}
+if (contains(description,"FINDDEPARTMENTINLDAP")){
+    string department;
+    if (userCompany=="3466"){
+            department=ldapUserAttr("department", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+        } else if (userCompany=="3113"){
+            department=ldapUserAttr("department", "(sAMAccountName=" + issueReporter + ")","mgl domain LDAP");
+        }
+    description=replace(description,"FINDDEPARTMENTINLDAP",department);
+}
+if (contains(description,"FINDNAMEINLDAP")){
+    description=replace(description,"FINDNAMEINLDAP",userFullName(issueReporter));
+}
+////////////////////////
+if (isNotNull(userCompany)){
+        if (userCompany!="3113") //если пользователь из  MCC, утверждение на его руководителя и соотв транзакция.
+        {
+            autotransition("DM APPROVE", key, true,true,true);
+        } else if (userCompany=="3113"){ //если пользователь из MGL - утверждение на Ларину и соотв транзакция.
+            autotransition("MGL IT", key, true,true,true); 
+        } 
+} else { //если пользователя нет ни в MCC, ни в MGL - заявка отклоняется
+            autotransition("Rejected", key, true,true,true);
+            addJSDComment(key, "remoteuser", "Автора заявки нет в каталоге LDAP, заявка отклоняется", true);
+        }

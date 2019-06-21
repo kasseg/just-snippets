@@ -1,0 +1,5 @@
+//Валидатор создания by Anatoliy.Gundarov
+string regexemail="^([A-Za-z0-9_-]+\\.)*[A-Za-z0-9_-]+@[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*\\.[A-Za-z]{2,6}$";
+if(!matches(customfield_13423,regexemail)){
+    return false, "Неверно введён E-mail";
+}

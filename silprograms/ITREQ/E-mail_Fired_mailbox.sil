@@ -1,0 +1,3 @@
+if (contains(description,"Access to mailbox of fired user")) {
+    autotransition("IT Security", key, true,true,true);
+}

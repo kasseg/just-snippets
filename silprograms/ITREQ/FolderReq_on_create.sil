@@ -1,0 +1,43 @@
+description=replace(description, "\r\n\r\n", "\r\n");
+customfield_10002+="Natalya.Iskandarova";//Аудитор
+string issueReporter=getUser(reporter).username;
+string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+storeNum=substring(storeNum, length(storeNum)-4, -1);
+string userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+
+string job;
+string department=ldapUserAttr("department", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+if (isNull(storeNum)){
+    string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+    if (contains(toLower(userPath),"st1491-sip")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+        storeNum="1491";
+        userCompany="3466";
+        job=ldapUserAttr("description", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+    } else if (contains(toLower(userPath),"st1492-svt")){//проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+        storeNum="1492";
+        userCompany="3466";
+        job=ldapUserAttr("description", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+    }
+} else {
+    job=ldapUserAttr("metroJobTitle", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+}
+
+//description="|*Location*|"+storeNum+" |\r\n"+description;
+if (isNull(userCompany)){
+    userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","mgl domain LDAP");
+} 
+
+if (isNotNull(userCompany)){
+        if (userCompany!="3113") //если пользователь из  MCC, утверждение на его руководителя и соотв транзакция.
+        {
+            description="|*Username*|"+issueReporter+" |\r\n|*Location*|"+storeNum+" |\r\n|*Department*|"+department+" |\r\n|*Position*|"+job+" |\r\n"+description;
+            autotransition("DM APPROVE", key, true,true,true);
+        } else if (userCompany=="3113"){ //если пользователь из MGL - утверждение на Ларину и соотв транзакция.
+            description="|*Username*|"+issueReporter+" |\r\n|*Location*|MGL|\r\n|*Department*|"+ldapUserAttr("department", "(sAMAccountName="+issueReporter+")","mgl domain LDAP")+" |\r\n|*Position*|"+ldapUserAttr("metroJobTitle", "(sAMAccountName="+issueReporter+")","mgl domain LDAP")+" |\r\n"+description;
+            customfield_10100="T.Larina";
+            autotransition("MGL MDLS approve group", key, true,true,true);
+        } 
+} else { //если пользователя нет ни в MCC, ни в MGL - заявка отклоняется
+            autotransition("Rejected", key, true,true,true);
+            addJSDComment(key, "remoteuser", "Автора заявки нет в каталоге LDAP, заявка отклоняется", true);
+        }

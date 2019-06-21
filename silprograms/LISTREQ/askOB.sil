@@ -1,0 +1,2 @@
+include "LISTREQ/strings.sil";
+customfield_10002 = arrayUnion(customfield_10002, OB_approvers_list);

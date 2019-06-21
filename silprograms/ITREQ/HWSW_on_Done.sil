@@ -1,0 +1,175 @@
+////После цикла жизни заявки, создаются инциденты в проект IT для дальнейших действий
+runAs("remoteuser");
+string issueReporter;
+if (isNotNull(customfield_13004)){
+    issueReporter=getUser(customfield_13004).username;
+} else issueReporter=getUser(reporter).username;
+string futureDescrHW="";
+string futureDescrSW="";
+string futureDescrRA="";
+string issuekeys="";
+string reason=substring(description, matchEnd(description, "Reason")+2, -1);
+reason=substring(reason, 0, indexOf(reason, "\n")-2);
+string allComments="";
+
+string [] requestComments = getAllCommentIds(key);
+if (size(requestComments)>0){
+    allComments="*Комментарии из заявки "+key+":*";
+    for(string x in requestComments) {
+        string [] cmt = getCommentById(x);
+        if (cmt["author"]!="remoteuser"){
+            allComments+="\r\n"+cmt["author"]+": "+cmt["text"];
+        }
+    }
+    allComments+="\r\n";
+}
+//Смотрим выбранное железо
+if (isNotNull(customfield_12800)){
+    futureDescrHW+="Необходимо установить утвержденное по заявке оборудование:\r\n";
+    for (string hw in customfield_12800){
+        futureDescrHW+="* "+hw+"\r\n";
+    }
+}
+if (contains(description,"Other Hardware")){
+    number startPos=matchEnd(description, "Other Hardware");
+    string subdescr=substring(description,startPos,-1);
+    number endPos=indexOf(subdescr, "\n");
+    if (isNull(futureDescrHW)){
+        futureDescrHW="Необходимо установить утвержденное по заявке оборудование:\r\n";
+    }
+    futureDescrHW+="* "+substring(subdescr, 2, endPos-2)+"\r\n";
+}
+if (isNotNull(futureDescrHW)){//Создаём на локал айти инц по HW
+futureDescrHW+="\r\n*Причина заявки:* "+reason/*+allComments*/+"\r\nПодробная информация в оригинальной заявке, см. связанные задачи";
+string [] custom_fields_mapping_region="reporter|"+issueReporter+"|Metro Service|Workplaces > Desktop, Laptop > Hardware|Metro Team|Local IT Support|Issue Location";
+string newIssue = createIssue(
+    "IT",
+    "", 
+    "Инцидент",
+    "Установить оборудование по заявке "+key, 
+    "4", 
+    futureDescrHW,
+    "","","","",custom_fields_mapping_region+customfield_10702);
+linkIssue(newIssue, key, "Relates");  
+%newIssue%.reporter=issueReporter;
+%newIssue%.components="Hardware other";
+%newIssue%.security="ISD only";
+if (isNotNull(allComments)){
+    string[] args = {newIssue, key};
+    interval varInterval = "10s";
+    runJobIn("ITREQ/HWSW_add_comment_to_IT.sil", args, varInterval);
+    //addJSDComment(newIssue, "remoteuser", allComments, false);
+}
+//runnerLog(newIssue);
+issuekeys+=newIssue;
+}
+//Смотрим выбранный софт
+if (isNotNull(customfield_12801)){
+    futureDescrSW+="Необходимо установить утвержденное по заявке ПО:\r\n";
+    for (string sw in customfield_12801){
+        futureDescrSW+="* "+sw+"\r\n";
+    }
+}
+if (contains(description,"Other Software")){
+    number startPos=matchEnd(description, "Other Software");
+    string subdescr=substring(description,startPos,-1);
+    number endPos=indexOf(subdescr, "\n");
+    if (isNull(futureDescrSW)){
+        futureDescrSW="Необходимо установить утвержденное по заявке ПО:\r\n";
+    }
+    futureDescrSW+="* "+substring(subdescr, 2, endPos-2)+"\r\n";
+}
+if (isNotNull(customfield_12802)){
+    futureDescrSW+="Необходимо установить утвержденное по заявке бесплатное ПО:\r\n";
+    for (string sw in customfield_12802){
+        futureDescrSW+="* "+sw+"\r\n";
+    }
+}
+if (contains(description,"Other Free Software")){
+    number startPos=matchEnd(description, "Other Free Software");
+    string subdescr=substring(description,startPos,-1);
+    number endPos=indexOf(subdescr, "\n");
+    if (isNull(futureDescrSW)){
+        futureDescrSW="Необходимо установить утвержденное по заявке бесплатное ПО:\r\n";
+    }
+    futureDescrSW+="* "+substring(subdescr, 2, endPos-2)+"\r\n";
+}
+if (isNotNull(futureDescrSW)){//Создаём на локал айти инц по HW
+futureDescrSW+="\r\n*Причина заявки:* "+reason/*+allComments*/+"\r\nПодробная информация в оригинальной заявке, см. связанные задачи";
+string [] custom_fields_mapping_region="reporter|"+issueReporter+"|Metro Service|Workplaces > Desktop, Laptop > Standard Software|Metro Team|Local IT Support|Issue Location";
+string newIssue = createIssue(
+    "IT",
+    "", 
+    "Инцидент",
+    "Установить ПО по заявке "+key, 
+    "4", 
+    futureDescrSW,
+    "","","","",custom_fields_mapping_region+customfield_10702);
+linkIssue(newIssue, key, "Relates");   
+%newIssue%.reporter=issueReporter;
+%newIssue%.components="Software other";
+%newIssue%.security="ISD only";
+if (isNotNull(allComments)){
+    string[] args = {newIssue, key};
+    interval varInterval = "10s";
+    runJobIn("ITREQ/HWSW_add_comment_to_IT.sil", args, varInterval);
+    //addJSDComment(newIssue, "remoteuser", allComments, false);
+}
+//runnerLog(newIssue);
+if (isNotNull(issuekeys)){
+    issuekeys+=", "+newIssue;
+} else {
+    issuekeys+=newIssue;
+}
+}
+
+
+if (isNotNull(customfield_12803)){
+    futureDescrRA+="Был запрошен удаленный доступ:\r\n";
+    for (string ra in customfield_12803){
+        futureDescrRA+="* "+ra+"\r\n";
+    }
+}
+if (isNotNull(futureDescrRA)){//Создаём на локал айти инц по HW
+    string team;
+    if (customfield_10702=="ЦО" or customfield_10702=="1198 Ногинск (платформа MGL)" or !arrayElementExists(customfield_12803, "Mail Access on Android device")){
+        team="Local IT Support";
+    } else {
+        team="Authorization";
+    }
+    futureDescrRA+="\r\n*Причина заявки:* "+reason/*+allComments*/+"\r\nПодробная информация в оригинальной заявке, см. связанные задачи";
+    string [] custom_fields_mapping_region="reporter|"+issueReporter+"|Metro Service|Mobile Devices > Mobile Phone, Tablet|Metro Team|"+team+"|Issue Location";
+    string newIssue = createIssue(
+        "IT",
+        "", 
+        "Инцидент",
+        "Настроить удаленный доступ по заявке "+key, 
+        "4", 
+        futureDescrRA,
+        "","","","",custom_fields_mapping_region+customfield_10702);
+    linkIssue(newIssue, key, "Relates");  
+    %newIssue%.reporter=issueReporter;
+    %newIssue%.components="User Rights (Access)";
+    %newIssue%.security="ISD only";
+    
+    if(contains(%newIssue%.description,"Android")||contains(%newIssue%.description,"Phone")||contains(%newIssue%.description,"Apple")){
+       %newIssue%.components = {"User Rights (Access)","Mobile Phone"};
+    }
+    if(contains(%newIssue%.description,"iPad")){
+       %newIssue%.components = {"User Rights (Access)","Ipad"};
+    }
+    
+    if (isNotNull(allComments)){
+        string[] args = {newIssue, key};
+        interval varInterval = "10s";
+        runJobIn("ITREQ/HWSW_add_comment_to_IT.sil", args, varInterval);
+        //addJSDComment(newIssue, "remoteuser", allComments, false);
+    }
+    if (isNotNull(issuekeys)){
+        issuekeys+=", "+newIssue;
+    } else {
+        issuekeys+=newIssue;
+    }
+    //runnerLog(newIssue);
+}
+addJSDComment(key, "remoteuser", "Ваша заявка одобрена. Доступ/оборудование/ПО будут предоставлены в рамках решения инцидента/ов: "+issuekeys, true);

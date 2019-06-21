@@ -1,0 +1,18 @@
+//вычисляет  руководителя сотрудника by Evgeniy Russkikh
+string issueReporter=getUser(reporter).username;
+string mgr=ldapUserAttr("manager", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+string mgrUserName;
+if (isNotNull(mgr)){
+    mgrUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+mgr+")","r4 domain LDAP");
+    customfield_10100=mgrUserName;
+} else {
+    mgr=ldapUserAttr("manager", "(sAMAccountName=" +issueReporter+ ")","mgl domain LDAP");
+    mgrUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+mgr+")","mgl domain LDAP");
+    if (isNotNull(mgrUserName)){
+    customfield_10100=mgrUserName;
+} else {
+addJSDComment(key, "remoteuser", "Автор заявки не имеет руководителя в SAP", true);
+sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "("+key+") не найден руководитель ","в АД не нашёлся руководитель");
+//autotransition("Rejected", key, true,true,true);
+}
+}

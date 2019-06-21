@@ -1,0 +1,29 @@
+string[] OB_approvers_list={
+    "a.kulinchenko",
+    "elmira.sitdikova",
+    "olga.dyakova",
+    "ulyana.trofimova",
+    "vera.mamsik"
+};
+string[] QA_approvers_list = {
+    "admin-ag",
+    "alena.spiridonova",
+    "ekaterina.lomakina",
+    "ekaterina.moskvina",
+    "ilya.uymanov",
+    "kristina.florya",
+    "mariya.zhukova01",
+    "oksana.makarova",
+    "olesya.pronina",
+    "olga.sheina",
+    "Sveta.Sokolovskaya",
+    "Yuliya.Lyustochkina"
+};
+string[] IM_user_list = {
+    "Natalya.Bobyakova",
+    "nikolay.chernyshkov",
+    "anna.glazkova",
+    "evgeniy.peregud",
+    "irina.shoshina",
+    "egor.sorokin"
+};

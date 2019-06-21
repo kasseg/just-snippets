@@ -1,0 +1,4 @@
+//пишем письмо коллегам из инфраструктуры, при передаче реквеста на их команду
+string mailTitle=key + " назначена на команду Infr. Servers & Workplace";
+string mailBody="Заявка http://jira.r4.madm.net/browse/"+key+" перешла в статус на выполнение командой Infr. Servers & Workplace";
+sendEmail("it-support@metro-cc.ru", {"aleksey.akhmetov@metro-cc.ru", "mikhail.krivykh@metro-cc.ru", "andrey.malushin@metro-cc.ru", "Nikolay.Vinokurov@metro-cc.ru"}, {}, mailTitle, mailBody);

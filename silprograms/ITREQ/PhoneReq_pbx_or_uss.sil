@@ -1,0 +1,24 @@
+//В зависимости от значений заявки, отправляет либо на PBX, либо на USS
+number startPos=matchEnd(description, "Тип заявки:");
+string subdescr=substring(description,startPos,-1);
+number endPos=indexOf(subdescr, "\n");
+string typeReq=substring(subdescr, 2, endPos-1);
+if (typeReq=="Создание нового номера телефона" || typeReq=="Замена сломанного телефонного аппарата") { //ИСПРАВИТЬ УСЛОВИЕ!!
+    autotransition("Phone USS", key, true,true,true);
+} else {
+    //все хорошо, идёт на PBX :)
+}
+
+/* Цепочка согласований
+New phone
+Пользователь – менеджер – ССП ЦО – Телеком – ССП ЦО – пользователь
+
+Change Name
+Пользователь – менеджер – Телеком – пользователь
+
+access level
+Пользователь – менеджер – Телеком – пользователь
+
+Replace brocken phone
+Пользователь – менеджер – ССП ЦО – Телеком – ССП ЦО – пользователь
+*/

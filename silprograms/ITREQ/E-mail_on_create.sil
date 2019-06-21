@@ -1,0 +1,20 @@
+description=replace(description, "\r\n\r\n", "\r\n");
+string issueReporter=getUser(reporter).username;
+string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+string job;
+string department=ldapUserAttr("department", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+storeNum=substring(storeNum, length(storeNum)-4, -1);
+if (isNull(storeNum)){
+    string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+    if (contains(toLower(userPath),"st1491-sip")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+        storeNum="1491";
+        job=ldapUserAttr("description", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+    } else if (contains(toLower(userPath),"st1492-svt")){//проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+        storeNum="1492";
+        job=ldapUserAttr("description", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+    }
+} else {
+    job=ldapUserAttr("metroJobTitle", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+}
+description="|*Username*|"+issueReporter+"|\r\n|*Location*|"+storeNum+"|\r\n|*Department*|"+department+"|\r\n|*Position*|"+job+"|\r\n"+description;
+autotransition("DM APPROVE", key, true,true,true);

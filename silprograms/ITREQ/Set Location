@@ -1,0 +1,203 @@
+string issueReporter=getUser(reporter).username;
+string storeNumber = ldapUserRecord("metroStoreNumber", "(sAMAccountName=" + issueReporter+ ")");
+storeNumber=substring(storeNumber, length(storeNumber)-4,length(storeNumber));
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+if (contains(toLower(userPath),"st1491-sip")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+    storeNumber="1491";
+} else if (contains(toLower(userPath),"st1492-svt")){//проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+    storeNumber="1492";
+}
+
+if (storeNumber=="1090"){
+    customfield_10702="ЦО";
+}else if (storeNumber=="1990"){
+    customfield_10702="";
+}else if (storeNumber=="1010"){
+    customfield_10702="1010 Москва";
+}else if (storeNumber=="1011"){
+    customfield_10702="1011 Москва	";
+}else if (storeNumber=="1012"){
+    customfield_10702="1012 Москва";
+}else if (storeNumber=="1013"){
+    customfield_10702="1013 Москва";
+}else if (storeNumber=="1014"){
+    customfield_10702="1014 Москва";
+}else if (storeNumber=="1015"){
+    customfield_10702="1015 Санкт-Петербург";
+}else if (storeNumber=="1016"){
+    customfield_10702="1016 Санкт-Петербург";
+}else if (storeNumber=="1017"){
+    customfield_10702="1017 Москва";
+}else if (storeNumber=="1018"){
+    customfield_10702="1018 Москва";
+}else if (storeNumber=="1019"){
+    customfield_10702="1019 Москва";
+}else if (storeNumber=="1020"){
+    customfield_10702="1020 Санкт-Петербург";
+}else if (storeNumber=="1021"){
+    customfield_10702="1021 Нижний Новгород";
+}else if (storeNumber=="1022"){
+    customfield_10702="1022 Ярославль";
+}else if (storeNumber=="1023"){
+    customfield_10702="1023 Казань";
+}else if (storeNumber=="1024"){
+    customfield_10702="1024 Ростов-на-Дону";
+}else if (storeNumber=="1025"){
+    customfield_10702="1025 Воронеж";
+}else if (storeNumber=="1026"){
+    customfield_10702="1026 Краснодар";
+}else if (storeNumber=="1027"){
+    customfield_10702="1027 Уфа";
+}else if (storeNumber=="1028"){
+    customfield_10702="1028 Волгоград";
+}else if (storeNumber=="1029"){
+    customfield_10702="1029 Екатеринбург";
+}else if (storeNumber=="1030"){
+    customfield_10702="1030 Екатеринбург";
+}else if (storeNumber=="1031"){
+    customfield_10702="1031 Челябинск";
+}else if (storeNumber=="1032"){
+    customfield_10702="1032 Самара";
+}else if (storeNumber=="1033"){
+    customfield_10702="1033 Тюмень";
+}else if (storeNumber=="1034"){
+    customfield_10702="1034 Тольятти";
+}else if (storeNumber=="1035"){
+    customfield_10702="1035 Пермь";
+}else if (storeNumber=="1036"){
+    customfield_10702="	1036 Рязань";
+}else if (storeNumber=="1037"){
+    customfield_10702="1037 Тула";
+}else if (storeNumber=="1038"){
+    customfield_10702="1038 Саратов";
+}else if (storeNumber=="1039"){
+    customfield_10702="1039 Липецк";
+}else if (storeNumber=="1040"){
+    customfield_10702="1040 Киров";
+}else if (storeNumber=="1041"){
+    customfield_10702="1041 Ульяновск";
+}else if (storeNumber=="1042"){
+    customfield_10702="1042 Ставрополь";
+}else if (storeNumber=="1043"){
+    customfield_10702="1043 Набережные Челны";
+}else if (storeNumber=="1044"){
+    customfield_10702="1044 Новосибирск";
+}else if (storeNumber=="1045"){
+    customfield_10702="1045 Омск";
+}else if (storeNumber=="1046"){
+    customfield_10702="1046 Красноярск";
+}else if (storeNumber=="1047"){
+    customfield_10702="1047 Оренбург";
+}else if (storeNumber=="1048"){
+    customfield_10702="1048 МО пос. Томилино";
+}else if (storeNumber=="1049"){
+    customfield_10702="1049 Москва";
+}else if (storeNumber=="1050"){
+    customfield_10702="1050 Нижний Новгород";
+}else if (storeNumber=="1051"){
+    customfield_10702="1051 Курск";
+}else if (storeNumber=="1052"){
+    customfield_10702="1052 Пенза";
+}else if (storeNumber=="1053"){
+    customfield_10702="1053 Ростов-на-Дону";
+}else if (storeNumber=="1054"){
+    customfield_10702="1054 Новокузнецк";
+}else if (storeNumber=="1055"){
+    customfield_10702="1055 Калуга";
+}else if (storeNumber=="1056"){
+    customfield_10702="1056 Брянск";
+}else if (storeNumber=="1057"){
+    customfield_10702="1057 Барнаул";
+}else if (storeNumber=="1058"){
+    customfield_10702="1058 Астрахань";
+}else if (storeNumber=="1059"){
+    customfield_10702="1059 Иваново";
+}else if (storeNumber=="1060"){
+    customfield_10702="1060 Новосибирск";
+}else if (storeNumber=="1061"){
+    customfield_10702="1061 МО д.Черная Грязь";
+}else if (storeNumber=="1062"){
+    customfield_10702="1062 Сочи (офис)";
+}else if (storeNumber=="1063"){
+    customfield_10702="1063 Тверь";
+}else if (storeNumber=="1064"){
+    customfield_10702="1064 Самара";
+}else if (storeNumber=="1065"){
+    customfield_10702="1065 Екатеринбург";
+}else if (storeNumber=="1066"){
+    customfield_10702="1066 Томск";
+}else if (storeNumber=="1067"){
+    customfield_10702="1067 МО г.Балашиха";
+}else if (storeNumber=="1068"){
+    customfield_10702="1068 Калининград";
+}else if (storeNumber=="1069"){
+    customfield_10702="1069 Смоленск";
+}else if (storeNumber=="1070"){
+    customfield_10702="1070 Чебоксары";
+}else if (storeNumber=="1071"){
+    customfield_10702="1071 Ижевск";
+}else if (storeNumber=="1072"){
+    customfield_10702="1072 Краснодар";
+}else if (storeNumber=="1073"){
+    customfield_10702="1073 МО г.Подольск";
+}else if (storeNumber=="1074"){
+    customfield_10702="1074 Казань";
+}else if (storeNumber=="1076"){
+    customfield_10702="1076 Кемерово";
+}else if (storeNumber=="1078"){
+    customfield_10702="1078 Магнитогорск";
+}else if (storeNumber=="1082"){
+    customfield_10702="1082 Ростов-на-Дону";
+}else if (storeNumber=="1083"){
+    customfield_10702="1083 Иркутск";
+}else if (storeNumber=="1086"){
+    customfield_10702="1086 Пятигорск";
+}else if (storeNumber=="1088"){
+    customfield_10702="1088 Стерлитамак";
+}else if (storeNumber=="1094"){
+    customfield_10702="1094 Новороссийск";
+}else if (storeNumber=="1095"){
+    customfield_10702="1095 Красноярск";
+}else if (storeNumber=="1202"){
+    customfield_10702="1202 Вологда";
+}else if (storeNumber=="1303"){
+    customfield_10702="1303 Нижний Тагил";
+}else if (storeNumber=="1304"){
+    customfield_10702="1304 Омск";
+}else if (storeNumber=="1306"){
+    customfield_10702="1306 Сургут";
+}else if (storeNumber=="1307"){
+    customfield_10702="1307 МО г.Ногинск";
+}else if (storeNumber=="1308"){
+    customfield_10702="1308 Москва";
+}else if (storeNumber=="1309"){
+    customfield_10702="1309 Волжский";
+}else if (storeNumber=="1310"){
+    customfield_10702="1310 Воронеж";
+}else if (storeNumber=="1311"){
+    customfield_10702="1311 Новосибирск";
+}else if (storeNumber=="1317"){
+    customfield_10702="1317 Серпухов";
+}else if (storeNumber=="1318"){
+    customfield_10702="1318 Лобня";
+}else if (storeNumber=="1320"){
+    customfield_10702="1320 Владимир";
+}else if (storeNumber=="1336"){
+    customfield_10702="1336 Орёл";
+}else if (storeNumber=="1337"){
+    customfield_10702="1337 Белгород";
+}else if (storeNumber=="1340"){
+    customfield_10702="1340 Владикавказ";
+}else if (storeNumber=="1342"){
+    customfield_10702="1342 Краснодар";
+}else if (storeNumber=="1356"){
+    customfield_10702="1356 Москва";
+}else if (storeNumber=="1357"){
+    customfield_10702="1357 Архангельск";
+}else if (storeNumber=="1444"){
+    customfield_10702="1444 МО г.Котельники";
+}else if (storeNumber=="1491"){
+    customfield_10702="1491 Симферополь";
+}else if (storeNumber=="1492"){
+    customfield_10702="1492 Севастополь";
+}

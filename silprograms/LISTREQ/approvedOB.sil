@@ -1,0 +1,2 @@
+labels = arrayUnion(labels, {"OB_Approved"});
+customfield_10100 = "";

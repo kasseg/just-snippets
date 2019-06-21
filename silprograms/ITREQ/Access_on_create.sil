@@ -1,0 +1,78 @@
+description=replace(description, "\r\n\r\n", "\r\n");
+customfield_10002+="Natalya.Iskandarova";//Аудитор
+string forWho;
+string issueReporter=getUser(reporter).username;
+if (isNotNull(customfield_13004)){
+    forWho=getUser(customfield_13004).username;
+    customfield_10002+=forWho;
+    watchers+=forWho;
+} else forWho=issueReporter;
+
+string userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + forWho + ")","r4 domain LDAP");
+if (isNull(userCompany)){
+    userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + forWho + ")","mgl domain LDAP");
+}
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+forWho+")","r4 domain LDAP");
+if (contains(toLower(userPath),"st1491-sip") or contains(toLower(userPath),"st1492-svt")){
+    userCompany="3466";
+}
+
+string job;
+string department=ldapUserAttr("department", "(sAMAccountName="+forWho+")","r4 domain LDAP");
+string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +forWho+ ")","r4 domain LDAP");
+storeNum=substring(storeNum, length(storeNum)-4, -1);
+if (isNull(storeNum)){
+    string userPath=ldapUserAttr("DN", "(sAMAccountName="+forWho+")","r4 domain LDAP");
+    if (contains(toLower(userPath),"st1491-sip")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+        storeNum="1491";
+        job=ldapUserAttr("description", "(sAMAccountName=" + forWho + ")","r4 domain LDAP");
+    } else if (contains(toLower(userPath),"st1492-svt")){//проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+        storeNum="1492";
+        job=ldapUserAttr("description", "(sAMAccountName=" + forWho + ")","r4 domain LDAP");
+    }
+} else {
+    job=ldapUserAttr("metroJobTitle", "(sAMAccountName=" + forWho + ")","r4 domain LDAP");
+}
+
+if (isNotNull(userCompany)){
+        if (userCompany!="3113") //если пользователь из  MCC, утверждение на его руководителя и соотв транзакция.
+        {
+            summary=summary+" ("+customfield_12602+")";
+            //string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +forWho+ ")","r4 domain LDAP");
+            //storeNum=substring(storeNum, length(storeNum)-4, -1);
+            if (storeNum=="1090"){
+                storeNum="ЦО";
+            } else if (storeNum=="1990"){
+                storeNum="Региональный сотрудник ЦО";
+            } else if (isNull(storeNum)){
+                if (contains(toLower(userPath),"st1491-sip")){
+                    storeNum="1491";
+                } else if (contains(toLower(userPath),"st1492-svt")){
+                    storeNum="1492";
+                } else {
+                    storeNum="?";
+                }
+            }
+            description="|*Username*|"+forWho+"|\r\n|*Location*|"+storeNum+"|\r\n|*Department*|"+department+"|\r\n|*Position*|"+job+"|"+description;
+            if (customfield_12602=="MMS BS"){
+                autotransition("MMS BS Owner", key, true,true,true);
+                //customfield_10100="YURIY.BAKULIN";
+                customfield_10100="victor.gribanovskiy";
+            }  else if(customfield_12602=="Listing (MDLS Request)"){//IT-190565
+                autotransition("MMS BS Owner", key, true,true,true);
+                customfield_10100={"Anna.Snopko","a.molokanova","Larisa.Kalinina"};
+            } else {
+            autotransition("DM APPROVE", key, true,true,true);
+            }
+            
+        } else if (userCompany=="3113"){ //если пользователь из MGL - утверждение на Ларину и соотв транзакция.
+            summary=summary+" ("+customfield_12602+")";
+            description="|*Username*|"+forWho+"|\r\n|*Location*|MGL|\r\n|*Department*|"+ldapUserAttr("department", "(sAMAccountName=" + forWho + ")","mgl domain LDAP")+"|\r\n|*Position*|"+ldapUserAttr("metroJobTitle", "(sAMAccountName=" + forWho + ")","mgl domain LDAP")+"|"+description;
+            autotransition("MGL MDLS Approve", key, true,true,true); 
+            customfield_10100="T.Larina";
+        }
+} else { //если пользователя нет ни в MCC, ни в MGL - заявка отклоняется
+            autotransition("Rejected", key, true,true,true);
+            //addJSDComment(key, "remoteuser", "Автора заявки нет в каталоге LDAP, заявка отклоняется", true);
+        }
+        

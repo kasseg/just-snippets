@@ -1,0 +1,53 @@
+//В зависимости от расположения пользователя, выставляется Яков Рстакян, Алексей Окулов либо Анастасия Мартынова
+string issueReporter=getUser(reporter).username;
+if (isNotNull(customfield_13004)){
+    issueReporter=getUser(customfield_13004).username;
+}
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+if (isNotNull(userPath)){
+    if (contains(toLower(userPath),"hq01-mow")){
+        //HO
+        customfield_10100={"Yakov.Rstakyan","a.gerasimenko"};
+    } else{
+        //store
+        customfield_10100="Anastasia.Martynova";
+    }
+} else {
+    userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","mgl domain LDAP");
+    if (isNotNull(userPath)){
+        //MGL
+        customfield_10100="marcin.mucha";
+    } else {
+        addJSDComment(key, "remoteuser", "error", true);
+    }
+}
+
+/*string userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+if (isNull(userCompany)){
+    userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","mgl domain LDAP");
+}
+string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+storeNum=substring(storeNum, length(storeNum)-4, -1);
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+if (contains(toLower(userPath),"st1491-sip")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+    userCompany="3466";
+    storeNum="1491";
+}  else if (contains(toLower(userPath),"st1492-svt")){
+    userCompany="3466";
+    storeNum="1492";
+} else if (contains(toLower(userPath),"hq01-mow")){
+    storeNum="1090";
+}
+if (userCompany!="3113") {
+    if (storeNum=="1090" or storeNum=="1990" or storeNum==""){
+        customfield_10100={"Yakov.Rstakyan","a.gerasimenko"};
+    } else if (userInGroup("MCC RU - EDP System Support", issueReporter)){
+        customfield_10100="aleksey.okulov";
+    } else {
+        customfield_10100="Anastasia.Martynova";
+    }
+
+} else if (userCompany=="3113") {
+    customfield_10100="marcin.mucha";
+}*/
+

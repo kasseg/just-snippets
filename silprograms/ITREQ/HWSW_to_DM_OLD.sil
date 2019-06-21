@@ -1,0 +1,76 @@
+//вычисляет стора ТЦ либо руководителя сотрудника, в зависимости от автора by Evgeniy Russkikh
+include "General_excludeListOfApprovers";//подключение списка исключений
+string issueReporter=getUser(reporter).username;
+string [] approvers;
+string mgr;
+string mgrUserName;
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+if (isNotNull(userPath)){
+    if (contains(toLower(userPath),"hq01-mow")){
+        //ЦО
+        mgr=ldapUserAttr("manager", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+        if (isNotNull(mgr)){
+                mgrUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+mgr+")","r4 domain LDAP");
+            } 
+            if (isNotNull(mgrUserName)){
+                customfield_10100=mgrUserName;
+            } else {
+                addJSDComment(key, "remoteuser", "Автор заявки не имеет руководителя в SAP", true);
+                sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "("+key+") не найден руководитель ","в АД не нашёлся руководитель");
+                }
+    } else {
+        //ТЦ
+        if (userInGroup("MCC RU - Information Services",issueReporter)){ //для IS - прямой руководитель
+            mgr=ldapUserAttr("manager", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+        if (isNotNull(mgr)){
+                mgrUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+mgr+")","r4 domain LDAP");
+            } 
+            if (isNotNull(mgrUserName)){
+                customfield_10100=mgrUserName;
+            } else {
+                addJSDComment(key, "remoteuser", "Автор заявки не имеет руководителя в SAP", true);
+                sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "("+key+") не найден руководитель ","в АД не нашёлся руководитель");
+                }
+        } else if (userInGroup("MCC RU MOW - Store Managers",issueReporter)){
+            autotransition("MSYS APPROVE", key, true,true,true); // Если заявка от стора, то сразу на MSYS
+        } else { // сотрудники ТЦ, где аппрувер будет стор
+            string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+            if (contains(toLower(userPath),"st1491-sip")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+                approvers=ldapUserList({"sAMAccountName"},"(&(!(userAccountControl:1.2.840.113556.1.4.803:=2))(description=*Store Manager*)(memberOf=CN=MCC RU ST1491 - Everybody,OU=ST1491-SIP,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+                storeNum="RU.3466.00001491";
+            } else if (contains(toLower(userPath),"st1492-svt")){//проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+                approvers=ldapUserList({"sAMAccountName"},"(&(!(userAccountControl:1.2.840.113556.1.4.803:=2))(description=*Store Manager*)(memberOf=CN=MCC RU ST1492 - Everybody,OU=ST1492-SVT,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+                storeNum="RU.3466.00001492";
+            } else {
+                approvers=ldapUserList({"sAMAccountName"}, "(&(!(userAccountControl:1.2.840.113556.1.4.803:=2))(metroStoreNumber="+storeNum+")(!(description=*Assistant*))(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+            }
+            if(isNull(approvers) && isNotNull(storeNum)){
+                storeNum=substring(storeNum, length(storeNum)-4, -1);
+                approvers=s%storeNum%.storeManager;
+            }
+            customfield_10100=approvers;
+        }
+    }
+} else {
+    userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","mgl domain LDAP");
+    if (isNotNull(userPath)){
+        //MGL
+        string department = ldapUserAttr("department", "(sAMAccountName=" +issueReporter+ ")","mgl domain LDAP");
+        if (contains(toLower(department),"transport")){
+                mgr=ldapUserAttr("manager", "(sAMAccountName=" +issueReporter+ ")","mgl domain LDAP");
+                mgrUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+mgr+")","mgl domain LDAP");
+                if (isNotNull(mgrUserName)){
+                            customfield_10100=mgrUserName;
+                        } else {
+                            //addJSDComment(key, "remoteuser", "Автор заявки не имеет руководителя в SAP", true);
+                            sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "("+key+") не найден руководитель ","в АД не нашёлся руководитель");
+                            //autotransition("Rejected", key, true,true,true);
+                            }
+            } else {
+                customfield_10100="t.larina";
+            }
+    } else {
+        addJSDComment(key, "remoteuser", "ldap error", true);
+        sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "("+key+") LDAP error","в АД не нашёлся аккаунт");
+    }
+}

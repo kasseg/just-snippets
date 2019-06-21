@@ -1,0 +1,14 @@
+//пишем коммент с небольшой задержкой
+string allComments="";
+string [] requestComments = getAllCommentIds(argv[1]);
+if (size(requestComments)>0){
+    allComments="*Комментарии из заявки "+argv[1]+":*";
+    for(string x in requestComments) {
+        string [] cmt = getCommentById(x);
+        if (cmt["author"]!="remoteuser"){
+            allComments+="\r\n"+cmt["author"]+": "+cmt["text"];
+        }
+    }
+    allComments+="\r\n";
+}
+addJSDComment(argv[0], "remoteuser", allComments, false);

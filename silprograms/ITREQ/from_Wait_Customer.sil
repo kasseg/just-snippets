@@ -1,0 +1,4 @@
+//Обработка ответа от автора на запрос информации и возврат в статус MSYS/Authorization by Evgeniy Russkikh
+JFieldChange[] changes  = getFieldChanges(key, "status");
+string fromStatus = changes[size(changes)-1].oldVal; // узнаём из какого статуса пришла заявка
+autotransition(fromStatus, key, true,true,true);//возвращает в статус, который был до запроса информации

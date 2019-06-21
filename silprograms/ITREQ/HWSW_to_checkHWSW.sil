@@ -1,0 +1,58 @@
+//На проверку наличия оборудования/софта координаторами by Evgeniy Russkikh
+include "main/stores.sil";//подключение структуры регионов
+string issueReporter=getUser(reporter).username;
+if (isNotNull(customfield_13004)){
+    issueReporter=getUser(customfield_13004).username;
+}
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+string OU=ldapUserAttr("OU", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+if (isNotNull(OU)){
+    string location_ou = OU[0];
+    
+}
+
+
+
+
+
+
+if (isNotNull(userPath)){
+    if (contains(toLower(userPath),"hq01-mow")){
+        //HO
+        customfield_10100={"Yakov.Rstakyan","a.gerasimenko"};
+    } else if (contains(toLower(userPath),"mcoe") || contains(toLower(userPath),"hq02-smr")) {
+        customfield_10100="Sergey.Volkov";
+    } else{
+        //store
+        string storeNumber=substring(userPath, indexOf(userPath, "OU="), -1);
+        string region_index;
+        storeNumber=substring(storeNumber, indexOf(storeNumber, "=")+1, indexOf(storeNumber, ","));
+        for(Store current_store in all_stores){
+            if (current_store.inAD==storeNumber){
+                region_index=current_store.region;
+                break;
+            }
+        }
+        string needCoordinator;
+        for(Region current_region in all_regions){
+            if (current_region.index==region_index){
+                needCoordinator=current_region.coordinator;
+                break;
+            }
+        }
+        if (isNotNull(needCoordinator)) {
+            customfield_10100=needCoordinator;
+        } else {
+            sendEmail("it-support@metro-cc.ru", "anatoliy.gundarov@metro-cc.ru", {}, "("+key+") check hwsw error","не нашло координатора");
+        }
+    }
+} else {
+    userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","mgl domain LDAP");
+    if (isNotNull(userPath)){
+        //MGL?
+        customfield_10100={"Yakov.Rstakyan","a.gerasimenko"};
+    } else {
+        addJSDComment(key, "remoteuser", "ldap error", true);
+        sendEmail("it-support@metro-cc.ru", "anatoliy.gundarov@metro-cc.ru", {}, "("+key+") check hwsw error","глянь плз");
+    }
+}

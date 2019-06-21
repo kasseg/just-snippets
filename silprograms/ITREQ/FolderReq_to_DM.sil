@@ -1,0 +1,43 @@
+//На руководителя или стора by Evgeniy Russkikh
+include "General_excludeListOfApprovers";//подключение списка исключений
+string issueReporter=getUser(reporter).username;
+string mgr;
+string mgrUserName;
+string storeNum;
+string [] approvers;
+if (userInGroup("MCC RU MOW - Store Managers",issueReporter)){
+    autotransition("MSYS APPROVE", key, true,true,true); // Если заявка от стора, то сразу на MSYS
+} else {//не стор
+storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+if (storeNum=="RU.3466.00001090" || storeNum=="RU.3466.00001991" || storeNum=="RU.3466.00001990" || userInGroup("MCC RU - Information Services",issueReporter)){ // ЦО или IS, где аппрувер - линейный менеджер
+    mgr=ldapUserAttr("manager", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+    mgrUserName;
+    if (isNotNull(mgr)){
+        mgrUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+mgr+")","r4 domain LDAP");
+        customfield_10100=mgrUserName;
+    } 
+    if (isNotNull(mgrUserName)){
+        customfield_10100=mgrUserName;
+    } else {
+        addJSDComment(key, "remoteuser", "Автор заявки не имеет руководителя в SAP", false);
+        sendEmail("it-support@metro-cc.ru", "anatoliy.gundarov@metro-cc.ru", {}, "("+key+") не найден руководитель ","в АД не нашёлся руководитель");
+        //autotransition("Rejected", key, true,true,true);
+        }
+} else { // сотрудники ТЦ, где аппрувер будет стор
+    string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+    if (contains(toLower(userPath),"st1491-sip")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+        approvers=ldapUserList({"sAMAccountName"},"(&(!(userAccountControl:1.2.840.113556.1.4.803:=2))(!(description=*Assistant*))(!(description=*Deputy*))(description=*Store Manager*)(memberOf=CN=MCC RU ST1491 - Everybody,OU=ST1491-SIP,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+        storeNum="RU.3466.00001491";
+    } else if (contains(toLower(userPath),"st1492-svt")){//проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+        approvers=ldapUserList({"sAMAccountName"},"(&(!(userAccountControl:1.2.840.113556.1.4.803:=2))(!(description=*Assistant*))(!(description=*Deputy*))(description=*Store Manager*)(memberOf=CN=MCC RU ST1492 - Everybody,OU=ST1492-SVT,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+        storeNum="RU.3466.00001492";
+    } else {
+        approvers=ldapUserList({"sAMAccountName"},"(&(!(userAccountControl:1.2.840.113556.1.4.803:=2))(metroStoreNumber="+storeNum+")(!(description=*Assistant*))(!(description=*Deputy*))(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+    }
+    if(isNull(approvers) && isNotNull(storeNum)){
+        storeNum=substring(storeNum, length(storeNum)-4, -1);
+        approvers=s%storeNum%.storeManager;
+    }
+    customfield_10100=approvers;
+ }
+}

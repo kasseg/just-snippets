@@ -1,0 +1,5 @@
+//вычисляет менеджера сотрудника и устанавливает его в поле Одобрения
+string issueReporter=getUser(reporter).username;
+string mgr=ldapUserAttr("manager", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+string mgrUserName=ldapUserAttr("sAMAccountName","(distinguishedName="+mgr+")","r4 domain LDAP");
+customfield_10100=mgrUserName;

@@ -1,0 +1,39 @@
+//В зависимости от расположения пользователя, выставляется нужный РК
+include "it/regions";
+string result="";
+if (customfield_10702=="ЦО" or customfield_10702=="1198 Ногинск (платформа MGL)"){
+    customfield_10100={"Yakov.Rstakyan","a.gerasimenko"};
+} else {
+    Region[] all_regions = {East,West,Center,South,Siberia,Mow};
+    for(Region current_region in all_regions){
+        for(string store in current_region.stores){
+            if(store==customfield_10702){
+                customfield_10702=store;
+                result=current_region.coordinator;
+            }
+        }
+    }
+    customfield_10100=result;
+}
+
+
+/* Перейти к проверке пути в АД
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+%k%.reporter+")","r4 domain LDAP");
+if (isNotNull(userPath)){
+    if (contains(toLower(userPath),"hq01-mow")){
+        //HO
+        sowhere="ЦО";
+    } else{
+        //store
+        sowhere="ТЦ";
+    }
+} else {
+    userPath=ldapUserAttr("DN", "(sAMAccountName="+%k%.reporter+")","mgl domain LDAP");
+    if (isNotNull(userPath)){
+        //MGL?
+        sowhere="МГЛ";
+    } else {
+        sowhere="тебя не существует";
+    }
+}
+*/

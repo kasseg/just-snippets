@@ -1,0 +1,28 @@
+//Валидатор создания e-mail request by Evgeniy Russkikh 
+string issueReporter=getUser(reporter).username;
+string job=toLower(ldapUserAttr("metroJobTitle", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP"));
+if (isNull(job)) {
+    job=toLower(ldapUserAttr("description", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP"));
+}
+if (contains(job,"administrative specialist") 
+            or userInGroup("G RU MCC HQ - Everybody",issueReporter) 
+            or userInGroup("MCC RU MOW - Head Office",issueReporter) 
+            or userInGroup("MCC RU - All HO Users",issueReporter) 
+            or userInGroup("G RU MGL - Everybody",issueReporter) 
+            or userInGroup("MGL RU NGN - Everyone",issueReporter)
+            or userInGroup("MCC RU - Information Services",issueReporter) 
+            or userInGroup("MCC RU - Store Manager Assistant",issueReporter) 
+            or userInGroup("MCC RU - Admin Specialist",issueReporter) 
+            or userInGroup("MCC RU MOW - Store Managers",issueReporter) 
+            or userInGroup("MCC RU - Floor Manager",issueReporter) 
+            or userInGroup("MCC RU - Sales Managers",issueReporter)
+            or userInGroup("MCC RU - APP - Jira_ITREQ",issueReporter)
+             or userInGroup("jira-unactive",issueReporter)){
+    if (description=="error"){
+        return false, "Не указаны детали заявки";
+    } else if (isNull(customfield_10001)){
+    return false, "Создание доступно только через портал";
+    }
+} else {
+    return false, "Нет прав на создание данной заявки. В торговых центрах доступ к созданию данной заявки есть только у Store Manager / Administrative Specialist / Deputy Store Manager / Sales Manager.";
+}

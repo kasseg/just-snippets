@@ -1,0 +1,47 @@
+//Действия при создании by Evgeniy Russkikh
+
+/*string k="ITREQ-582";
+string [] hwAll;
+string [] folders;
+string folderCopy;
+string issueReporter=getUser(%k%.reporter).username;
+string issDescr=%k%.description;
+string name=substring(issDescr, matchEnd(issDescr, "Фамилия, имя")+2, -1);
+name=substring(name, 0, indexOf(name, "|"));
+
+string room=substring(issDescr, matchEnd(issDescr, "Комната")+2, -1);
+room=substring(room, 0, indexOf(room, "|"));
+string hwExists=substring(issDescr, matchEnd(issDescr, "Компьютерное оборудование уже есть")+3, -1);
+hwExists=substring(hwExists, 0, indexOf(hwExists, "|"));
+if (hwExists=="Нет"){
+    hwAll=substring(issDescr, matchEnd(issDescr, "Необходимое оборудование")+2, -1);
+    hwAll=substring(hwAll,0, indexOf(hwAll, "|"));
+    hwAll=replace(hwAll,"* ","");
+    hwAll=split(hwAll,"\n");
+    //hwAll=substring(hwExists, 0, indexOf(hwExists, "\n")-2); 
+    
+}
+string phExists=substring(issDescr, matchEnd(issDescr, "Телефон уже есть")+3, -1);
+phExists=substring(phExists, 0, indexOf(phExists, "|"));
+
+if (contains(issDescr,"Запрошен доступ в папки")){
+    folders=substring(issDescr, matchEnd(issDescr, "Запрошен доступ в папки")+2, -1);
+    folders=substring(folders,0, indexOf(folders, "|"));
+    folders=replace(folders,"* ","");
+    folders=split(folders,"\n");
+}
+
+if (contains(issDescr,"Скопировать доступ")){
+    folderCopy=substring(issDescr, matchEnd(issDescr, "Скопировать доступ")+2, -1);
+    folderCopy=substring(folderCopy, 0, length(folderCopy)-1);
+}
+runnerLog(issueReporter);
+runnerLog(issDescr);
+runnerLog("-----------------");
+runnerLog(name);
+runnerLog(room);
+runnerLog(hwExists);
+runnerLog(hwAll);
+runnerLog(phExists);
+runnerLog(folders);
+runnerLog(folderCopy);*/

@@ -1,0 +1,56 @@
+//Добавляет в начало Description инфу об авторе заявки by Evgeniy Russkikh
+description=replace(description, "\r\n\r\n", "\r\n");
+string forWho=getUser(reporter).username;
+string issueReporter=getUser(reporter).username;
+if (isNotNull(customfield_13004)){
+    forWho=getUser(customfield_13004).username;
+}
+if (forWho!=issueReporter){
+    customfield_10002+=forWho;
+    watchers+=forWho;
+} else forWho=issueReporter;
+
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+forWho+")","r4 domain LDAP");
+if (isNotNull(userPath)){ 
+    //MCC
+    description="|*User Name*|"+forWho+"|\r\n|*Department*|"+ldapUserAttr("department", "(sAMAccountName=" + forWho + ")","r4 domain LDAP")+"|\r\n|*Position*|"+ldapUserAttr("metroJobTitle", "(sAMAccountName=" + forWho + ")","r4 domain LDAP")+"|\r\n"+description;
+    autotransition("DM APPROVE", key, true,true,true);
+} else {
+    userPath=ldapUserAttr("DN", "(sAMAccountName="+forWho+")","mgl domain LDAP");
+    if (isNotNull(userPath)){
+        //MGL
+        description="|*User Name*|"+forWho+"|\r\n|*Department*|"+ldapUserAttr("department", "(sAMAccountName=" + forWho + ")","mgl domain LDAP")+"|\r\n|*Position*|"+ldapUserAttr("metroJobTitle", "(sAMAccountName=" + forWho + ")","mgl domain LDAP")+"|\r\n"+description;
+        autotransition("MGL IT", key, true,true,true);
+    }
+}
+
+
+        
+ 
+/*
+string userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + forWho + ")","r4 domain LDAP");
+if (isNull(userCompany)){
+    userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + forWho + ")","mgl domain LDAP");
+}
+string userPath=ldapUserAttr("DN", "(sAMAccountName="+forWho+")","r4 domain LDAP");
+if (contains(toLower(userPath),"st1491-sip") or contains(toLower(userPath),"st1492-svt")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+    userCompany="3466";
+} 
+if (isNotNull(userCompany)){
+        if (userCompany!="3113") //если пользователь из  MCC, утверждение на его руководителя и соотв транзакция.
+        {
+            //summary=summary+" MCC";
+            description="|*User Name*|"+forWho+"|\r\n|*Department*|"+ldapUserAttr("department", "(sAMAccountName=" + forWho + ")","r4 domain LDAP")+"|\r\n|*Position*|"+ldapUserAttr("metroJobTitle", "(sAMAccountName=" + forWho + ")","r4 domain LDAP")+"|\r\n"+description;
+            autotransition("DM APPROVE", key, true,true,true);
+        } else if (userCompany=="3113"){ //если пользователь из MGL - утверждение на Ларину и соотв транзакция.
+            //summary=summary+" MGL";
+            description="|*User Name*|"+forWho+"|\r\n|*Department*|"+ldapUserAttr("department", "(sAMAccountName=" + forWho + ")","mgl domain LDAP")+"|\r\n|*Position*|"+ldapUserAttr("metroJobTitle", "(sAMAccountName=" + forWho + ")","mgl domain LDAP")+"|\r\n"+description;
+            //autotransition("DM APPROVE", key, true,true,true);
+            autotransition("MGL IT", key, true,true,true);
+            
+        }
+} else { //если пользователя нет ни в MCC, ни в MGL - заявка отклоняется
+            //autotransition("Rejected", key, true,true,true);
+            //addJSDComment(key, "remoteuser", "Автора заявки нет в каталоге LDAP, заявка отклоняется", true);
+        }
+*/

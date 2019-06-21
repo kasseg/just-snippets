@@ -1,0 +1,24 @@
+JFieldChange[] changes  = getFieldChanges(key, "status");
+string fromStatus = changes[size(changes)-1].oldVal; // узнаём из какого статуса пришла заявка
+if (fromStatus!="Wait Customer"){
+    if(customfield_12602=="MMS MD+"){
+    autotransition("Under Review", key, true,true,true);
+    customfield_10100="a.gritsenkova";
+    } 
+    else if(customfield_12602=="Teradata"){
+    autotransition("MMS HO Analyst", key, true,true,true);
+    customfield_10100="sergey.kazorin";
+    } 
+    else if(customfield_12602=="InIT"){
+    autotransition("IS Fulfilled", key, true,true,true); 
+    }
+    
+    JUser mail_user = getUser(assignee);
+    string assignee_mail = mail_user.email;
+    sendEmail("it-support@metro-cc.ru", {assignee_mail},{"anatoliy.gundarov@metro-cc.ru"}, "Заявка " + key+ " прокомментирована и вернулась в работу", getIssueURL(key));
+    
+} 
+else {
+    
+    //ничего :)
+}

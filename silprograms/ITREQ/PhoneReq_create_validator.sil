@@ -1,0 +1,26 @@
+// Доступ к созданию имеют только сотрудники ЦО by Evgeniy Russkikh
+string issueReporter=getUser(reporter).username;
+if(!userInGroup("MCC RU MOW - Head Office",issueReporter) 
+&& !userInGroup("MCC RU - All HO Users",issueReporter) 
+&& !userInGroup("MGL RU NGN - Everyone",issueReporter) 
+&& !userInGroup("G RU MGL - Everybody",issueReporter)  
+&& !userInGroup("MGL RU MOW - Everyone",issueReporter)
+&& !userInGroup("G RU MCC HQ - Everybody",issueReporter)
+&& !userInGroup("jira-unactive",issueReporter)) {
+   return false, "comment", "Данный тип заявок доступен только для сотрудников ЦО.";
+}else{
+//проверка на заполнение нужных полей
+if (description=="errorNoData"){
+    return false, "Укажите имя, отдел и комнату сотрудника";
+} else if (description=="errorNoName"){
+    return false, "Не введено имя";
+} else if (description=="errorNoComment"){
+    return false, "Опишите поломку";
+} else if (description=="errorNoPhone"){
+    return false, "Введите номер телефона";
+}else if (description=="errorNoRoom"){
+    return false, "Введите номер комнаты";
+}else if (isNull(customfield_10001)){
+    return false, "Создание доступно только через портал";
+}
+}

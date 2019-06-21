@@ -1,0 +1,5 @@
+if (description=="ERROR_REQUIRED_FIELDS"){
+    return false, "Не заполнены обязательные поля";
+} else if (isNull(customfield_10001)){
+    return false, "Создание доступно только через портал";
+    }

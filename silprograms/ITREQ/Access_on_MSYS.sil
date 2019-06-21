@@ -1,0 +1,24 @@
+ string issueReporter=getUser(reporter).username;
+ if (customfield_12602=="MDLS"){
+    autotransition("Authorization Fulfilled", key, true,true,true); 
+ } else if(customfield_12602=="MMS MD+"){
+    if(contains(description,"DNR OPERATOR")){
+        customfield_10100="andrey.markin";
+    } else if(contains(description,"MEDIA_MARKT_COORDINATOR")){
+        customfield_10100="victor.gribanovskiy";
+    } else if(contains(description,"PRICING")){
+        customfield_10100="elena.nefedova";//natalia.zyuzina в декрете
+    } else if(contains(description,"CM W/O ACTIVATION") || contains(description,"CM_FULL")){
+        string myPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+        if(contains(myPath,"Food")){
+            customfield_10100="Anna.Chudakova";
+        } else {
+            customfield_10100="evgeniy.peregud";
+        }
+    } else {
+         autotransition("Authorization Fulfilled", key, true,true,true); //на MMS HO Analysts
+    }
+
+ } else if(customfield_12602=="InIT"){
+    customfield_10100={"a.gerasimenko","ivan.khramov","sergey.semagin","Yakov.Rstakyan"};
+ } else {customfield_10100="dmitriy.bychkov";}

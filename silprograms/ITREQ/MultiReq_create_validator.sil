@@ -1,0 +1,6 @@
+//Валидатор создания by Evgeniy Russkikh
+if (reporter!="admin-er"){
+    return false, "в разработке";
+} else if (description=="error"){
+    return false, "Не заполнены обязательные поля";
+}

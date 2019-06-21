@@ -1,0 +1,2 @@
+labels = arrayUnion(labels, {"QA_Approved"});
+customfield_10100 = "";

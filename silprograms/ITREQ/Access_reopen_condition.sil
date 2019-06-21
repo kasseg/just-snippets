@@ -1,0 +1,8 @@
+//Возможность Диме Бычкову вернуть из Rejected на MSYS Approve
+if (status=="Rejected"){
+    if (currentUser() == "dmitriy.bychkov" or currentUser() == "admin-er" or currentUser() == "admin-ag"){
+        return true;
+    } else {
+        return false;
+    }
+} else return true;

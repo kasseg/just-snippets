@@ -1,0 +1,14 @@
+//пишет комментарий в заявку, чтоб пользователь понимал, что заявка ушла на выполнение by Evgeniy Russkikh
+boolean alreadyHave=false;
+string [] requestComments = getAllCommentIds(key);
+if (size(requestComments)>0){
+    for(string x in requestComments) {
+        string [] cmt = getCommentById(x);
+        if (cmt["author"]=="remoteuser" and cmt["text"]=="Заявка утверждена и передана на выполнение."){
+            alreadyHave=true;
+        }
+    }
+}
+if (!alreadyHave){
+    addJSDComment(key, "remoteuser", "Заявка утверждена и передана на выполнение.", true);
+}

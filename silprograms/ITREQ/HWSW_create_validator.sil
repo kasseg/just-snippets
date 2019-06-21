@@ -1,0 +1,40 @@
+// Валидатор формы HWSW by Evgeniy Russkikh
+string issueReporter=getUser(reporter).username;
+string job=toLower(ldapUserAttr("metroJobTitle", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP"));
+if (isNull(job)) {
+    job=toLower(ldapUserAttr("description", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP"));
+}
+if (contains(job,"administrative specialist") 
+
+            or userInGroup("G RU MCC HQ - Everybody",issueReporter) 
+            or userInGroup("MCC RU MOW - Head Office",issueReporter) 
+            or userInGroup("MCC RU - All HO Users",issueReporter) 
+            or userInGroup("G RU MGL - Everybody",issueReporter) 
+            or userInGroup("MGL RU NGN - Everyone",issueReporter)
+            or userInGroup("MCC RU - Information Services",issueReporter) 
+            or userInGroup("MCC RU - Store Manager Assistant",issueReporter) 
+            or userInGroup("MCC RU - Admin Specialist",issueReporter) 
+            or userInGroup("MCC RU - Internet Access - HR",issueReporter) 
+            or userInGroup("MCC RU MOW - Store Managers",issueReporter) 
+            or userInGroup("MCC RU - Floor Manager",issueReporter) 
+            or userInGroup("MCC RU - Sales Managers",issueReporter)
+            or userInGroup("MCC RU - APP - Jira_ITREQ",issueReporter)
+             or userInGroup("jira-unactive",issueReporter)
+             or issueReporter=="Elvira.Kozhevatkina" //удалить и добавить нормальные группы
+             or issueReporter=="elena.paramonova"){ //удалить и добавить нормальные группы
+    if (description=="errorNoReason"){
+        return false, "Не указана причина";
+    } else if (description==""){
+        return false, "Не выбрано оборудование или ПО для заказа";
+    } else if (isNull(customfield_10001)){
+    return false, "Создание доступно только через портал";
+    } else if(!contains(description,"Reason")){
+        return false, "Ошибка формы. Перезагрузите браузер. Если проблема останется, обратитесь в службу поддержку и пришлите скриншот данного";
+    }  else if (isNotNull(customfield_13004)) {//проверка for User на ГПЯ
+        if (getUserDirectoryName(customfield_13004)=="GroupMailboxes"){
+            return false, "customfield_13004", "Укажите конкретного сотрудника, а не ящик отдела.";
+        }
+    }
+} else {
+    return false, "Нет прав на создание данной заявки. В торговых центрах доступ к созданию данной заявки есть только у Store Manager / Administrative Specialist / Deputy Store Manager / Sales Manager.";
+}
