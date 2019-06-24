@@ -1,0 +1,7 @@
+if (argv["screen"] == "create") {
+
+string compile=argv["description"]+argv["customfield_13608"]+"\\\\n";
+//string compile=customfield_13608;
+lfSet("description",compile);
+//lfSet("customfield_14227","");
+ }

@@ -1,0 +1,5 @@
+if (argv["screen"] == "create") {
+    //lfDisable("description");
+}
+lfWatch("customfield_14227", {"customfield_14227", "description", "customfield_13608"}, "ORD/assetCreating.sil", {"click"});/* решение инцидента после создания, если стоит галочка*/
+//lfInstantHook("customfield_14227", "ORD/assetCreating.sil"); /* решение инцидента после создания, если стоит галочка*/

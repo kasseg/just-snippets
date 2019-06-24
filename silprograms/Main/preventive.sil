@@ -1,0 +1,47 @@
+// Создание задач/подзадач на профилактику по регионам и ТЦ. by Anatoliy Gundarov
+include "main/stores.sil";//подключение структуры регионов
+//if(day(currentDate())==day(startOfMonth(currentDate()))){//проверка, что сегодня начало месяца
+string project_name = "IT";//поменять на "IT"
+string issue_priority_name = "4";//поменять на актуальный приоритет
+string parent_issue_type_name = "Ремонт";//поменять на актуальный тип задачи
+string child_issue_type_name = "Подзадача";//поменять на актуальный тип подзадачи
+string issue_summary = "Квартальная профилактика - ";
+string[] issue_components = {"PDT"};
+string[] custom_fields_mapping = "Metro Service|Mobile Devices > Price Checker, PDT, IRAS, Terminal|Metro Team|Local IT Support|Issue Location";
+string parent_issue_description = "Необходимо провести профилактику PDT, Zebra с использованием ТСД и приложением Init согластно инструкции: 2.08.1 Mobile InIT при проведении профилактик.doc ";
+string child_issue_description = "Необходимо провести профилактику PDT, Zebra с использованием ТСД и приложением Init согластно инструкции: 2.08.1 Mobile InIT при проведении профилактик.doc в ТЦ ";
+string custom_fields_mapping_store;
+Region[] all_regions2 = {South};//массив регионов. поменять на {East,West,Center,South,Siberia,Mow}
+    //создание задачи на регион
+for(Region current_region in all_regions2){
+
+    string custom_fields_mapping_region = custom_fields_mapping+current_region.name;
+    runnerLog(custom_fields_mapping_region);
+    string parent_issue = createIssue(
+    project_name,
+    "", 
+    parent_issue_type_name,
+    issue_summary + current_region.name, 
+    issue_priority_name, 
+    parent_issue_description + current_region.name,
+    issue_components,"","","",custom_fields_mapping_region);
+    runnerLog(parent_issue);
+    %parent_issue%.reporter = current_region.reporter;
+    
+    // создание подзадач на ТЦ
+   
+    for(string curstore in current_region.stores){
+        Store current_store = curstore;
+        
+        string custom_fields_mapping_store = custom_fields_mapping+current_store.name;
+        string child_issue = createIssue(
+        project_name,
+        parent_issue,
+        child_issue_type_name,
+        issue_summary + current_store.name,
+        issue_priority_name,
+        child_issue_description + current_store.name,
+        issue_components,"","","",custom_fields_mapping_store);
+        %child_issue%.reporter = current_region.reporter;
+    }   
+}

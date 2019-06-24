@@ -1,0 +1,40 @@
+//Структура создания задач by Anatoliy Gundarov
+struct Mytask {string project_Key; string parent_IssueKey;string issue_Type;
+string issue_Summary ;string issue_Priority;string issue_Description;
+string[] issue_Components;date issue_Duedate;interval issue_Estimate;
+string issue_Securitylevel;string[] issue_Customfieldsmappings;}
+
+Mytask sw_task;
+Mytask hw_task;
+Mytask phone_task;
+Mytask remote_task;
+Mytask folder_task;
+
+sw_task.project_Key = "TEST";
+sw_task.parent_IssueKey = "";
+sw_task.issue_Type = "Ремонт";
+sw_task.issue_Summary = "Access Request (Excise)";
+sw_task.issue_Priority = "4";
+sw_task.issue_Description = "не пустое";
+sw_task.issue_Components = "";
+sw_task.issue_Duedate = "";
+sw_task.issue_Estimate = "";
+sw_task.issue_Securitylevel = "";
+sw_task.issue_Customfieldsmappings = "";
+
+string new_issue = createIssue(
+sw_task.project_Key,
+sw_task.parent_IssueKey,
+sw_task.issue_Type,
+sw_task.issue_Summary,
+sw_task.issue_Priority,
+sw_task.issue_Description,
+sw_task.issue_Components,
+sw_task.issue_Duedate,
+sw_task.issue_Estimate,
+sw_task.issue_Securitylevel,
+sw_task.issue_Customfieldsmappings);
+
+runnerLog(sw_task.project_Key);
+runnerLog(new_issue);
+return new_issue;

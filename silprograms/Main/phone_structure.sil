@@ -1,0 +1,43 @@
+// структура отделов для определения автора по номеру телефона by Anatoliy Gundarov
+struct Store_phone{string[] phone_number; string[] group;}
+Store_phone entry = {{"00","23"},{"MCC RU - Customer Entry"}};
+Store_phone delivery= {{"19","28","35"},
+{"MCC RU - Delivery Volga", "MCC RU - Delivery South",
+"MCC RU - Delivery Syberia", "MCC RU - Delivery Ural",
+"MCC RU - Delivery North-West","MCC RU - Delivery Moscow1", "MCC RU - Delivery Moscow2",
+"MCC RU - Delivery Center1", "MCC RU - Delivery Center2"}};
+Store_phone alcoholws= {{"76"},{"MCC RU - Alcohol Declarant"}};
+Store_phone decoration= {{"41"},{"MCC RU - Decoration in ALL Stores"}};
+Store_phone security= {{"45"},{"MCC RU - Security Manager"}};
+Store_phone sm_assistant= {{"51"},{"MCC RU - Store Manager Assistant"}};
+Store_phone gap= {{"52"},{"MCC RU - Gap Check"}};
+Store_phone hr= {{"53"},{"MCC RU - HR Stores"}};
+Store_phone veterinary= {{"55"},{"MCC RU - Internet Access - Veterinary"}};
+Store_phone ddc= {{"56"},{"MCC RU - DDC"}};
+Store_phone gr= {{"57","95"},{"MCC RU - Goods Receiving"}};
+Store_phone main_cashier= {{"58"},{"MCC RU - Store Main Cashiers"}};
+Store_phone alcohol= {{"37","59","54"},{"MCC RU - ALCOHOL ALL"}};
+Store_phone hr_manager= {{"61"},{"MCC RU - HR Managers"}};
+Store_phone sweets = {{"69","97"},{"MCC RU - Sweets Bakery"}};
+Store_phone alc = {{"38","62"},{"MCC RU - ALC"}};
+Store_phone meat = {{"42","63"},{"MCC RU - Meat"}};
+Store_phone sport = {{"70"},{"MCC RU - Sport Seasonal Toys"}};
+Store_phone fish = {{"71","49"},{"MCC RU - Fish"}};
+Store_phone dairy = {{"72","30"},{"MCC RU - Dairy"}};
+Store_phone acquisition = {{"78","26","60","64"},{"MCC RU - Customer Service"}};
+Store_phone household = {{"79","65"},{"MCC RU - Household"}};
+Store_phone diy= {{"80"},{"MCC RU - DIY"}};
+Store_phone cashier_supervisor= {{"84","24","29"},{"MCC RU - Cashier Supervisor"}};
+Store_phone fm= {{"74","75","82","25", "46"},{"MCC RU - Floor Manager"}};
+Store_phone general_food= {{"83"},{"MCC RU - GFC"}};
+Store_phone fruits= {{"87","66"},{"MCC RU - F&V"}};
+Store_phone cosmetics= {{"89"},{"MCC RU - Cosmetics"}};
+Store_phone sales= {{"91"},{"MCC RU - Sales Managers"}};
+Store_phone office= {{"94"},{"MCC RU - Office Media"}};
+Store_phone engineer= {{"96","44"},{"MCC RU HQ-MOW - FOL_Department_Engineer_services_RO"}};
+
+string [] named_exception = {"61","51","81","91"};//список исключений для пользователей с именным п/я
+Store_phone[] allphones = {entry,fm,gr,sm_assistant,gap,hr,ddc,decoration,
+acquisition,cashier_supervisor,alc,hr_manager,fruits,main_cashier,sweets,veterinary,
+general_food,meat,dairy,household,office,alcoholws,fish,delivery,cosmetics,diy,sales,
+alcohol,sales,sport,engineer,security};

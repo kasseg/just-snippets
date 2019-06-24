@@ -1,0 +1,47 @@
+include "main/stores.sil";
+
+
+
+
+
+
+// struct Region {string index; string name; Store[] stores; string reporter; string coordinator;}
+
+// Region Center;
+// Region East;
+// Region Mow;
+// Region South;
+// Region West;
+
+Center.index = "center";
+Center.name =  "Регион Центр";
+Center.stores =  center_stores;
+Center.reporter =  "sss.center";
+Center.coordinator =  "Sergey.Volkov";
+
+East.index = "east";
+East.name = "Регион Восток";
+East.stores = east_stores;
+East.reporter = "sss.east";
+East.coordinator = "Igor.Lukashin";
+
+Mow.index = "mow";
+Mow.name =  "Регион Москва";
+Mow.stores =  mow_stores;
+Mow.reporter =   "sss.mow";
+Mow.coordinator =  "Dmitriy.Barinov";
+
+South.index = "south";
+South.name =  "Регион Юг";
+South.stores =  south_stores;
+South.reporter =   "sss.south";
+South.coordinator =  "Viktor.Kladov";
+
+West.index = "west";
+West.name =  "Регион Запад";
+West.stores =  west_stores;
+West.reporter =   "sss.west";
+West.coordinator =  "Pavel.Bagaev";
+
+// all_regions = {East,West,South,Mow,Center};
+// Region[] all_regions = {East,West,South,Mow,Center};

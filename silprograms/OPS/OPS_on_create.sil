@@ -1,0 +1,9 @@
+//Действия после создания заявки и после измненения типа OPS отзыва by Anatoliy Gundarov
+include "ops/OPS_types.sil";
+ for (OPS_type cur_type in ops_types){
+     if(customfield_13300==cur_type.ops_type){
+        customfield_10002=cur_type.emailusers;
+        summary = cur_type.ops_type;
+        break;
+     }
+ }
