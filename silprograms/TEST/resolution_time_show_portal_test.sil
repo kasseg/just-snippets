@@ -1,0 +1,54 @@
+//проставление комментария с средним временем решения задач с таким же сервисом 
+string myproject = "IT"; 
+string myService = customfield_10103; //Metro Service 
+string myPeriod = "-21d"; 
+string myJQL = "project = "+ myproject+" and 'Metro Service' = '"+myService+"' and resolved >startOfDay('"+myPeriod+"')"+" and 'Priority' = "+priority + " and 'resolution'  not in ('Отозвана автором', 'Ответ не получен')";
+
+string [] keys = selectIssues(myJQL);// получение списка решенных задач с сервисом исходной за выбранный период 
+string CommentText; 
+interval alldates;interval period;interval remaining; 
+date timetowait;date createddate;date resolveddate; 
+struct Myinfo {interval averagetime; string mypriority;string prioritytime;string remainingtime;} 
+Myinfo Info; 
+Info.mypriority = priority; 
+if (priority=="1"){Info.prioritytime="24 часа";} 
+if (priority=="2"){Info.prioritytime="5 дней";} 
+if (priority=="3"){Info.prioritytime="10 дней";} 
+if (priority=="4"){Info.prioritytime="60 дней";} 
+if (size(keys)!=0){ 
+    for(string myissue in keys){ 
+        JFieldChange [] mychanges = lastIssueChanges(myissue.key); 
+        createddate = myissue.created; 
+        resolveddate = mychanges[0].changeDate; //последнее обновление решенной задачи из списка 
+        period = resolveddate - createddate;//время решения 
+        alldates = alldates + period;//сумма времени решения всех задач из списка 
+    } 
+    
+    Info.averagetime = alldates/size(keys);//среднее время решения 
+    remaining = Info.averagetime -(currentDate() - created); 
+     if(remaining<0){ 
+        Info.remainingtime = "Над Вашей заявкой работают специалисты. Ожидайте решение в ближайшее время"; 
+    } 
+     if(remaining>0){ 
+        Info.remainingtime = "До решения Вашей заявки осталось примерно " + remaining; 
+    } 
+//    CommentText = "Приоритет заявки: "+Info.mypriority+" (максимальное время решения: "+Info.prioritytime+")\n"+"Среднее время решения задач данного типа и приоритета : " + Info.averagetime;
+
+    
+    CommentText = "Приоритет заявки: "+Info.mypriority+"\n"+"Среднее время решения задач данного типа и приоритета : " + Info.averagetime + "\n" + Info.remainingtime;
+
+    CommentText = replace(CommentText,"w","н"); 
+    CommentText = replace(CommentText,"d","д"); 
+    CommentText = replace(CommentText,"h","ч"); 
+    CommentText = replace(CommentText,"m","м"); 
+    CommentText = replace(CommentText,"s","с"); 
+} 
+else { 
+    //    CommentText = "Приоритет: " + Info.mypriority + " (максимальное время решения: "+Info.prioritytime+")\n" + " Данных о среднем времени решения пока нет.";
+
+    Info.remainingtime = "Над вашей заявкой работают специалисты. Ожидайте решение в ближайшее время"; 
+    CommentText = "Приоритет: " + Info.mypriority +"\n" + " Данных о среднем времени решения пока нет. Максимальное время решения вашей заявки с момента открытия: "+ Info.prioritytime + "\n" + Info.remainingtime;
+
+} 
+    addComment(key, "remoteuser", CommentText); 
+return CommentText;

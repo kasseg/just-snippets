@@ -1,0 +1,21 @@
+//Создает сабтаски, в зависимости от мультиселекта
+string newIssuesMessage="Созданы сабтаски: ";
+for (string system in #{Новый ТЦ/ЦО}){
+    string [] custom_fields_mapping="reporter|"+reporter;
+    string newSubtask = createIssue(
+    "TEST",
+    key, 
+    "Подзадача",
+    "Оценка ЦК "+system, 
+    "", 
+    "",
+    "","","","",custom_fields_mapping);
+    %newSubtask%.#{Новый ТЦ/ЦО}=system;
+    newIssuesMessage+=newSubtask+", ";
+}
+newIssuesMessage=chop(newIssuesMessage,length(newIssuesMessage)-2);
+if (size(#{Новый ТЦ/ЦО})>0){
+    lfGlobalMessage(newIssuesMessage, "SUCCESS");
+} else {
+    lfGlobalMessage("Сабтаски не созданы", "WARNING");
+}

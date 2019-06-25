@@ -1,0 +1,8 @@
+//service issue check change status if exist Visit issue
+
+string [] itIssue = linkedIssues(key, "Relates");
+for (string relKey in itIssue) {
+             if (%relKey%.project=="SA" and %relKey%.type=="Визит" and %relKey%.status==status) {
+return false;
+}
+}

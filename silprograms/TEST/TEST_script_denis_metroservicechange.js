@@ -1,0 +1,1 @@
+jQuery(this).css("background-color", "yellow");

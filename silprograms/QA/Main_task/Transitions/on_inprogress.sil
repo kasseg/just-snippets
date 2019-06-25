@@ -1,0 +1,6 @@
+// Вложить файл с данными в основную задачу
+ string filePath="D:/Atlassian/JIRA/Projects/QA/" + key +".csv";
+ if(fileExists(filePath)){
+    attachFile(filePath, key); 
+ }
+ 

@@ -1,0 +1,7 @@
+//request support from local IT support
+
+string itIssue = linkedIssues(key);
+autotransition(61, itIssue); // transition #61 "Возврат из ожидания"
+
+JComment SALastComment = getLastComment(key);
+addComment(itIssue, "remoteuser", SALastComment["text"]);

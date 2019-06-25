@@ -1,0 +1,10 @@
+// add customfield_13207 linked issues information for JEMH
+    customfield_13207="" ;
+string [] relIssues= linkedIssues(key, "Relates");
+for (string relKey in relIssues) {
+             if (%relKey%.project=="SA") {
+            customfield_13207 += {"<p>"+%relKey%.key+", номер СО: "+%relKey%.customfield_13206+"; Описание:"+%relKey%.description+".</p> "} ;
+//            customfield_13207 += %relKey%.customfield_13206;
+//            customfield_13207 += %relKey%.description;
+    }
+  }

@@ -1,0 +1,166 @@
+// AI for IT Support. Generation 2.
+// denis.burdukovskiy@metro-cc.ru
+
+struct newValue {           // Изменение поля заявки
+    string field;           // Примеры "priority" , "customfield_11010", "Metro Service"
+    string value;           // Пример "2"
+}
+struct variant {
+    string dateRE;          // RegExp для проверки текущей даты. Если неуказано или "" , то это TRUE. Использовать в первом варианте, если их несколько.
+                            // Пример (.*Mon.*|.*Thu.*)(w42|w43)   - Mon или Thu только 42й или 43й недели года. Формат даты - ниже 
+    newValue [] newValues;  // Массив новых значений полей заявки
+}
+struct aMatchItem {
+    string name;            // Смысловое определение случая.
+    string textRE;          // RegExp для поиска. Должно быть в lower case (!)
+                            // Пример ^(?!.*(фиск)).*принтер.*|.*картридж.*  - принтер или картридж, но без фиск в строке.
+    string template;        // Шаблон запроса. Подсказка для FLS о том, что должно быть предоставлено пользователем.
+    variant [] variants;    // Возможные варианты заполнения полей в зависимости от текущей даты.
+}
+
+string format = "yyyy-MM-dd E 'w'w"; // 2018-10-15 Mon w42 : Monday, week in year 42 
+string currentDay = formatDate(currentDate(), format);
+string textToFindRegExp = toLower(summary+description);
+variant thisVariant;        // здесь будет записан найденный вариант
+
+aMatchItem [] allCases;
+aMatchItem ItemToAdd ;
+
+// описание случая
+ItemToAdd.name = "Принтеры обычные";
+ItemToAdd.textRE = "^(?!.*(фиск)).*принтер.*|.*картридж.*|.*мфу.*";
+ItemToAdd.variants[0].newValues += {"component","Printer"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "Workplaces > Printing Devices > Hardware"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "Зебра (этикетки и карты клиента)";
+ItemToAdd.textRE = ".*zebra.*|.*зебр.*|.*этикет.*";
+ItemToAdd.variants[0].newValues += {"component","Printer (Card,Label)"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "IT Projects & Suppliers > POS Services > Card and Label Printer"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "e-Doc";
+ItemToAdd.textRE = ".*e-?do(c|k).*|.*(и|е)-?док.*";
+ItemToAdd.variants[0].newValues += {"component","e-Doc"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "Admin & Dev > eDoc"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "Табелки, Престиж, плоттер";
+ItemToAdd.textRE = ".*prestige.*|.*престиж.*|.*плотт?ер.*|.*табел(ок|к).*";
+ItemToAdd.variants[0].newValues += {"component","Prestige"}; 
+ItemToAdd.variants[0].newValues += {"Metro Service", "MMS > Prestige"};
+ItemToAdd.variants[0].newValues += {"priority", "3"};
+ItemToAdd.variants["Подготовка и старт Метропочты"].dateRE = "(.*Mon.*|.*Tue.*|.*Wed.*|.*Thu.*)(w42|w44|w46|w48|w50|w52)";
+ItemToAdd.variants["Подготовка и старт Метропочты"].newValues += {"component","Prestige"}; 
+ItemToAdd.variants["Подготовка и старт Метропочты"].newValues += {"Metro Service", "MMS > Prestige"};
+ItemToAdd.variants["Подготовка и старт Метропочты"].newValues += {"priority", "2"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+
+// завершение описаний случаев
+
+for (aMatchItem aCase in allCases) {
+    if (matches(textToFindRegExp,aCase.textRE)){
+        thisVariant = aCase.variants[0];            // Есть совпадение. Берём дефолтный вариант.
+        for (variant aVariant in aCase.variants) {  // Если варианты, начинаем поиск глубже по вариантам - случаям в зависимости от даты
+            if (matches(currentDay, aVariant.dateRE)){
+                thisVariant = aVariant;             // последний вариант из имеющихся.
+            }
+        }
+    break;    //есть первое совпадение по textRE -> завершаем поиск.
+    }
+}
+
+//update jira issue
+for (newValue newChange in thisVariant.newValues){
+    string fieldToChange=newChange.field;
+    %fieldToChange% = newChange.value;
+}
+
+return ;
+
+
+/* 
+struct itemChange {         // Изменение полей в зависимости выполнения от RegExp даты
+    string dateRE;          // RegExp для проверки текущей даты. "" - для значения по умолчанию.
+                            // Пример (.*Mon.*|.*Thu.*)(w42|w43)   - Mon или Thu 42й или 43й недели года
+    string newComponent;    // Новая компонента
+    string newMetroService; // Новый Metro Service
+    string newPriority;     // Новый приоритет 
+}
+
+struct aMatchItem {
+    string name;            // Смысловое определение случая.
+    string textRE;          // RegExp для поиска. Должно быть в lower case 
+                            // Пример ^(?!.*(фиск)).*принтер.*|.*картридж.*  - принтер или картридж, но без фиск.
+    string template;        // Шаблон запроса. Подсказка для FLS о том, что должно быть предоставлено пользователем.
+    itemChange [] newValues;//
+}
+
+string format = "yyyy-MM-dd E 'w'w"; // 2018-10-15 Mon w42 : Monday, week in year 42 
+string currentDay = formatDate(currentDate(), format);
+
+aMatchItem [] allCases;
+aMatchItem ItemToAdd ;
+ItemToAdd = {"про принтер", ".*принтер.*", "",""};
+ItemToAdd.newValues[0] = {"", "printer","MMS > 3V","3"};
+ItemToAdd.newValues[1] = {"(.*Mon.*|.*Thu.*)(w42|w43)", "printer","MMS > 3V","3"};
+allCases += ItemToAdd;
+ItemToAdd = {"престиж", ".*престиж.*", "",""};
+ItemToAdd.newValues[0] = {"", "printer","MMS > 3V","3"};
+allCases += ItemToAdd;
+
+string textToFindRegExp = toLower("например для поиска регуляного выражения. Например myname1");
+
+for (aMatchItem aCase in allCases) {
+    if (matches(textToFindRegExp,aCase.textRE)){
+        
+    }
+}
+
+
+return allCases;
+
+/*
+struct aMatchItem {
+    string name;            // Смысловое определение случая.
+    string textRE;          // RegExp для поиска. Должно быть в lower case 
+                            // Пример ^(?!.*(фиск)).*принтер.*|.*картридж.*  - принтер или картридж, но без фиск.
+    string dateRE;          // RegExp для проверки текущей даты. ".*" - для любой даты. 
+                            // Пример (.*Mon.*|.*Thu.*)(w42|w43)   - Mon или Thu 42й или 43й недели года
+    string newComponent;    // Новая компонента
+    string newMetroService; // Новый Metro Service
+    string newPriority;     // Новый приоритет 
+}
+
+string format = "yyyy-MM-dd E 'w'w"; // 2018-10-15 Mon w42 : Monday, week in year 42 
+string currentDay = formatDate(currentDate(), format);
+
+aMatchItem [] matchItems;
+matchItems += {"Престиж/табелки",".*выражен.*", ".*", "printer","MMS > 3V","3"};
+matchItems += {"Престиж/табелки",".*выражен.*", ".*2018-10-15.*|.*2018-10-16.*", "printer","MMS > 3V","2"};
+matchItems += {"myname2",".*например.*",".*Mon", "printer","MMS > 3V","2"};
+
+string textToFindRegExp = toLower("например для поиска регуляного выражения. Например myname1");
+for (aMatchItem anItem in matchItems) {
+    if (matches(textToFindRegExp, anItem.textRE) and matches(currentDay, anItem.dateRE)) {
+        runnerLog(anItem);
+        break;        
+    }
+}
+
+//re_index = arrayFind(array, element)
+
+
+return currentDay;
+*/

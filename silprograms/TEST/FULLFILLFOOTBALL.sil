@@ -1,0 +1,5 @@
+string [] keys = selectIssues("project = TEST");
+for(string k in keys) {
+    JFieldChange[] changes  = getFieldChanges(k, "customfield_11010");
+    %k%.customfield_12302=size(changes); 
+}

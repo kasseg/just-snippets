@@ -1,0 +1,32 @@
+number position;
+string temp=description;
+string result;
+string temp2;
+string[] parsim;
+if (contains(description, "\n")){
+parsim=split(description, "\n");
+
+for(number i = 0; i < arraySize(parsim); i = i + 1){
+    //parsim[i] = "|"+parsim[i]+"|";
+    if (contains(parsim[i], "-")){
+    position=matchEnd(parsim[i], ".*-");
+    parsim[i]=replace(parsim[i],"-","|");
+    trim(parsim[i]);
+    parsim[i]="|"+parsim[i]+"|";
+}
+description=join(parsim, "\n");
+}
+description="||№ Артикула||Цена без НДС||\n"+description;
+}
+
+/*if (contains(temp, "-")){
+    position=matchEnd(temp, ".*-");
+    temp=chop(temp,position-1);
+    temp2=substring(description, matchStart(description, ".*-")+1, length(description));
+description="|"+description;
+result = replace(description, temp,temp+"|");
+result=replace(result,temp2,temp2+"|");
+result=replace(result,"-","");
+trim(result);
+description=result;
+}*/

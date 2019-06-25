@@ -1,0 +1,23 @@
+//Check Metro Team if MetroService changeDate
+//if ((customfield_11010 != argv["customfield_11010"]) and (argv["customfield_11010"] != "")) {
+    //lfShowFieldMessage("customfield_10103", "<span style='font-size:90%'>Изменился Metro Team.<br>Проверьте, что установлено правильное значение.<br>Предыдущее значение: "+argv["customfield_11010"]+"</span>", "WARNING");
+//}
+
+
+//Проверить изменение Metro Team при смене Metro Service
+if ((argv["customfield_10103"] != customfield_10103 ) and (argv["customfield_11010"] != customfield_11010) ) { // Если изменился Metro Service и Metro Team
+    
+//    lfExecuteJS("TEST/TEST_script_denis_metroservicechange.js");
+    if (argv["screen"]== "trans_71") {//Экран "Решить"
+        lfSet("customfield_11010", customfield_11010); //Metro Team
+        lfShowFieldMessage("customfield_11010","<span style='font-size:90%'>Заявка переводится в статус Решён, поэтому Metro Team остаётся без изменений <br>(но Вы можете изменить его вручную)</span>", "INFO");
+    }
+    else {
+        lfShowFieldMessage("customfield_11010","<span style='font-size:90%'>При изменении Metro Service изменился Metro Team. <br>Убедитесь в правильности значений. Исходные значения в заявке: <br> <span style='font-weight: bold'>Metro Team: </span> "+customfield_11010+"<br><span style='font-weight: bold'>Metro Service:</span> "+customfield_10103+"</span>", "WARNING");
+        
+    }
+    //lfShowFieldMessage("customfield_11010","<script>$(document).ready(function(){$(this).parent().css({'color': 'red', 'border': '2px solid red'});});</script>Hello", "WARNING");
+
+
+}
+

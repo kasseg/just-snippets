@@ -1,0 +1,59 @@
+struct Buying{
+     string categoryName; number CMA; string fieldValue; string email; string[] buying_users;
+}
+
+
+
+Buying Buying100 = {"Test",100,"100 - Test","MCC RU - QA FNF",{}};
+Buying Buying101 = {"Canned Food",101,"101 - Canned Food","MCC RU MOW - Canned food HO",{}};
+// Buying Buying101 = {"Canned Food",101,"101 - Canned Food","MCC RU - QA FNF",{}};
+// Buying Buying101 = {"Canned Food",101,"101 - Canned Food","",{"Igor.Stebelev"}};
+Buying Buying102 = {"Dairy",102,"102 - Dairy","MCC RU MOW - Dairy HO",{}};
+Buying Buying103 = {"Sweets",103,"103 - Sweets","MCC RU MOW - Sweets HO",{}};
+Buying Buying104 = {"Drinks",104,"104 - Drinks","MCC RU MOW - Alcohol&Tobaco HO",{}};
+Buying Buying105 = {"Detergents",105,"105 - Detergents","MCC RU MOW - Cosmetics&Detergents HO",{}};
+Buying Buying106 = {"Processed Meat",106,"106 - Processed Meat","MCC RU MOW - Processed meat HO",{}};
+Buying Buying107 = {"Fruits / Vegetables",107,"107 - Fruits / Vegetables","",{"valentina.gylko","vladimir.sharonov"}};
+Buying Buying108 = {"Grocery",108,"108 - Grocery","MCC RU MOW - Grocery HO",{}};
+Buying Buying109 = {"Fish",109,"109 - Fish","MCC RU MOW - Fish HO",{}};
+Buying Buying110 = {"Wines",110,"110 - Wines","MCC RU MOW - WINE HO",{}};
+Buying Buying111 = {"Tobacco",111,"111 - Tobacco","MCC RU MOW - Alcohol&Tobaco HO",{}};
+Buying Buying112 = {"Fresh Meat",112,"112 - Fresh Meat","MCC RU MOW - Meat HO",{}};
+Buying Buying113 = {"Deep Frozen",113,"113 - Deep Frozen","MCC RU MOW - Deep frozen&Bakery HO",{}};
+Buying Buying114 = {"Delicatessen and Cheese",114,"114 - Delicatessen and Cheese","MCC RU MOW - Delicatessen&Cheese HO",{}};
+Buying Buying115 = {"Bakery",115,"115 - Bakery","MCC RU MOW - Deep frozen&Bakery HO",{}};
+Buying Buying116 = {"Soft Drinks",116,"116 - Soft Drinks","MCC RU MOW - Soft drinks HO",{}};
+Buying Buying117 = {"Toiletries",117,"117 - Toiletries","MCC RU MOW - Cosmetics&Detergents HO",{}};
+Buying Buying500 = {"Sales out articles food",500,"500 - Sales out articles food","",{}};
+Buying Buying600 = {"Gifts",600,"600 - Gifts","",{"yuliya.smirnova"}};
+Buying Buying210 = {"Office Technics",210,"210 - Office Technics","MCC RU MOW - Office technics HO",{}};
+Buying Buying211 = {"Media",211,"211 - Media","MCC RU MOW - Media HO",{}};
+Buying Buying213 = {"Household",213,"213 - Household","MCC RU MOW - Storage&Cleaning HO",{}};
+Buying Buying214 = {"D.I.Y.",214,"214 - D.I.Y.","MCC RU MOW - DIY HO",{}};
+Buying Buying215 = {"Car Accessories",215,"215 - Car Accessories","MCC RU MOW - DIY HO",{}};
+Buying Buying216 = {"Home textiles",216,"216 - Home textiles","MCC RU MOW - Home Textile HO",{}};
+Buying Buying217 = {"Sport",217,"217 - Sport","MCC RU MOW - Sport&Garden HO",{}};
+Buying Buying218 = {"Camping/Garden",218,"218 - Camping/Garden","MCC RU MOW - Sport&Garden HO",{}};
+Buying Buying219 = {"Ladies confection",219,"219 - Ladies confection","MCC RU MOW - Ladies clothing&Luggage HO",{}};
+Buying Buying220 = {"Men confection",220,"220 - Men confection","MCC RU MOW - Men clothing&Shoes HO",{}};
+Buying Buying221 = {"Workwear",221,"221 - Workwear","MCC RU MOW - Ladies clothing&Luggage HO",{}};
+Buying Buying222 = {"Shoes",222,"222 - Shoes","MCC RU MOW - Men clothing&Shoes HO",{}};
+Buying Buying223 = {"Underwear",223,"223 - Underwear","MCC RU MOW - Underwear HO",{}};
+Buying Buying224 = {"Office Supplies",224,"224 - Office Supplies","MCC RU MOW - Office Supplies HO",{}};
+Buying Buying227 = {"Toys",227,"227 - Toys","MCC RU MOW - Toys&Christmas HO",{}};
+Buying Buying228 = {"Cookware",228,"228 - Cookware","MCC RU MOW - Gastro cookware HO",{}};
+Buying Buying229 = {"Luggage",229,"229 - Luggage","MCC RU MOW - Ladies clothing&Luggage HO",{}};
+Buying Buying230 = {"Office Furniture/Stationery",230,"230 - Office Furniture/Stationery","MCC RU MOW - Office furniture HO",{}};
+Buying Buying232 = {"Home equipment",232,"232 - Home equipment","",{}};
+Buying Buying2381 = {"Tableware",2381,"238 - Tableware(Gastro tableware)","MCC RU MOW - Gastro tableware&Serving HO",{}};
+Buying Buying2382 = {"Tableware",2382,"238 - Tableware(Gastro equipment)","MCC RU MOW - Gastro equipment&Furniture",{}};
+Buying Buying501 = {"Metropolia",501,"501 - Metropolia","",{}};
+
+Buying[] AllBuyings = {Buying100,
+    Buying101, Buying102, Buying103, Buying104, Buying105, Buying106, Buying107, 
+    Buying108, Buying109, Buying110, Buying111, Buying112, Buying113, Buying114, 
+    Buying115, Buying116, Buying117, Buying500, Buying600, Buying210, Buying211, 
+    Buying213, Buying214, Buying215, Buying216, Buying217, Buying218, Buying219, 
+    Buying220, Buying221, Buying222, Buying223, Buying224, Buying227, Buying228, 
+    Buying229, Buying230, Buying232, Buying2381, Buying2382, Buying501
+};

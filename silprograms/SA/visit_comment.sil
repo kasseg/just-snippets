@@ -1,0 +1,5 @@
+//add coment Визит согласован
+
+
+string commentMsg = "Визит согласован" ;
+addJSDComment(key, currentUser(), commentMsg, false, false);

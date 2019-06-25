@@ -1,0 +1,126 @@
+// evgeniy russkikh
+// добавляет делегирующих нужному пользователю
+string format = "yyyy-MM-dd";
+string parentUser=getUser(gadget_getSingleValue(argv, "Кому")).username;
+
+string delegateUser=toLower(getUser(gadget_getSingleValue(argv, "Кого")).username);
+string until = formatDate(gadget_getDateValue(argv, "До"), format);
+runnerLog(parentUser);
+runnerLog(delegateUser);
+runnerLog(until);
+string parentDelegate=toLower(getUserProperty(parentUser, "delegates"));
+
+string [] userDelegatesNameAndDate=split(parentDelegate,",");//0 = username, 1=until date
+//string [] wannaBeNameAndDate=split(wannaBeDelegate,"=");//0 = username, 1=until date
+
+if (userExists(delegateUser)){
+    if (until>currentDate()){
+        string newDelegates="";
+        boolean userExists=false;
+        if (parentDelegate!="null" && parentDelegate!="Null"){
+            for(string delegateWithdate in userDelegatesNameAndDate){
+                string [] DelegateByOne=split(delegateWithdate,"=");//0 = username, 1=until date
+                if (DelegateByOne[0]!=delegateUser){
+                    newDelegates+=delegateWithdate+",";
+                } else {
+                   newDelegates+=DelegateByOne[0]+"="+until+",";
+                   userExists=true;
+                }
+            }
+        }
+        if (!userExists){
+            newDelegates+=delegateUser+"="+until+",";
+        }
+        
+        if (isNotNull(newDelegates)){
+            newDelegates=chop(newDelegates,length(newDelegates)-1);
+        }
+        if (newDelegates==""){
+            newDelegates="null";
+        }
+        
+        setUserProperty(parentUser, "delegates", newDelegates);
+        
+        if (userExists){
+            runnerLog("AlreadyWas: "+delegateUser);
+        } else {
+            runnerLog( "Added: "+delegateUser);
+            string [] myArgs=parentUser+"="+delegateUser;
+            call("","General_new_delegate_to_old_issues.sil",myArgs);
+        }
+    } else {
+        runnerLog("WrongDate");
+    }
+} else {
+    runnerLog("WrongLogin");
+}
+
+
+
+/*if (isNotNull(parentUser)){
+    if (isNotNull(delegateUser)){
+        string readProperty=getUserProperty(parentUser, "delegates");
+        if (isNotNull(readProperty)){
+            readProperty+=",";
+        }
+        runnerLog("Было: "+readProperty);
+        setUserProperty(parentUser, "delegates", readProperty+delegateUser+"="+until);
+        runnerLog("Стало: "+getUserProperty(parentUser, "delegates"));
+    } else runnerLog("Пользователя "+gadget_getSingleValue(argv, "Кого")+" не существует");
+} else runnerLog("Пользователя "+gadget_getSingleValue(argv, "Кому")+" не существует");
+*/
+
+
+/*
+string getData=arrayGetElement(argv, 0);
+string username=substring(getData,0,indexOf(getData,"*"));
+string wannaBeDelegate=toLower(substring(getData,indexOf(getData,"*")+1,-1));
+string userDelegate=toLower(getUserProperty(username, "delegates"));
+
+
+
+string [] userDelegatesNameAndDate=split(userDelegate,",");//0 = username, 1=until date
+string [] wannaBeNameAndDate=split(wannaBeDelegate,"=");//0 = username, 1=until date
+if (contains(wannaBeNameAndDate[0],"@")){
+    wannaBeNameAndDate[0]=toLower(getUserByEmail(wannaBeNameAndDate[0]).username);
+}
+if (userExists(wannaBeNameAndDate[0])){
+    if (wannaBeNameAndDate[1]>currentDate()){
+        string newDelegates="";
+        boolean userExists=false;
+        if (userDelegate!="null" && userDelegate!="Null"){
+            for(string delegateWithdate in userDelegatesNameAndDate){
+                string [] DelegateByOne=split(delegateWithdate,"=");//0 = username, 1=until date
+                if (DelegateByOne[0]!=wannaBeNameAndDate[0]){
+                    newDelegates+=delegateWithdate+",";
+                } else {
+                   newDelegates+=DelegateByOne[0]+"="+wannaBeNameAndDate[1]+",";
+                   userExists=true;
+                }
+            }
+        }
+        if (!userExists){
+            newDelegates+=wannaBeNameAndDate[0]+"="+wannaBeNameAndDate[1]+",";
+        }
+        
+        if (isNotNull(newDelegates)){
+            newDelegates=chop(newDelegates,length(newDelegates)-1);
+        }
+        if (newDelegates==""){
+            newDelegates="null";
+        }
+        
+        setUserProperty(username, "delegates", newDelegates);
+        
+        if (userExists){
+            return "AlreadyWas*"+wannaBeNameAndDate[0];
+        } else {
+            return "Added*"+wannaBeNameAndDate[0];
+        }
+    } else {
+        return "WrongDate";
+    }
+} else {
+    return "WrongLogin";
+}
+*/

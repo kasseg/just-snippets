@@ -1,0 +1,2 @@
+string commentMsg = "Запрошен результат визита" ;
+addJSDComment(key, "remoteuser", commentMsg, false, false);

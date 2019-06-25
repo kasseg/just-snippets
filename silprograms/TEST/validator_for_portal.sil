@@ -1,0 +1,8 @@
+string errorMsg1 = "Нужно минимум 4 символа";
+string errorMsg2 = "Можно только буквы!";
+if(length(summary)<3) {
+   return false, "summary", errorMsg1;
+}
+if (!isAlpha(summary)){
+    return false, "summary", errorMsg2;
+}

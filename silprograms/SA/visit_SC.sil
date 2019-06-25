@@ -1,0 +1,3 @@
+//добавление "Забран в СЦ" в выполненные работы
+string format = "EEE, d MMM yyyy";
+customfield_13417+="| "+formatDate(currentDate(), format)+" Забран в СЦ.";

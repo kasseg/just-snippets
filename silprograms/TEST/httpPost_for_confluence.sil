@@ -1,0 +1,24 @@
+string url = "https://confluence.r4.madm.net/rest/api/content";
+HttpRequest request;
+HttpHeader authHeader = httpBasicAuthHeader("admin", "admin");//логин и пароль
+HttpHeader header = httpCreateHeader("Content-Type", "application/json");
+request.headers += authHeader;
+request.headers += header;
+string titlePage="Title from var";
+string bodyPage="Body of page <br/>from variable";
+string postData="{";
+postData+="\"type\":\"page\"";
+postData+=",\"title\":\""+titlePage+"\"";
+postData+=", \"ancestors\":[{\"id\":13174583}]"; //Родитель. Т.е. внутрь дерева которого положить.
+postData+=", \"space\":{\"key\":\"JSDRU\"}";
+postData+=",\"body\":{\"storage\":{\"value\":\""+bodyPage+"\",\"representation\":\"storage\"}}";
+postData+="}";
+//Post data and get response 
+//httpPost(url, request, "{\"type\":\"page\",\"title\":\"Test page\", \"ancestors\":[{\"id\":13174583}], \"space\":{\"key\":\"JSDRU\"},\"body\":{\"storage\":{\"value\":\"<p>This is <br/> a new page</p>\",\"representation\":\"storage\"}}}");
+httpPost(url, request, postData);
+number statusCode = httpGetStatusCode();
+if (statusCode >= 200 && statusCode < 300) {
+    runnerLog("Successful response!");
+} else {
+    runnerLog(postData);
+}

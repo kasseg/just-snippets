@@ -1,0 +1,134 @@
+//создание подзадач на все тц указанные в Issue Location
+include "ursa/fi_functions.sil";
+include "qa/strings.sil";
+include "qa/buying.sil";
+
+// function getReporter(string current_store_group, string current_dept_group){
+//     if(isNotNull(usersInGroups({current_store_group,current_dept_group}))){
+//         return usersInGroups({current_store_group,current_dept_group});//список пользователей с обеими группами
+//     }
+// }
+runAs("remoteuser");
+string reason = customfield_13703;
+string action = customfield_13704;
+description = "Уважаемые коллеги!\r\nИнформация о процессе Stop Selling\r\nПричина: " + reason + "\r\nДействие: " + action + "\r\nБудьте информированы";
+summary = standart_summary + " " + summary;
+string custom_fields_mapping= "reporter|reporter_toChange|Issue Location|";
+
+
+
+string[] stores_to_create = "";
+string parent_issue = key;
+// Store[] test_stores = {store_1023, store_1074, store_1032,store_1064};
+project_name = "QA";//
+issue_priority_name = "4";//
+issue_components = {""};
+string cma = customfield_13604;
+    // for(Store current_store in all_stores){
+if(customfield_10702=="Все ТЦ MCC"){
+     for(Store current_store in all_stores){
+        stores_to_create = addElementIfNotExist(stores_to_create, current_store.name);
+     }
+}
+else{
+   stores_to_create = customfield_10702;
+}
+    for(Store current_store in all_stores){
+        if(elementExists(stores_to_create, current_store.name)){
+            string custom_fields_mapping_store = replace(custom_fields_mapping + current_store.name, "reporter_toChange", "admin-ag");
+            runnerLog(custom_fields_mapping_store);
+            string cur_issue_summary = current_store.name + current_store.index ;
+            string child_issue = createIssue(
+                project_name, 
+                parent_issue,  
+                "Подзадача", 
+                standart_summary,
+                issue_priority_name, 
+                standart_description, 
+                issue_components,
+                "",
+                "",
+                "",
+                custom_fields_mapping_store);
+           
+        }
+    }
+
+    for(Buying current_buying_dept in AllBuyings){
+        if(current_buying_dept.fieldValue == cma){
+            if(isNotNull(current_buying_dept.email)){
+                customfield_10002 += usersInGroups(current_buying_dept.email);
+            }
+            if(isNotNull(current_buying_dept.buying_users)){
+                arrayUnion(customfield_10002, current_buying_dept.buying_users); 
+            }
+        }
+    }
+    string[] copies = customfield_14226;
+    
+    for(string cur_copy in copies){
+        switch (cur_copy){
+            case "District Managers":
+                for(string cur_group in district_managers){
+                    string[] users_in_group = usersInGroups(cur_group);
+                    customfield_10002 = arrayUnion(customfield_10002, users_in_group);
+                }
+            break;
+            case "QASO regional":
+                for(string cur_group in qa_regional){
+                    string[] users_in_group = usersInGroups(cur_group);
+                    customfield_10002 = arrayUnion(customfield_10002, users_in_group);
+                }
+            break;
+            case "QA General":
+                for(string cur_group in qa_general){
+                    string[] users_in_group = usersInGroups(cur_group);
+                    customfield_10002 = arrayUnion(customfield_10002, users_in_group);
+                }
+            break;
+            case "Noginsk":
+                for(string cur_group in noginsk_addresses_group){
+                    string[] users_in_group = usersInGroups(cur_group);
+                    customfield_10002 = arrayUnion(customfield_10002, users_in_group);
+                }
+            break;
+            case "FSD":
+                for(string cur_group in fsd_addresses_group){
+                    string[] users_in_group = usersInGroups(cur_group);
+                    customfield_10002 = arrayUnion(customfield_10002, users_in_group);
+                }
+            break;
+            case "E-Commerce":
+                customfield_10002 = arrayUnion(customfield_10002, ecommerce_users);
+                break;
+            case "Lobnya":
+                customfield_10002 = arrayUnion(customfield_10002, lobnya_users);
+            break;
+        }
+  }
+//   addJSDComment(key, "admin-ag", copies, true, true) ;
+    
+    
+    
+    
+    
+    
+    
+   
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

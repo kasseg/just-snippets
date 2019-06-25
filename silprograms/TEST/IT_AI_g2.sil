@@ -1,0 +1,136 @@
+// AI for IT Support. Generation 2.
+// denis.burdukovskiy@metro-cc.ru
+struct newValue {           // Изменение поля заявки
+    string field;           // Примеры "priority" , "customfield_11010", "Metro Service"
+    string value;           // Пример "2"
+}
+struct variant {
+    string dateRE;          // RegExp для проверки текущей даты. Если неуказано или "" , то это TRUE. Использовать в первом варианте, если их несколько.
+                            // Пример (.*Mon.*|.*Thu.*)(w42|w43)   - Mon или Thu только 42й или 43й недели года. Формат даты - ниже 
+    newValue [] newValues;  // Массив новых значений полей заявки
+}
+struct aMatchItem {
+    string name;            // Смысловое определение случая.
+    string textRE;          // RegExp для поиска. Должно быть в lower case (!)
+                            // Пример ^(?!.*(фиск)).*принтер.*|.*картридж.*  - принтер или картридж, но без фиск в строке.
+                            // Пример .*\\b(dis|дис)\\b.* - точное совпадение отдельного слова dis или дис
+    string template;        // Шаблон запроса. Подсказка для FLS о том, что должно быть предоставлено пользователем.
+    variant [] variants;    // Возможные варианты заполнения полей в зависимости от текущей даты.
+}
+
+string format = "yyyy-MM-dd E 'w'w"; // 2018-10-15 Mon w42 : Monday, week in year 42 
+string currentDay = formatDate(currentDate(), format);
+string textToFindRegExp = toLower(summary+" "+description);
+
+variant thisVariant;        // здесь будет записан найденный вариант
+aMatchItem [] allCases;
+aMatchItem ItemToAdd ;
+
+// описание случая
+ItemToAdd.name = "Принтеры обычные";
+ItemToAdd.textRE = "^(?!.*(фиск|zebra|зебр|карто)).*принтер.*|.*картридж.*|.*мфу.*";
+ItemToAdd.variants[0].newValues += {"component","Printer"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "Workplaces > Printing Devices > Hardware"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "Зебра (этикетки и карты клиента)";
+ItemToAdd.textRE = ".*zebra.*|.*зебр.*|.*этикет.*";
+ItemToAdd.variants[0].newValues += {"component","Printer (Card,Label)"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "IT Projects & Suppliers > POS Services > Card and Label Printer"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "e-Doc";
+ItemToAdd.textRE = ".*e-?do(c|k).*|.*(и|е)-?док.*";
+ItemToAdd.variants[0].newValues += {"component","e-Doc"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "Admin & Dev > eDoc"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "Табелки, Престиж, плоттер";
+ItemToAdd.textRE = ".*prestige.*|.*престиж.*|.*плотт?ер.*|.*табел(ок|к).*";
+ItemToAdd.variants[0].newValues += {"component","Prestige"}; 
+ItemToAdd.variants[0].newValues += {"Metro Service", "MMS > Prestige"};
+ItemToAdd.variants[0].newValues += {"priority", "3"};
+ItemToAdd.variants["Подготовка и старт Метропочты"].dateRE = "(.*Mon.*|.*Tue.*|.*Wed.*|.*Thu.*)(w42|w44|w46|w48|w50|w52)";
+ItemToAdd.variants["Подготовка и старт Метропочты"].newValues += {"component","Prestige"}; 
+ItemToAdd.variants["Подготовка и старт Метропочты"].newValues += {"Metro Service", "MMS > Prestige"};
+ItemToAdd.variants["Подготовка и старт Метропочты"].newValues += {"priority", "2"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "DIS";
+ItemToAdd.textRE = ".*\\b(dis|дис)\\b.*";
+ItemToAdd.variants[0].newValues += {"component","DIS"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "CRM & Checkout > DIS"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "Разное железо";
+ItemToAdd.textRE = ".*катт?ер.*|.*логг?ер";
+ItemToAdd.variants[0].newValues += {"component","Hardware other"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "Local IT Support > Hardware other"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+ 
+// описание случая
+ItemToAdd.name = "MDLS";
+ItemToAdd.textRE = ".*мдлс.*|.*mdls.*|.*консолидаци.*|.*frip.*|.*фрип.*|.*hawa.*";
+ItemToAdd.variants[0].newValues += {"component","MDLS"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "Logistics > MDLS"};
+ItemToAdd.variants[0].newValues += {"priority", "3"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "Опрос сотрудников Metro Voice";
+ItemToAdd.textRE = ".*metro.*voice.*|.*метро.*войс.*";
+ItemToAdd.variants[0].newValues += {"component","Metro Voice"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "HR > Poll"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// описание случая
+ItemToAdd.name = "Опрос сотрудников Metro Ритм перемен";
+ItemToAdd.textRE = ".*ритм.*перемен.*|.*transformation.*pulse.*";
+ItemToAdd.variants[0].newValues += {"component","Transformation Pulse"};
+ItemToAdd.variants[0].newValues += {"Metro Service", "HR > Poll"};
+ItemToAdd.variants[0].newValues += {"priority", "4"};
+allCases += ItemToAdd;
+ItemToAdd="";
+
+// завершение описаний случаев
+
+for (aMatchItem aCase in allCases) {
+    if (matches(textToFindRegExp,aCase.textRE)){
+
+        thisVariant = aCase.variants[0];            // Есть совпадение. Берём дефолтный вариант.
+        for (variant aVariant in aCase.variants) {  // Если варианты, начинаем поиск глубже по вариантам - случаям в зависимости от даты
+            if (matches(currentDay, aVariant.dateRE)){
+                thisVariant = aVariant;             // последний вариант из имеющихся.
+            }
+        }
+    break;    //есть первое совпадение по textRE -> завершаем поиск.
+    }
+}
+
+//update jira issue
+for (newValue newChange in thisVariant.newValues){
+    string fieldToChange=newChange.field;
+    %fieldToChange% = newChange.value;
+}
+
+return ;
+

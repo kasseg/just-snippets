@@ -1,0 +1,41 @@
+// Создание задач/подзадач на замену Backup лент по регионам и ТЦ.
+include "it/regions";//подключение структуры регионов
+//if(day(currentDate())==day(startOfMonth(currentDate()))){//проверка, что сегодня начало месяца
+string project_name = "TEST";//поменять на "IT"
+string issue_priority_name = "4";//поменять на актуальный приоритет
+string parent_issue_type_name = "Инцидент";//поменять на актуальный тип задачи
+string child_issue_type_name = "Подзадача";//поменять на актуальный тип подзадачи
+string issue_summary = "Месячный Backup ";
+string[] issue_components = {"Backup"};
+string[] custom_fields_mapping = "Metro Service|Storage & Backup > Backup & Archiving > Files Backup & Archiving|Metro Team|Local IT Support|Issue Location";
+string parent_issue_description = "Необходимо заменить месячную backup ленту согласно инструкции: 3.18.6 Проведение процедуры резервного копирования данных.doc ";
+string child_issue_description = "Необходимо заменить месячную backup ленту согласно инструкции: 3.18.6 Проведение процедуры резервного копирования данных.doc в ТЦ ";
+Region[] all_regions = {East,South};//массив регионов. поменять на {East,West,Center,South,Siberia,Mow}
+    //создание задачи на регион
+for(Region current_region in all_regions){
+    string custom_fields_mapping_region = custom_fields_mapping+current_region.name;
+    string parent_issue = createIssue(
+    project_name,
+    "", 
+    parent_issue_type_name,
+    issue_summary + current_region.name, 
+    issue_priority_name, 
+    parent_issue_description + current_region.name,
+    issue_components,"","","",custom_fields_mapping_region);
+    %parent_issue%.reporter = current_region.reporter;
+    //создание подзадач на ТЦ
+    for(string store in current_region.stores){
+        string custom_fields_mapping_store = custom_fields_mapping + store;
+        string child_issue = createIssue(
+        project_name,
+        parent_issue,
+        child_issue_type_name,
+        issue_summary + store,
+        issue_priority_name,
+        child_issue_description + store,
+        issue_components,"","","",custom_fields_mapping_store);
+        %child_issue%.reporter = current_region.reporter;
+    }   
+}
+
+//}

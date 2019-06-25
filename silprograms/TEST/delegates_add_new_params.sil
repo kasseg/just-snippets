@@ -1,0 +1,5 @@
+//gadget_createInput("Кому", "",  true, "Кому нужно добавить делегирующих");
+//gadget_createInput("Кого", "",  true, "Кого нужно добавить");
+gadget_createUserPicker("Кому", "remoteuser",  true, "Кому нужно добавить делегирующих");
+gadget_createUserPicker("Кого", "remoteuser",  true, "Кого нужно добавить");
+gadget_createDatePicker("До", currentDate(), false, "По какое число выставить делегирование");

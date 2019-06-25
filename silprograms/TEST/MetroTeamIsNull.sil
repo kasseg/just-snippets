@@ -1,0 +1,4 @@
+if (isNull(customfield_11010) and argv["screen"] == "view")
+{
+    lfDialogMessage("В инциденте не проставлена команда (Metro Team)! Необходимо выставить команду, иначе инцидент может зависнуть без внимания", "ERROR");
+}//lfExecuteJS("checkTeam.js");

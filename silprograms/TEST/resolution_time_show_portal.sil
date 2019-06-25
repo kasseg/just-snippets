@@ -1,0 +1,161 @@
+//проставление комментария с средним временем решения задач с таким же сервисом 
+// Удалить. Перенесено в IT 
+string myproject = "IT"; 
+// string myService = customfield_10103; //Metro Service 
+string myPeriod = "-30d";
+string myPeriodText = substring(myPeriod, 1, 3);
+//string myJQL = "project = "+ myproject+" and 'Metro Service' = '"+myService+"' and resolved >startOfDay('"+myPeriod+"')" + " and 'resolution'  not in ('Отозвана автором', 'Ответ не получен')"+" and 'Priority' = ";
+string myJQLstart = "project = "+ myproject+" and 'component' = '"+component+"' and resolved >startOfDay('"+myPeriod+"')" + " and 'resolution'  not in ('Отозвана автором', 'Ответ не получен')";
+string myJQL = "project = "+ myproject+" and 'component' = '"+component+"' and resolved >startOfDay('"+myPeriod+"')" + " and 'resolution'  not in ('Отозвана автором', 'Ответ не получен')"+" and 'Priority' = ";
+string curpriotext = "Приоритет заявки: ";
+string usualPlanText = "Типичное время решения подобных заявок:";
+string usualPlanTextWOcomponent = "Заявок данного типа за последние "+myPeriodText+" дней не было. Максимальное время решения заявок такого приоритета:";
+string usualPlanTextWOcomponentPrio = "Заявок данного типа и приоритета за последние "+myPeriodText+" дней не было. Максимальное время решения заявок такого приоритета:";
+// string remainingBlank ="Данных о среднем времени решения пока нет. Максимальное время решения вашей заявки с момента открытия: "; 
+string stat = "Статистика по данному типу задач за предыдущие "+myPeriodText+" суток.";
+string statInProgress = "Ваша заявка в работе уже ";
+string CommentText;
+
+boolean[] tablelist;
+interval inprogress = (currentDate()-created);
+
+string responseType="";
+string myTable = "";
+string [] myPrio = {"1","2","3", "4"};
+string [] keysArraywithdiffprio;
+string [] keys;
+struct InfoStructure {         //структура информации
+    string[] myissues; 
+    number issuecount;
+    string mypriority;
+    interval averagetime; 
+    string prioritytime;
+    string plantime;
+    string mintime;
+    string maxtime;
+    string medianatime;
+    boolean needtable;
+}
+InfoStructure Info; 
+
+function getDataforInfoStructure(string infoPriority,string myJQL){//функция получения сроков решения 
+    InfoStructure CurInfo;
+   
+    date timetowait;date createddate;date resolveddate;
+    interval [] allperiods;
+    interval alldates;interval period;interval remaining;interval inprogress;
+    string[] JQLresult = selectIssues(myJQL+infoPriority);
+    
+   
+    
+    JQLresult = arraySort(JQLresult,false);
+    CurInfo.myissues = JQLresult;
+    CurInfo.issuecount = arraySize(JQLresult);
+    CurInfo.mypriority = infoPriority;
+    Info.mypriority = priority;
+    if (size(JQLresult)!=0){
+        for(string currentIssue in JQLresult){
+            JFieldChange [] myLastChanges = lastIssueChanges(currentIssue.key);//данные о последнем изменении
+            createddate = currentIssue.created;//дата создания
+            resolveddate = myLastChanges[0].changeDate; //последнее обновление решенной задачи из списка
+            period = resolveddate - createddate;//время решения
+            alldates = alldates + period;//сумма времени решения всех задач из списка
+            allperiods = arrayAddElement(allperiods, period);//массив всех сроков решения
+            }
+        allperiods = arraySort(allperiods, false);//сортируем массив по возрастающей
+        number myIndex = floor(arraySize(allperiods)/2, 2);//индекс медианного значения
+        CurInfo.averagetime = alldates/arraySize(allperiods);//среднее значение
+        CurInfo.mintime = arrayGetElement(allperiods, 0);//минимальное (первое) значение
+        CurInfo.maxtime = arrayGetElement(allperiods, arraySize(allperiods)-1);//максимальное(последнее) значение
+        CurInfo.medianatime = arrayGetElement(allperiods,myIndex);//медиана
+        inprogress = currentDate() - createddate;
+        remaining = CurInfo.averagetime -(currentDate() - createddate);//расчет оставшегося времени
+        CurInfo.plantime = CurInfo.medianatime;
+        CurInfo.needtable = true;
+    }
+   else{//если поиск пустой
+        CurInfo.issuecount = 0;
+        CurInfo.mintime = 0;
+        CurInfo.maxtime = 0;
+        CurInfo.medianatime = 0;
+        CurInfo.averagetime = 0;
+        CurInfo.plantime = CurInfo.prioritytime;
+        CurInfo.needtable = false;
+        }
+    return CurInfo;
+}
+function CreateTable(InfoStructure[]Allinfo){
+    string myTableHeader = "||Приоритет||Количество||Медиана||Мин.||Макс.||"+"\n";//добавление заголовка таблицы
+    string myTable;
+    for (InfoStructure CurInfo in Allinfo){
+       myTable = myTable +
+        "|"+CurInfo.mypriority +
+        "|"+CurInfo.issuecount +
+        "|"+chop(CurInfo.medianatime,length(CurInfo.medianatime)-3)+
+        "|"+chop(CurInfo.mintime,length(CurInfo.mintime)-3)+
+        "|"+chop(CurInfo.maxtime,length(CurInfo.maxtime)-3)+
+        "|"+"\n";
+            }
+    myTable = myTableHeader +myTable;
+    return myTable;
+}
+function translate(string CommentText){
+    string []english={"w","d","h","m","s"};
+    string []russian={"н","д","ч","м","с"};
+    for(number i=0;i<4;i++){
+        CommentText = replace(CommentText,english[i],russian[i]);
+    }
+    return CommentText;
+}
+string priomaxtime = "";
+InfoStructure[] Allinfo;
+InfoStructure CurrentPrioInfo;
+
+if (priority=="1"){priomaxtime = "24 часа";}
+if (priority=="2"){priomaxtime = "5 дней";}
+if (priority=="3"){priomaxtime = "10 дней";}
+if (priority=="4"){priomaxtime = "60 дней";} 
+
+string[] JQLresultCheck = selectIssues(myJQLstart);
+if (size(JQLresultCheck)==0){
+    responseType = 3; //заявок нет вообще
+}
+else{//получение данных
+   
+    for (string curPrio in myPrio){//для всех приоритетов
+        InfoStructure CurInfo = getDataforInfoStructure(curPrio,myJQL);//данные для текущего приоритета
+        Allinfo= arrayAddElement(Allinfo, CurInfo);//пополнение массива всех данных
+        if(CurInfo.mypriority == priority ){
+                CurrentPrioInfo = CurInfo;//данные для текущего приоритета
+        }
+    }
+    if (CurrentPrioInfo.needtable ==false){responseType = 2;}
+    if (CurrentPrioInfo.needtable ==true){responseType = 1;}
+    myTable = CreateTable(Allinfo);
+}
+
+if (responseType == 1){
+    CommentText = curpriotext + priority + "\n";
+    CommentText = CommentText + usualPlanText + chop(CurrentPrioInfo.medianatime, length(CurrentPrioInfo.medianatime)-3)+ "\n";
+    CommentText = CommentText + statInProgress+" " +chop(inprogress,length(inprogress)-3)+ "\n";
+    CommentText = CommentText + stat  + "\n";
+    CommentText = CommentText + "\n" + myTable;
+}
+if (responseType == 2){
+    CommentText = curpriotext + priority + "\n";
+    CommentText = CommentText + usualPlanTextWOcomponentPrio + priomaxtime + "\n";
+    CommentText = CommentText + statInProgress+" " +chop(inprogress,length(inprogress)-3)+ "\n";
+    CommentText = CommentText + stat  + "\n";
+    CommentText = CommentText + "\n" + myTable;
+}    
+if (responseType == 3){
+    CommentText = curpriotext + priority + "\n";
+    CommentText = CommentText + usualPlanTextWOcomponent + priomaxtime + "\n";
+    CommentText = CommentText + statInProgress+" " +chop(inprogress,length(inprogress)-3)+ "\n";
+}    
+
+CommentText = translate(CommentText);
+//addJSDComment(key, "remoteuser", CommentText, false); //внутренний
+addJSDComment(key, "remoteuser", CommentText, false, false); //Без уведомления почтой о комментарии
+//addComment(key, "remoteuser", CommentText, "MCC RU - Information Services"); //Комментарий доступен только группе EDP
+return CommentText;

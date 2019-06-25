@@ -1,0 +1,6 @@
+//проверка соответствия оборудования
+string [] s=customfield_14407;  //
+    
+    if (s[1]=="!") {
+    return false, "Нет серийного номера";
+     } else return true;

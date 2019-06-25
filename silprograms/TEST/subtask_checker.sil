@@ -1,0 +1,12 @@
+//Проверяет все подзадачи, если все выполнены, то переводит родительскую задачу в следующий статус
+string [] allSubtasksKeys=subtasks(parent);
+boolean allSubtasksDone=true;
+for (string subKey in allSubtasksKeys) {
+        if (%subKey%.status!="Done"){
+            allSubtasksDone=false;
+            break;
+        }
+}
+if (allSubtasksDone){
+    autotransition("Resolved", parent, true, true, true);
+}

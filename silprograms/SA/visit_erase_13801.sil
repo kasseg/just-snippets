@@ -1,0 +1,23 @@
+//gadget_Checkbox_options заявки для визита and edit linkedIssues
+
+string [] op = getFieldOptions("SA", "Визит", "Заявки для визита");
+for (string op1 in op) 
+                    {
+                if  (contains(customfield_13801, op1)==true) {
+//заявка выполнена                        
+                        string relatedIssue = chop(op1, indexOf(op1, ","));
+                        addJSDComment(relatedIssue, currentUser(), "Заявка выполнена во время визита "+key+".", false, false);
+                        //addJSDComment(op1, currentUser(), "Заявка выполнена во время визита "+key+".", false, false);
+                        autotransition(111, relatedIssue, true, true, true);
+                        //autotransition(111, op1, true, true, true);
+                    }
+                else { 
+//ремонт будет продолжен
+                       string relatedIssue = chop(op1, indexOf(op1, ","));
+                        addJSDComment(relatedIssue, currentUser(), "Проведен визит "+key+".", false, false);
+                       //addJSDComment(op1, currentUser(), "Проведен визит "+key+".", false, false);
+                       autotransition(671, relatedIssue, true, true, true);  
+                       // autotransition(671, op1, true, true, true);                    
+                }
+                    }
+for (string op1 in op) { admDeleteCustomFieldOption(op1, "Заявки для визита", "SA", "Визит");}

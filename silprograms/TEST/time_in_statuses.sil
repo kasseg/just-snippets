@@ -1,0 +1,67 @@
+struct superResult{
+        string [] names;
+        interval [] vremyas;
+        number [] countss;
+    }
+function getStatusesTimeSpent(string issueKey) {
+    // function that returns a map with key status and value total time spent
+    interval[] result;
+    string [] statuses;
+    number [] counts;
+    string[] statusHistory = fieldHistory(issueKey, "status");
+    superResult myresult;
+    date oldDate = %issueKey%.created;
+    if(size(statusHistory) > 0) {
+        string oldStatus = getStatusNameById(statusHistory[1]);
+        interval timeSpent = 0;
+        for(number i = 3; i < size(statusHistory); i += 2) {
+            string newStatus = getStatusNameById(statusHistory[i]);
+            date newDate = statusHistory[i-1];
+            timeSpent = newDate - oldDate;
+            if (arrayElementExists(statuses, oldStatus)){
+                number indexOfStatus=arrayFind(oldStatus, statuses);
+                result[indexOfStatus]+=timeSpent;
+                counts[indexOfStatus]+=1;
+            } else {
+                result+= timeSpent;
+                statuses+=oldStatus;
+                counts+=1;
+            }
+            oldStatus = newStatus;
+            oldDate = newDate;
+        }
+        myresult.names=statuses;
+        myresult.vremyas=result;
+        return myresult;
+    }
+}
+
+string jql="issuetype = \"Credit Limits\" and created >=2018-08-01 and status = Done and \"Customer Request Type\" not in (\"HVS (ПРЕДОПЛАТА) (CMREQ)\",\"Cash&Carry prepayment (НЕ ДОСТАВКА) (CMREQ)\")";
+string [] SelIss = selectIssues (jql);
+string [] statuses;
+interval [] timeInStatus;
+superResult allTickets;
+runnerLog("Всего задач: "+size(SelIss));
+for (string isc in SelIss) {
+    superResult timeSpentInStatuses = getStatusesTimeSpent(isc);
+    for (number i=0;i<size(timeSpentInStatuses.names);i++){
+        if (!arrayElementExists(allTickets.names, timeSpentInStatuses.names[i])){
+            allTickets.names+=timeSpentInStatuses.names[i];
+            allTickets.vremyas+=timeSpentInStatuses.vremyas[i];
+            allTickets.countss+=1;
+        } else {
+            number indexOfStatus=arrayFind(allTickets.names, timeSpentInStatuses.names[i]);
+            allTickets.vremyas[indexOfStatus]+=timeSpentInStatuses.vremyas[i];
+            allTickets.countss[indexOfStatus]+=1;
+        }
+    }
+}
+runnerLog(allTickets.names);
+runnerLog(allTickets.vremyas);
+runnerLog(allTickets.countss);
+interval [] averageTime;
+
+for (number i=0;i<size(allTickets.vremyas);i++){
+    averageTime+=allTickets.vremyas[i]/allTickets.countss[i];
+}
+runnerLog(averageTime);

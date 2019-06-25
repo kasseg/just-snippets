@@ -1,0 +1,2 @@
+//description=chop(description,10);
+//return false, "comment", description;

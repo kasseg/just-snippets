@@ -1,0 +1,55 @@
+
+string standart_summary = "Stop Selling";
+string main_task_description = "";
+string standart_description = "Уважаемые коллеги!\r\nПросим вас проверить и снять с реализации указанную партию (партии) продукции.\r\nПартию (артикул) временно не отгружать клиентам.\r\nКоличество снятой партии внесите в таблицу. В случае отсутствия указанной партии укажите «0».\r\nПри выявлении продукции с указанным несоответствием в других партиях необходимо снять ее с реализации и добавить в поле «комментарий».\r\nФАЙЛ С ТАБЛИЦЕЙ ВО ВЛОЖЕНИИ\r\nЗаполненный файл необходимо выслать ответом на это письмо\r\nВАЖНО!При ответе просьба не менять тему письма.";
+
+// string[] custom_fields_mapping_toChange = "reporter|reporter_toChange|FI Команда|Group_toChange|Issue Location";
+
+string[] store_group_for_QA_participants = {
+    "MCC RU - Delivery Volga", "MCC RU - Delivery South", 
+    "MCC RU - Delivery Syberia", "MCC RU - Delivery Ural", "MCC RU - Delivery North-West",
+    "MCC RU - Delivery Moscow1", "MCC RU - Delivery Moscow2",
+    "MCC RU - Delivery Center1", "MCC RU - Delivery Center2",
+    "MCC RU - Deputy Store Managers",
+    "MCC RU - InStore Sales",
+    "MCC RU - Sales Managers",
+    "MCC RU - Key Accounts",
+    "MCC RU - Senior Key Account",
+    "MCC RU - Store Managers"
+};
+string[] store_group_haccp = {
+    "MCC RU - HACCP Volga", "MCC RU - HACCP South", 
+    "MCC RU - HACCP Syberia", "MCC RU - HACCP Ural", "MCC RU - HACCP North-West",
+    "MCC RU - HACCP Moscow1", "MCC RU - HACCP Moscow2",
+    "MCC RU - HACCP Center1", "MCC RU - HACCP Center2"
+};
+
+string[] district_managers = {
+    "MCC RU MOW - District Managers"
+};
+string[] qa_regional = {
+    "MCC RU - QASO regional"
+   
+};
+string[] qa_general  = {
+    "MCC RU - QA General"
+};
+
+string[] noginsk_addresses_group = {
+    "MGL RU NGN - WH MANAGERS",
+    "MGL RU NGN - Senior Dispatchers"
+};
+
+string[] fsd_addresses_group = {
+    "MCC RU MOW - MFSD STOCK PLANNING"
+};
+
+string[] ecommerce_users = {
+    "olga.ulyanova",
+    "aleksandra.kuchumova",
+    "operations.webshop"
+};
+string[] lobnya_users = {
+    "dmitry.mosin",
+    "fasol.warehouse"
+};

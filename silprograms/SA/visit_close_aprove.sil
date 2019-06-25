@@ -1,0 +1,26 @@
+// create issue in IT project for aprove close SA visit
+if (customfield_1400[text] !="") {
+    
+    } 
+//string newSAissue = createIssue("IT","", "Инцидент", summary);
+//%newSAissue%.description=("Визит компании "
+//+ key.customfield_13422 + " с целью " + key.customfield_13409+". ");
+//%newSAissue%.description+=("Начало визита " + key.customfield_13406);//начало визита
+//%newSAissue%.description+=(", Окончание визита " + key.customfield_13501);//окончание визита
+
+description=("Визит компании "+ key.customfield_13422 + " с целью " + key.customfield_13409+". ");
+    string format = "dd.MM.yy HH:mm";
+description+=("\n"+"Начало визита:    " + formatDate(key.customfield_13406, format));//начало визита
+description+=("\n"+"Окончание визита: " + formatDate(key.customfield_13501, format));//окончание визита
+
+    string [] relIssues= linkedIssues(key, "Relates");
+    if (length(relIssues)>0) {
+description+=("\n"+"Заявки по которым проводится визит:"+"\n");
+    for (string relKey in relIssues) {
+             if (%relKey%.project=="SA") {
+description+=(%relKey%.key+", Описание:"+%relKey%.description+"\n ");
+                 }}}
+
+
+//%key%.assignee="";
+//linkIssue(key, newSAissue, "Relates");

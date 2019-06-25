@@ -1,0 +1,7 @@
+//измененение статуса связанных заявок на "Визит" 
+string [] relIssues= linkedIssues(key, "Relates");
+for (string relKey in relIssues) {
+            if (%relKey%.project=="SA") {
+                autotransition("Инженер пришел", relKey, true, true, true);
+                 }
+  }

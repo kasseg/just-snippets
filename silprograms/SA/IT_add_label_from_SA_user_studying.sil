@@ -1,0 +1,9 @@
+// issue resolved in SA Project with labels send labels IT Issue
+
+string [] relIssues= linkedIssues(key, "Relates");
+for (string lab in key.labels) {
+for (string relKey in relIssues) {
+    if (%relKey%.project=="IT"  and lab!="Mail" and lab!="Комментарий"and lab!="SA_KBSSS") {
+        
+     %relKey%.labels += lab;
+}}}

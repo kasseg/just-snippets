@@ -1,0 +1,27 @@
+ // автоматическое создание заявок: номер |ТЦ|СО|описание в description
+ string [] loc = getFieldOptions("SA", "Service Task", "Issue Location");
+string [] list=description;
+for (string st in list) {
+ 
+ string [] str=split(st, ";");
+
+  for (string store in loc) {
+             if (contains(store, str[0])==true) {
+ 
+ string newSAissue = createIssue("SA","", "Service Task", "Просроченная замена ФН "+str[0] );
+ 
+ %newSAissue%.description=("Определенное количество ФН считаются просроченными, для исправления данной ситуации с перечисленных ККТ необходимо распечатать фискальный признак, передать чек на кассовый контроль: "+str[2]);  
+  %newSAissue%.customfield_13422=str[1]; // Сервисная о.
+
+ 
+ 
+ %newSAissue%.customfield_10702=store; // issue location
+%newSAissue%.customfield_13211="Незначительная"; // Категория неисправности
+  %newSAissue%.customfield_13413="28/09/18 12:07"; // Дата окончания ремонта по регламенту.
+     %newSAissue%.customfield_13205="28/09/18 12:07"; // Ремонт до 
+      autotransition(11, newSAissue, true, true, true);
+
+ linkIssue("IT-172882", newSAissue, "Relates");
+ }
+ }string [] loc = getFieldOptions("SA", "Service Task", "Issue Location");
+   }

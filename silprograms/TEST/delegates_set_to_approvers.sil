@@ -1,0 +1,18 @@
+// добавляет делегирующих лиц в аппруверы by evgeniy russkikh
+if (isNotNull(customfield_10100)){
+string [] currentApprovers=customfield_10100;
+string [] newApprovers;
+while (arraySize(newApprovers)!=arraySize(currentApprovers)){
+newApprovers=currentApprovers;
+for(string approver in newApprovers){
+    string [] usersDelegatesWithDate = split(getUserProperty(approver, "delegates"),",");
+    if (isNotNull(usersDelegatesWithDate)){
+        for(string delegate in usersDelegatesWithDate){
+        string [] userDelegates = split(delegate,"=");
+        currentApprovers=addElementIfNotExist(currentApprovers, userDelegates[0]);
+        }
+    }
+    }
+}
+customfield_10100=currentApprovers;
+}

@@ -1,0 +1,8 @@
+// validation 1000 characters in new reguest
+
+number i=length(description);
+number j=length(customfield_13207);    
+if ((i+j)>980)  //если не выбран са
+    { 
+        return false, "Превышено количество символов в описании или диагностике(1000)";
+     };

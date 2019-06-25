@@ -1,0 +1,4 @@
+//denis.burdukovskiy@metro-cc.ru
+// do something when label is changed (ran from LF)
+
+lfDialogMessage("Hi", "WARNING");

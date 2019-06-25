@@ -1,0 +1,15 @@
+string [] allUsers=usersInGroups("MCC RU - All Users");
+for (string oneUser in allUsers){
+    string [] allDelegates=split(getUserProperty(oneUser, "delegates"),",");
+    string newDelegates="";
+    for(string delegateWithdate in allDelegates){
+        string [] DelegateByOne=split(delegateWithdate,"=");//0 = username, 1=until date
+        if (DelegateByOne[1]>currentDate()-"1d"){
+            newDelegates+=delegateWithdate+",";
+        }
+    }
+    if (isNotNull(newDelegates)){
+        newDelegates=chop(newDelegates,length(newDelegates)-1);
+    }
+    setUserProperty(oneUser, "delegates", newDelegates);
+}

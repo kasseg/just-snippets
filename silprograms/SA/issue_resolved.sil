@@ -1,0 +1,10 @@
+//service issue is resolved
+
+string [] itIssue = linkedIssues(key, "Relates");
+for (string relKey in itIssue) {
+             if (%relKey%.project=="IT") {
+autotransition(61, relKey); // transition #61 "Возврат из ожидания"
+JComment SALastComment = getLastComment(key);
+addJSDComment(relKey, currentUser(), SALastComment["text"], false, false);
+}
+}

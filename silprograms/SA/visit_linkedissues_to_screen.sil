@@ -1,0 +1,13 @@
+// add to options customfield_13801 linked issues information for screen
+//string [] op = getFieldOptions("SA", "Визит", "Заявки для визита");
+//for (string op1 in op) { admDeleteCustomFieldOption(op1, "Заявки для визита", "SA", "Визит");}
+
+string [] relIssues= linkedIssues(key, "Relates");
+for (string relKey in relIssues) {
+            if (%relKey%.project=="SA") {
+             //   admAddCustomFieldOption(%relKey%.key, "Заявки для визита", "SA", "Визит");
+             admAddCustomFieldOption(%relKey%.key+", "+%relKey%.customfield_13206+".", "Заявки для визита", "SA", "Визит");
+              }
+  }
+  
+ return true;

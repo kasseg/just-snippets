@@ -1,0 +1,44 @@
+ // Считает количество времени до первой смены статуса (время реакции) и записывает в поле Response Time
+    interval[] result;
+    string[] statusHistory = fieldHistory(key, "status");
+    if(size(statusHistory) > 0) {
+        //status changed
+        date oldDate = %key%.created;
+        string oldStatus = statusHistory[1];
+        interval timeSpent = 0;
+        date newDate = statusHistory[2];
+        timeSpent = newDate - oldDate;
+        result[oldStatus] = timeSpent;
+    number temp;
+    number sumMin=0;
+    number position;
+    //прибавляем недели
+    if (contains(result, "w")){
+    position=matchEnd(result, ".*w");
+    temp=chop(result,position-1);
+    sumMin=sumMin+temp*10080;
+    result=substring(result,position+1,length(result));
+    }
+    //прибавляем дни
+    if (contains(result, "d")){
+    position=matchEnd(result, ".*d");
+    temp=chop(result,position-1);
+    sumMin=sumMin+temp*1440;
+    result=substring(result,position+1,length(result));
+    }
+    //прибавляем часы
+    if (contains(result, "h")){
+    position=matchEnd(result, ".*h");
+    temp=chop(result,position-1);
+    sumMin=sumMin+temp*60;
+    result=substring(result,position+1,length(result));
+    }
+    //прибавляем минуты
+    if (contains(result, "m")){
+    position=matchEnd(result, ".*m");
+    temp=chop(result,position-1);
+    sumMin=sumMin+temp;
+    }
+    customfield_12304=sumMin;
+    
+  }

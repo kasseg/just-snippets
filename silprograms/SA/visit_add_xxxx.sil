@@ -1,0 +1,39 @@
+// add deputy SM and security
+    
+if (contains(customfield_10106, "deputysm.store")==false)  //Email Users
+    {   if (customfield_10106!="") {
+    customfield_10106+=", deputysm.storeXXXX@metro-cc.ru";
+        }
+     else {customfield_10106+="deputysm.storeXXXX@metro-cc.ru"; };
+     };
+     
+    string[] loc = split(customfield_10702, " ");
+     string Store = substring(loc[0], 2, -1);
+     
+        if (substring(loc[0], 0, 2)=="10") 
+        {
+        string Store = substring(loc[0], 2, -1);
+   
+   if (contains(customfield_13416, "Security.Store")==false)  //Получатели
+        {    customfield_13416+="Security.store"+loc[0];
+            customfield_13416+="Security.store"+Store;
+        };
+     
+        if (contains(customfield_13416, "Fm.Store")==false)  //Получатели
+        {    customfield_13416+="FM.store"+loc[0];
+            customfield_13416+="FM.store"+Store;
+        }; }
+        else
+        {
+            if (contains(customfield_13416, "Security.Store")==false)  //Получатели
+        {    customfield_13416+="Security.store"+loc[0];
+            };
+             if (contains(customfield_13416, "Fm.Store")==false)  //Получатели
+        {    customfield_13416+="FM.store"+loc[0];
+                   };
+        };
+        
+        
+        
+     return true;
+      

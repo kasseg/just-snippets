@@ -1,0 +1,14 @@
+// JComment cmt = getLastComment(key);
+// string current=cmt["author"];
+
+// if (reporter==current){
+//     addComment(key, "remoteuser", "ты автор");
+// } else if (assignee==current){
+//     addComment(key, "remoteuser", "ты исполнитель");
+// } else {
+//     addComment(key, "remoteuser", "ты никто");
+// }
+
+
+struct Persontostat {string login; string[] issuekeys; date[] timeStart; date[] timeEnd; interval[] inAss;}
+Persontostat Nagaev = {"sergey.nagaev",{},{},{},{}};

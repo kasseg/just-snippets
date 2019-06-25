@@ -1,0 +1,127 @@
+include "it/regions";
+if (argv["screen"] == "view"){
+
+
+/*if (getIP=="IT"){
+    customfield_10100="Andrey.Badanov";
+} else if (getIP=="Equipment"){
+    customfield_10100={"elena.safronova", "yu.titova"};
+} else if (getIP=="Facility"){
+    customfield_10100="pavel.ashpetov";
+} else if (getIP=="Construction"){
+   customfield_10100="Alena.Elshina";
+} else {//тогда Property
+   customfield_10100="albert.kayumov";
+}*/
+
+//lfDialogMessage(substring(description, matchEnd(description, "№ ТЦ")+2, indexOf(description, "\n")-2), "ERROR");
+//addJSDComment(key, currentUser(), "I have executed a transition. 111 TRUE", true);
+//addJSDComment(key, currentUser(), "I have executed a transition. 222 FALSE", false);
+//addJSDComment(key, currentUser(), "you can't see me", false, true);
+//setUserProperty(reporter, "delegates", newDelegates);
+
+
+/*string[] groups = "MCC RU - All Users";
+string[] usersByGroups;
+usersByGroups = usersInGroups(groups);
+string withDelegates="";
+for(string user in usersByGroups){
+   if (isNotNull(getUserProperty(user, "delegates"))){
+       withDelegates+=user+", ";
+   }
+}
+lfDialogMessage(withDelegates, "ERROR");*/
+
+/*string field_name;
+string[] field_history;
+field_name = "status";
+field_history = fieldHistory(key, field_name);
+
+JFieldChange[] changes  = getFieldChanges(key, "status");*/
+//lfDialogMessage(changes[size(changes)-1].oldVal, "ERROR");
+//lfDialogMessage(customfield_10001, "ERROR");
+
+
+//addJSDComment(key, "admin-er", "YO!", false, false);
+//addJSDComment(key, "remoteuser", "tf", true, false);
+//addJSDComment(key, "remoteuser", "ft", false, true);
+//addJSDComment(key, "remoteuser", "tt", true, true);
+    /*string childissue;
+    JComment lastcom = getLastComment(key);
+    string comtext = lastcom["text"];
+    JIssueLink[] AllLinkedIssues = getIssueLinksDetail(key);
+    for(JIssueLink currentlink in AllLinkedIssues){
+        if(currentlink.description=="causes"){
+            childissue = currentlink.issue;
+            %childissue%.components = components;
+            %childissue%.customfield_10103 = customfield_10103; //Metro_service
+            %childissue%.customfield_11010 = customfield_11010; // Metro_team
+            autotransition("Решить", currentlink.issue,true,true,true) ;
+          addComment(currentlink.issue, "remoteuser", comtext);
+        }
+    }*/
+
+
+
+//JFieldChange[] changes  = getFieldChanges(key, "customfield_11010");
+//lfDialogMessage(changes, "ERROR");
+/*if (customfield_11010=="FLS"){
+    if (userInGroup("MCC RU - FLS", currentUser())){
+        number [] allComments = getAllCommentIds(key);
+        boolean checkOrNo=false;
+        for(number x in allComments) {
+         string [] cmt = getCommentById(x);
+         if (cmt["author"]==reporter){
+             checkOrNo=true;
+         }
+        }
+        if (checkOrNo){
+            lfShowFieldMessage("description","Присутствуют комментарии автора" ,"INFO");
+        }
+    }
+}
+//lfShowFieldMessage("description","descrTableHtml" ,"HINT");
+/*string userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + reporter + ")","r4 domain LDAP");
+if (isNotNull(userCompany)){
+    
+} else {
+    userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + reporter + ")","mgl domain LDAP");
+}
+
+if (isNotNull(userCompany)){
+        if (userCompany=="3466")
+        {
+            lfDialogMessage("что нибудь MCC", "ERROR");
+        } else if (userCompany=="3113"){
+            lfDialogMessage("что нибудь MGL", "ERROR");
+        } 
+} else {
+            lfDialogMessage("что нибудь непонятно", "ERROR");
+        }
+
+*/
+/*string company="unknown"; 
+string userPath=ldapUserAttr("DN", "(sAMAccountName=" + reporter + ")","r4 domain LDAP");
+if (isNull(userPath)){
+    userPath=ldapUserAttr("DN", "(sAMAccountName=" + reporter + ")","mgl domain LDAP");
+    if (isNull(userPath)){
+        company="unknown";
+    } else company="MGL"; 
+} else company="MCC";  
+lfDialogMessage("компания = "+company+" ||| " +userPath, "ERROR");
+
+if (company=="MCC" and status=="Open"){
+    autotransition("Начать работу", key, true,true,true);    
+} else if (company=="MGL" and status=="Open"){
+    autotransition("Решить", key, true,true,true); 
+}
+/*
+// Прокачка Ховера!!!!!!!!!!!!!!!!!!!!
+/*if (userInGroup("jira-administrators", currentUser())){
+
+lfExecuteJS("TEST/User_Hover_plus_for_admins.js");
+} else {
+    lfExecuteJS("TEST/User_Hover_plus_for_users.js");
+    }*/
+
+}

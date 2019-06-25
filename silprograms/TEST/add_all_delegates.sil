@@ -1,0 +1,12 @@
+string [] approversInIssue=customfield_10100;
+string [] blablabla=call("","/TEST/add_delegates.sil", approversInIssue);
+addJSDComment(key, "admin-er", "FROM BEGINING appinissue:"+approversInIssue);
+addJSDComment(key, "admin-er", "FROM  BLABLA:"+blablabla);
+
+while(blablabla!=approversInIssue) {
+    approversInIssue=blablabla;
+    blablabla=call("","/TEST/add_delegates.sil", approversInIssue);
+    addJSDComment(key, "admin-er", "FROM CYCLE"+blablabla);
+}
+
+customfield_10100=arrayUnion(approversInIssue, blablabla);

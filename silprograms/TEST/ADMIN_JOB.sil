@@ -1,0 +1,3 @@
+//наша служба и опасна и трудна
+sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "job запущен","В общем, задача запущена, fyi. <br>"+argv[0]);
+//admReindex(true);

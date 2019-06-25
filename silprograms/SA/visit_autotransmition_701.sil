@@ -1,0 +1,15 @@
+//измененение статуса связанных заявок на "Ожидание визита" и перенос значений инженера и времени в связанные заявки.
+string [] relIssues= linkedIssues(key, "Relates");
+for (string relKey in relIssues) {
+            if (%relKey%.project=="SA") {
+                %relKey%.customfield_13406=customfield_13406;
+                %relKey%.customfield_13501=customfield_13501;
+                %relKey%.customfield_13407=customfield_13407;
+                %relKey%.customfield_13409=key.customfield_13409;
+                %relKey%.customfield_13411=key.customfield_13411;
+                %relKey%.customfield_13415=key.customfield_13415;
+                %relKey%.customfield_13412=key.customfield_13412;
+                %relKey%.customfield_13600=key.customfield_13600;
+                autotransition(701, relKey, true, true, true);
+                 }
+  }

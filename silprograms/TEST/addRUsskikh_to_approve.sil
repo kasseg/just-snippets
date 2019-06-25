@@ -1,0 +1,3 @@
+customfield_10100="admin-er";
+raiseEvent("Issue Updated", key, currentUser());
+//sendEmail("it-support@metro-cc.ru", customfield_10100, {}, key+" требуется Ваше утверждение","Заявке требуется утверждение. <br><a href=\"https://jira.r4.madm.net/servicedesk/customer/portal/261/"+key+"\">Вот ссылочка</a>");

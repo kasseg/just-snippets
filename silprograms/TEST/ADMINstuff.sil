@@ -1,0 +1,234 @@
+//ищу в LDAP и чтонибудь делаю
+include "General_excludeListOfApprovers";//подключение списка исключений
+/*string jql= "project = \"Customer Manager Requests\" and resolution is EMPTY and status = Resolved";
+string [] SelIss = selectIssues (jql);
+for (string isc in SelIss) {
+//%isc%.customfield_10002+="aleksandr.prokhorov";
+//%isc%.watchers+="aleksandr.prokhorov";
+//%isc%.resolution="Готово";
+runnerLog(%isc%.resolution);
+//runnerLog(%isc%.watchers);
+}
+*/
+/*------------СТАТА ДЛЯ КАЗНАЧЕЙСТВА--------------------------------------------------------
+string jql= "issuetype =\"Credit Limits\" and status =\"Tresuary HO\"";
+string [] SelIss = selectIssues (jql);
+for (string isc in SelIss) {
+    number startPos=matchEnd(%isc%.description, "GM#/ТЦ №");
+    string subdescr=substring(%isc%.description,startPos,-1);
+    number endPos=indexOf(subdescr, "\n");
+    string storeNum=substring(subdescr, 2, endPos-2);
+    string[] statusHistory=fieldHistory(isc, "status");
+    if (statusHistory[size(statusHistory)-1]=="11104"){
+        runnerLog(isc+","+%isc%.summary+","+storeNum+","+statusHistory[size(statusHistory)-2]);
+    }
+}
+/---------------------------------------------------------------------------*/
+//------------СТАТА ДЛЯ IP FORM--------------------------------------------------------
+/*string jql= "issuetype = \"IP Form\"";
+string [] SelIss = selectIssues (jql);
+runnerLog("Номер заявки$Номер ТЦ$Наименование работ$Стоимость работа$Дата создания$На согласовании$Вид затрат$Компания$Статус");
+for (string isc in SelIss) {
+    string storeNum=substring(%isc%.description, matchEnd(%isc%.description, "№ ТЦ")+2, indexOf(%isc%.description, "\n")-2);
+    string describe=substring(%isc%.description, matchEnd(%isc%.description, "Описание / Specification")+2, -1);
+    describe=substring(describe, 0, indexOf(describe, "\n")-2);
+    string getIP=substring(%isc%.description, matchEnd(%isc%.description, "Вид работ")+2, -1);
+    getIP=substring(getIP,0, indexOf(getIP, "\n")-2);
+    string cost=substring(%isc%.description, matchEnd(%isc%.description, "Cost of works, equipment in RUR without VAT")+2, -1);
+    cost=substring(cost,0, indexOf(cost, "\n")-2);
+    string vidZatrat=substring(%isc%.description, matchEnd(%isc%.description, "Вид затрат / Type of expansion")+2, -1);
+    vidZatrat=substring(vidZatrat,0, indexOf(vidZatrat, "\n")-2);
+    string company=substring(%isc%.description, matchEnd(%isc%.description, "Цена в руб. без НДС")+5, -1);
+    company=substring(company,0, indexOf(company, "|"));
+    if (getIP=="Facility" or getIP=="Property"){
+        runnerLog(isc+"$"+storeNum+"$"+describe+"$"+cost+"$"+%isc%.created+"$"+%isc%.customfield_10100+"$"+vidZatrat+"$"+company+"$"+%isc%.status);
+    }
+}*/
+//---------------------------------------------------------------------------
+/*{
+  "type":"page",
+  "title":"My Test Page",
+  "space":{"key":"TST"},
+  "body":{
+    "storage":{
+      "value":"<p>This is a new page</p>",
+      "representation":"storage"
+    }
+  }
+}
+*/
+
+string k="CLAIMSMCC-4709";
+/*string jql= "project =\"MCC Claims\"  and status = \"Wait Event\" and key !=CLAIMSMCC-4709";
+string [] SelIss = selectIssues (jql);
+for (string isc in SelIss) {
+    %isc%.customfield_10002+=%isc%.customfield_13200;
+    admReindexIssue(isc);
+    runnerLog(isc+" " + %isc%.customfield_10002);
+}*/
+
+runnerLog("вывожу в лог всё что захочу");
+ /*
+string jql= "Одобрения = Ekaterina.Latukhina and type = \"IP Form\"";
+string [] SelIss = selectIssues (jql);
+//runnerLog("Номер заявки$Номер ТЦ$Наименование работ$Стоимость работа$Дата создания$На согласовании$Вид затрат$Компания$Статус");
+runnerLog("Номер ТЦ$Номер заявки$Дата создания$Наименование работ$Полное описание работ$Стоимость работ$Вид затрат$Investment ID");
+for (string isc in SelIss) {
+    string storeNum=substring(%isc%.description, matchEnd(%isc%.description, "№ ТЦ")+2, indexOf(%isc%.description, "\n")-2);
+    string describe=substring(%isc%.description, matchEnd(%isc%.description, "Описание / Specification")+2, -1);
+    describe=substring(describe, 0, indexOf(describe, "\n")-2);
+    string describeFULL=substring(%isc%.description, matchEnd(%isc%.description, "Подробное обоснование / Reason")+2, -1);
+    describeFULL=substring(describeFULL, 0, indexOf(describeFULL, "\n")-2);
+    string getIP=substring(%isc%.description, matchEnd(%isc%.description, "Вид работ")+2, -1);
+    getIP=substring(getIP,0, indexOf(getIP, "\n")-2);
+    string cost=substring(%isc%.description, matchEnd(%isc%.description, "Cost of works, equipment in RUR without VAT")+2, -1);
+    cost=substring(cost,0, indexOf(cost, "\n")-2);
+    string vidZatrat=substring(%isc%.description, matchEnd(%isc%.description, "Вид затрат / Type of expansion")+2, -1);
+    vidZatrat=substring(vidZatrat,0, indexOf(vidZatrat, "\n")-2);
+    string company=substring(%isc%.description, matchEnd(%isc%.description, "Цена в руб. без НДС")+5, -1);
+    company=substring(company,0, indexOf(company, "|"));
+    //if (getIP=="Facility" or getIP=="Property"){
+    string investmentID;
+    if(vidZatrat=="CAPEX"){
+        investmentID=substring(%isc%.description, matchEnd(%isc%.description, "Номер инвестиционного проекта / Investment ID (в случае CAPEX)")+2, -1);
+        investmentID=substring(investmentID, 0, indexOf(investmentID, "\n")-2);
+    } else {
+        investmentID="";
+    }
+        runnerLog(storeNum+"$"+isc+"$"+%isc%.created+"$"+describe+"$"+describeFULL+"$"+cost+"$"+vidZatrat+"$"+investmentID);
+    //}
+}*/
+
+/*string[] statusHistory = fieldHistory(SelIss[0], "status");
+string issKEY=SelIss[0];
+string oldStatus = statusHistory[1];
+statuses+=statusHistory[1];
+interval [] timeInStatus=statusHistory[0]-%issKEY%.created;
+interval timeSpent = 0;
+
+date oldDate = %issKEY%.created;
+for(number i = 3; i < size(statusHistory); i += 2) {
+    string newStatus = statusHistory[i];
+    if (!arrayElementExists(statuses, newStatus)){
+        statuses+=newStatus;
+        date newDate = statusHistory[i-1];
+        oldDate = statusHistory[i-3];
+        timeSpent = newDate - oldDate;
+        timeInStatus+=timeSpent;
+    } else {
+        number indexOfStatus=arrayFind(statuses, newStatus);
+        timeInStatus[indexOfStatus]+=timeSpent;
+    }
+}
+runnerLog(SelIss[0]);
+
+for (number i=0;i<size(statuses);i++){
+    statuses[i]=getStatusNameById(statuses[i]);
+}
+runnerLog(statuses);
+runnerLog(timeInStatus);*/
+//runnerLog(MSHprojects);
+
+/*string results = sql("JIRA_fls", "update cwd_user set active=1 where USER_NAME='stockplanningcvs'");
+runnerLog(results);
+admClearCache();*/
+//number statusCode = httpGetStatusCode();
+//runnerLog(statusCode);
+/*jiraHours1+="h";
+string jiraMinutes=sum["MINUTE"];
+jiraMinutes+="m";
+runnerLog(jiraHours1);
+runnerLog(jiraMinutes);
+sum=jiraHours+" "+jiraMinutes;
+runnerLog(sum);*/
+/*string jql= "issuetype = \"Credit Limits\" and summary ~ \"50 000\" and summary !~ \"001\" and created >= 2018-03-01";
+string [] SelIss = selectIssues (jql);
+for (string isc in SelIss) {
+    number startPos=matchEnd(%isc%.description, "GM#/ТЦ №");
+    string subdescr=substring(%isc%.description,startPos,-1);
+    number endPos=indexOf(subdescr, "\n");
+    string storeNum=substring(subdescr, 2, endPos-2);
+    string INN=substring(%isc%.description, matchEnd(%isc%.description, "INN/ИНН")+2, -1);
+    INN=substring(INN,0, indexOf(INN, "\n")-2);
+    string client=substring(%isc%.description, matchEnd(%isc%.description, "(номер карты клиента)")+3, -1);
+    client=substring(client,0, indexOf(client, "\n")-2);
+    string limit=substring(%isc%.description, matchEnd(%isc%.description, "Запрашиваемый кредитный лимит, RUR")+2, -1);
+    limit=substring(limit,0, indexOf(limit, "\n")-2);
+    string delay=substring(%isc%.description, matchEnd(%isc%.description, "Запрашиваемое кол-во каледарных дней отсрочки платежа")+2, -1);
+    delay=substring(delay,0, indexOf(delay, "\n")-2);
+    
+    runnerLog(isc+","+%isc%.summary+","+storeNum+","+INN+","+client+","+limit+","+delay);
+    
+}*/
+/*string isc="CMREQ-13759";
+string company=substring(%isc%.description, matchEnd(%isc%.description, "Цена в руб. без НДС")+5, -1);
+company=substring(lala,0, indexOf(lala, "|"));
+runnerLog(lala);*/
+/*
+string results = sql("JIRA_fls", "update cwd_user set active=1 where USER_NAME='docflow'");
+runnerLog(results);
+admClearCache();*/
+
+/*runnerLog("Гоу чо", 0, "init_progressBar");
+number index=1;
+string jql= "issuetype =\"Credit Limits\" and status = \"Contract management group\"";
+string [] SelIss = selectIssues (jql);
+string answer = "";
+string head = "<head><style>#customers {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;border-collapse: collapse;}#customers td, #customers th {border: 1px solid #ddd;padding: 5px;}#customers th {padding-top: 8px;padding-bottom: 8px;text-align: left;background-color: #214f81;color: white;}</style></head>";
+string sendbody=head+"<table id='customers'><th>Задача</th><th>Описание</th>";
+
+
+
+for (string isc in SelIss) {
+    runnerLog(isc+";"+%isc%.summary,index/size(SelIss)*100);
+    sendbody+="<tr><td><a href='"+isc+"'>" + isc + "</a></td><td> " + %isc%.summary + "</td></tr>";
+     
+    index++;
+}
+sendEmail("it-support@metro-cc.ru", {"cm.tsuvorova01@metro-cc.ru"},{"Marina.Koneva@metro-cc.ru","victor.gribanovskiy@metro-cc.ru","stanislav.ermilov@metro-cc.ru","anatoliy.gundarov@metro-cc.ru","evgeniy.russkikh@metro-cc.ru"},"Отчёт CMREQ",sendbody);
+ */
+//Утверждающим устанавливает Store Manager ТЦ, к котому принадлежит Автор by Evgeniy Russkikh
+/*customfield_10100={"cm.krnalivayko","yuriy.bakulin","cm.tsuvorova01","stanislav.ermilov"}; одобр
+customfield_10002+={"cm.krnalivayko","cm.tsuvorova01","stanislav.ermilov"};*/
+
+//С прогресс баром
+/*runnerLog("Гоу чо", 0, "init_progressBar");
+number index=1;
+string jql= "issuetype = \"IP Form\" and status not in (Done,Rejected)";
+string [] SelIss = selectIssues (jql);
+for (string isc in SelIss) {
+    runnerLog(isc,index/size(SelIss)*100);
+    index++;
+}*/
+
+// include "General_excludeListOfApprovers";//подключение списка исключений
+// include "main/stores.sil";//подключение структуры регионов
+// string valera="sergey.trifonov";
+// string k="IT-139196";
+//string field_name;
+//string[] field_history;
+//field_name = "duedate";
+//field_history = fieldHistory(k, field_name);
+// runnerLog(size(fieldHistory(k, "duedate"))>0);
+
+
+/*------------СТАТА ДЛЯ C&C Prepayment--------------------------------------------------------
+runnerLog("Гоу чо", 0, "init_progressBar");
+number index=1;
+string jql= "\"Customer Request Type\" = \"Cash&Carry prepayment (НЕ ДОСТАВКА) (CMREQ)\" and status = \"Contract management group\"";
+string [] SelIss = selectIssues (jql);
+for (string isc in SelIss) {
+    number startPos=matchEnd(%isc%.description, "INN/ИНН");
+    string subdescr=substring(%isc%.description,startPos,-1);
+    number endPos=indexOf(subdescr, "\n");
+    string INN=substring(subdescr, 2, endPos-2);
+    
+    startPos=matchEnd(%isc%.description, "(номер карты клиента)");
+    subdescr=substring(%isc%.description,startPos,-1);
+    endPos=indexOf(subdescr, "\n");
+    string custNum=substring(subdescr, 2, endPos-2);
+    
+    runnerLog(isc+";"+%isc%.created+";"+INN+";"+custNum,index/size(SelIss)*100);
+    index++;
+}
+---------------------------------------------------------------------------*/

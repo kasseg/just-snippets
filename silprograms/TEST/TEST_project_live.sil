@@ -1,0 +1,18 @@
+lfInstantHook("reporter", "TEST/TEST_script.sil");
+if ((userInGroup("MCC RU - FLS", currentUser())) and (isNull(customfield_11601))) {
+    lfShowFieldMessage("customfield_11601", "Уверен, что номер телефона не нужен?", "WARNING");
+}
+//lfWatch("status", "status", "TEST_script.sil",{"mouseenter","mouseover","mousemove","mouseleave","mouseout"});
+//lfWatch("reporter", "reporter", "TEST_script.sil",{"mouseenter","mouseover","mousemove","mouseleave","mouseout"});
+
+lfWatch("customfield_10702", {"customfield_10702"}, "TEST_script_denis.sil");
+lfInstantHook("customfield_10702", "TEST/TEST_script_denis.sil");
+
+//lfWatch("customfield_11010", {"customfield_11010"}, "TEST/joke.sil", {"change"});
+
+//lfWatch("customfield_10103", {"customfield_10103", "customfield_11010"}, "TEST/TEST_script_denis_metrosevicechange.sil"); //Metro Service
+lfWatch("customfield_11010", {"customfield_10103", "customfield_11010"}, "TEST/TEST_script_denis_metrosevicechange.sil"); //Metro Service
+
+//lfInstantHook("customfield_11010", "TEST/joke.sil"); 
+
+lfWatch("labels", "labels","TEST/TEST_script_alert_labels.sil");

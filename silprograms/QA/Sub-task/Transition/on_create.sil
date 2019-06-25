@@ -1,0 +1,41 @@
+//действие при создании подзадачи. Запрос пользователя
+include "qa/strings.sil";
+include "main/Stores.sil";
+function getReporter(string current_store_group, string current_dept_group){
+    if(isNotNull(usersInGroups({current_store_group,current_dept_group}))){
+        return usersInGroups({current_store_group,current_dept_group});//список пользователей с обеими группами
+    }
+}
+function getUserListByStore(string[] store_group_for_QA_participants, string cur_store_group){// получение списка пользователей из списка групп для каждого ТЦ для 
+    string[] UserListByStore;
+    string[] user_list_all = {};
+    for(string cur_group in store_group_for_QA_participants){
+        string[] current_user_list = getReporter(cur_store_group,cur_group);   
+        if(isNotNull(current_user_list)){
+            UserListByStore = arrayUnion(UserListByStore,current_user_list); 
+        }
+    }
+    return  UserListByStore;
+}
+runAs("remoteuser");
+string formatforsummary = "yyyyMMdd";
+string storeNumber = chop(customfield_10702,4);
+
+string storegroup = store_%storeNumber%.storegroup;
+
+string[] sss = getUserListByStore(store_group_for_QA_participants,storegroup);
+string[] sss1 = usersInGroups(district_managers);
+string[] sss2 = usersInGroups(qa_regional);
+string[] sss3 = usersInGroups(qa_general);
+
+
+// reporter = "Igor.Stebelev";
+// reporter = "Elena.Pokrovskaya";
+//reporter = getUserListByStore(store_group_haccp, storegroup);
+ //customfield_10002 = sss; //проставление партисипантов ВКЛЮЧИТЬ!!!
+
+
+autotransition("Запросить информацию", key, true, true, true);
+
+summary = standart_summary + " " + customfield_10702 + " " + formatDate(currentDate(), formatforsummary);
+copyAttachment(%parent%.key,%parent%.attachments, key);

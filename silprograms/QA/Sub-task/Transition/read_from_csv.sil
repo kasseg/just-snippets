@@ -1,0 +1,82 @@
+//копирование входящих данных из файла csv при нажатии кнопки Проверено в файл на сервер
+string attach_regex = "QA.*.(csv|CSV)";
+string[] csvAttach = "";
+string answer = "";
+number countattach = 0;
+string myParent = parent;
+string regex_check_0 = ".*0";
+struct article{
+    string mgb;
+    string mcc;
+    string name;
+    string a_date;
+    string supplier;
+    string amount;
+}
+if(type=="Подзадача"){
+    for(string cur_attach_name in attachments){
+        if(matches(cur_attach_name,attach_regex)){
+            csvAttach = arrayAddElement(csvAttach,cur_attach_name);
+            countattach+=1;
+        }
+        else{
+            deleteAttachment(key,cur_attach_name);
+        }
+    }
+    if(arraySize(csvAttach) !=0){
+        string  filePath = getAttachmentPath(key,  csvAttach[0]);
+        string[] csvRows = readFromCSVFile(filePath, true,"Windows-1251");
+       
+       article [] sss = readFromCSVFile(filePath, true,"Windows-1251");
+    //   sss = arrayDeleteElement(sss, ",,,,,");
+       for(article e in sss){
+            if(e.mgb == ""){
+                sss = arrayDeleteElement(sss, e);
+            }
+       }
+       
+       for(article e in sss){
+            description += "\r\n" +"|" + e +"|";
+       }
+       
+       if(arraySize(sss) ==1){
+            string text_to_search = replace(description, "\r\n","");
+            if(sss[0].amount==0){
+                addJSDComment(key, "admin-ag", "проверено на стоке всего 0", true, true);
+                autotransition("Решено", key, true,true,true); 
+            }
+       
+       
+       
+    //   description += arraySize(sss);
+       
+       
+        // if(arraySize(csvRows) >1){
+        //     // for(string csvRow in csvRows) {
+        //     //     csvRows = arrayDeleteElement(csvRows, ";;;;;");
+        //     // }
+        //     // for(string csvRow in csvRows) {
+        //     //     string csvRow1 = replace(csvRow,",",".");
+        //     //     string csvRow2 = replace(csvRow1,";","|");
+        //     //     description +="\r\n|" + csvRow;
+        //     //     description = replace(description,"\r\n||||||","");
+               
+        //     // }
+        //     for(string csvRow in csvRows) {
+        //         csvRows = arrayDeleteElement(csvRows, ";;;;;");
+        //     }
+        //     // for(string csvRow in csvRows) {
+        //         // description += "\r\n"+csvRow ;
+        //     // }
+        //  description += "\r\n"+csvRows ;
+        //  description += "\r\n"+arraySize(csvRows) ;
+            
+        // }
+       
+            // if(matches(text_to_search ,regex_check_0)){
+            //     addJSDComment(key, "admin-ag", "проверено на стоке всего 0", true, true);
+            //     autotransition("Проверено", key, true,true,true); 
+            // }
+        }
+    }
+}

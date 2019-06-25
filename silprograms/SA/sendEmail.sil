@@ -1,0 +1,6 @@
+string [] to = {"dmitriy.stroynov@metro-cc.ru"};
+string [] cc = {"morner@mail.ru"};
+string [] emailSubject=" на ремонт №"+key;
+
+sendHtmlEmail("it-support@metro-cc.ru", to, cc, emailSubject, "Заявка на ремонт №"+key+" Дата составления:"
+, key, {"*.jpg"});

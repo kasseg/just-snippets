@@ -1,0 +1,5 @@
+if (contains(argv["reporter"], "MCC RU") and isNull(customfield_10002))
+{
+    lfExecuteJS("addParticipant.js");
+    
+}

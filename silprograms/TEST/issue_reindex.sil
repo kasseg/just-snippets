@@ -1,0 +1,4 @@
+// denis.burdukovskiy@metro-cc.ru
+
+runnerLog(admReindexIssue(argv[0])) ;
+return;

@@ -1,0 +1,196 @@
+include "main/stores.sil";
+include "qa/strings.sil";
+
+function getReporter(string current_store_group, string current_dept_group){
+    if(isNotNull(usersInGroups({current_store_group,current_dept_group}))){
+        return usersInGroups({current_store_group,current_dept_group});//список пользователей с обеими группами
+    }
+}
+
+function getUserListByStore(string[] store_group_for_QA_participants, string cur_store_group){// получение списка пользователей из списка групп для каждого ТЦ для 
+    string[] UserListByStore;
+    string[] user_list_all = {};
+    for(string cur_group in store_group_for_QA_participants){
+        string[] current_user_list = getReporter(cur_store_group,cur_group);   
+        if(isNotNull(current_user_list)){
+            UserListByStore = arrayUnion(UserListByStore,current_user_list); 
+        }
+    }
+    return  UserListByStore;
+}
+
+function getRealUserNames(string[] usernames){
+    string[] RealUserNames;
+    for(string cur_user in usernames){
+        RealUserNames = addElement(RealUserNames,getUser(cur_user).username);
+    }
+    return  RealUserNames;
+}
+
+
+
+//  store_group_for_QA_participants = {
+//     "MCC RU - Customer Service Volga", "MCC RU - Customer Service South", 
+//     "MCC RU - Customer Service Syberia", "MCC RU - Customer Service Ural", "MCC RU - Customer Service North-West",
+//     "MCC RU - Customer Service Moscow1", "MCC RU - Customer Service Moscow2",
+//     "MCC RU - Customer Service Center1", "MCC RU - Customer Service Center2"
+//  };
+
+
+
+
+
+
+
+
+
+string storeNumber = "1023";
+
+string storegroup = store_%storeNumber%.storegroup;
+runnerLog(storegroup);
+
+string[] sss = getUserListByStore(store_group_for_QA_participants,storegroup);
+
+
+runnerLog(sss);
+
+runnerLog(getUserListByStore(store_group_haccp,storegroup));
+
+
+
+// string my_key = "QA-115";
+//  string filePath2="D:/Atlassian/JIRA/Projects/QA/" + %my_key%.key +".csv";
+
+// string my_key = "QA-114";
+// string regex_check_0 = ".*0";
+// string text_to_search = replace(%my_key%.description, "\r\n","");
+//  if(matches(text_to_search ,regex_check_0)){
+//     addJSDComment(my_key, "admin-ag", "на стоке всего 0", true, true);
+//             autotransition("Проверено", my_key, true,true,true); 
+//  }
+
+
+// string[] mySubtasks = subtasks(my_key);
+// for(string cur_subtask in mySubtasks){
+//     switch(%cur_subtask%.status){
+//         case "Open":
+//             addJSDComment(%cur_subtask%.key, "admin-ag", "Open", true, true);
+//         break;
+//         case "Checked":
+//             addJSDComment(%cur_subtask%.key, "admin-ag", "Checked", true, true);
+//         break;
+//         case "Resolved":
+//             addJSDComment(%cur_subtask%.key, "admin-ag", "Resolved", true, true);
+//         break;
+//         case "Wait Customer":
+//             addJSDComment(%cur_subtask%.key, "admin-ag", "Wait Customer", true, true);
+//         break;
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// string custom_fields_mapping= "reporter|reporter_toChange|Issue Location|";
+// string[] stores_to_create =  %my_key%.customfield_10702;
+// string parent_issue = %my_key%.key;
+// Store[] test_stores = {store_1023};
+// string project_name = "QA";//
+// string issue_priority_name = "4";//
+// string issue_components = {""};
+
+//     // for(Store current_store in all_stores){
+//     for(Store current_store in test_stores){
+//           string custom_fields_mapping_store = replace(custom_fields_mapping + current_store.name, "reporter_toChange", "admin-ag");
+//           runnerLog(custom_fields_mapping_store);
+//                 string cur_issue_summary = current_store.name + current_store.index ;
+//                 string child_issue = createIssue(
+//                     project_name, 
+//                     parent_issue,  
+//                     "Подзадача", 
+//                     standart_summary,
+//                     issue_priority_name, 
+//                     "description", 
+//                     issue_components,
+//                     "",
+//                     "",
+//                     "",
+//                     custom_fields_mapping_store);
+//                     if(%my_key%.type=="Stop Selling"){
+//     copyAttachment(parent_issue, %my_key%.attachments, %child_issue%.key);
+//     runnerLog(%my_key%.attachments);
+// }
+//     }
+
+
+
+
+
+
+
+
+
+
+//----------------------------------------------QA csv -----------------------------------------------
+// string my_key = "QA-5";
+// string attach_regex = ".*.(csv|CSV)";
+// string[] csvAttach = "";
+// string answer = "";
+// number countattach = 0;
+// string myParent = %my_key%.parent;
+
+// if(%my_key%.type=="Подзадача"){
+//     for(string cur_attach_name in %my_key%.attachments){
+//         if(matches(cur_attach_name,attach_regex)){
+//             csvAttach = arrayAddElement(csvAttach,cur_attach_name);
+//             countattach+=1;
+//         }
+//     }
+   
+    
+//     if(arraySize(csvAttach) !=0){
+//     //     autotransition("Начать работу", key, true, true, true);
+   
+//         string  filePath = getAttachmentPath(my_key,  csvAttach[0]);
+//         runnerLog(filePath);
+//         string[] csvRows = readFromCSVFile(filePath, true,"Windows-1251");
+//         string myParent =  %my_key%.parent;
+//          runnerLog(csvRows);
+//          for(string csvRow in csvRows) {
+//         // string csvRow1 = replace(csvRow,"|",",");
+//         // string csvRow2 = replace(csvRow1,";","|");
+//             // runnerLog("\r\n|" + %my_key%.customfield_10702 + "|" + csvRow2);
+//             runnerLog("\r\n|" + %my_key%.customfield_10702 + "|" + csvRow2);
+            
+//         }
+      
+        
+    //     for(string csvRow in csvRows) {
+    //         %myParent%.description +="\r\n|" + replace(csvRow,";","|");
+    //     }
+ 
+    // }
+    //  else{
+    //      answer = "Файла нет.";// 
+    //      addJSDComment(%my_key%.key, "admin-ag", answer, true);
+//     }
+
+// }
+// runnerLog(%my_key%.attachments);
+
+// runnerLog(filePaths);
+
+//  string file_path = arrayGetElement(filePaths,0);
+//  runnerLog(file_path);
+ 
+//----------------------------------------------------------------------------------------------------

@@ -1,0 +1,60 @@
+//действие при решении основной задачи
+string[] mySubtasks = subtasks(key);
+string article_action = customfield_14006;
+string transitionName = "";
+string resolution_pref = "Уважаемые коллеги!\r\nДействие по результатам проверки партии:\r\n";
+string resolution_post = ".\r\nПосле этого ответить 'Готово' в ответ на это письмо.";
+string ACHTUNG = "\r\n(ВАЖНО! При ответе просьба не менять тему письма)";
+
+
+string text_open = "Текст когда оператор не взял в работу";
+string text_resolved = "Текст когда был нулевой сток и задача уже решена";
+string text_wc = "Обработка данных завершена.\r\nПосле истечения указанного срока ваши данные не были приняты в обработку.";
+// string text_cheked = "Текст когда не был получен ответ";
+
+
+
+
+
+switch(article_action){
+    case "Вернуть партию в реализацию":
+        transitionName = "Решить";//ответ не нужен
+    break;
+    case "Наклеить стикер (образец прилагается) и вернуть в реализацию":
+        transitionName = "Решить";//ответ не нужен
+    break;
+    case "Вернуть поставщику":
+        transitionName = "Запрос пользователя";
+    break;
+    case "Утилизировать за счет поставщика":
+        transitionName = "Запрос пользователя";
+    break;
+    case "Утилизировать за счет ТЦ":
+        transitionName = "Запрос пользователя";
+    break;
+    case "Утилизировать за счет ТЦ (импорт)":
+        transitionName = "Запрос пользователя";
+    break;
+}
+
+string resolution_text = resolution_pref + article_action + resolution_post + ACHTUNG;
+
+for(string cur_subtask in mySubtasks){
+    switch(%cur_subtask%.status){
+        case "Open":
+            addJSDComment(%cur_subtask%.key, "admin-ag", text_open, true, true);
+            autotransition("Решено",%cur_subtask%.key,true, true, true);
+        break;
+        case "Resolved":
+            addJSDComment(%cur_subtask%.key, "admin-ag", text_resolved, true, true);
+        break;
+        case "Wait Customer":
+            addJSDComment(%cur_subtask%.key, "admin-ag", text_wc, true, true);
+            autotransition("Решено",%cur_subtask%.key,true, true, true);
+        break;
+        case "Checked":
+            addJSDComment(%cur_subtask%.key, "admin-ag", resolution_text, true, true);
+            autotransition(transitionName,%cur_subtask%.key,true, true, true);
+        break;
+    }
+}

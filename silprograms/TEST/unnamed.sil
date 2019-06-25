@@ -1,0 +1,6 @@
+if (issuelinks-linktype =="is caused by") {
+    return true;
+}
+else {
+    return false;
+}

@@ -1,0 +1,10 @@
+string jql= "created >= \""+argv[0]+"\" and created <=  \""+argv[1]+"\" and project = \"Buy More Pay Less\"";
+string [] SelIss = selectIssues (jql);
+string [] neededIssues;
+for (string isc in SelIss) {
+number createdHour=hour(%isc%.created);
+    if (createdHour==9){
+        neededIssues+=isc;
+    }
+}
+return neededIssues;

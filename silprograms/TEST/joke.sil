@@ -1,0 +1,5 @@
+if (/*argv["screen"] == "view" or */argv["screen"] == "trans_121")
+{
+    lfExecuteJS("TEST/joke.js");
+}
+

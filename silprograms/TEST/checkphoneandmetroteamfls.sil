@@ -1,0 +1,11 @@
+if ((userInGroup("MCC RU - FLS", currentUser())) and (isNull(customfield_11601))){ //metro team == FLS and phone number is empty
+    lfDialogMessage("This is a dialog message!", "WARNING");
+    lfShowFieldMessage("customfield_11601", "Assignee changed", "SUCCESS");
+    return false,"", "Номер телефона автора заявки отсутствует. Пожалуйста, вернитесь в заявку и через кнопку 'Редактировать' укажите номер телефона заявителя";
+}
+else {
+    lfDialogMessage("This is a dialog message!", "WARNING");
+    
+lfShowFieldMessage("customfield_11601", "Assignee changed", "SUCCESS");
+    return true;
+}

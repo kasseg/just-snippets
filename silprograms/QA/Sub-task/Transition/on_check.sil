@@ -1,0 +1,43 @@
+//копирование входящих данных из файла csv при нажатии кнопки Проверено в файл на сервер
+string attach_regex = ".*.(csv|CSV)";
+string[] csvAttach = "";
+string answer = "";
+number countattach = 0;
+string myParent = parent;
+string regex_check_0 = ".*0";
+
+struct article{
+    string mgb;
+    string mcc;
+    string name;
+    string a_date;
+    string supplier;
+    string amount;
+}
+    for(string cur_attach_name in attachments){
+        if(matches(cur_attach_name,attach_regex)){
+            csvAttach = arrayAddElement(csvAttach,cur_attach_name);
+            countattach+=1;
+        }
+        else{
+            deleteAttachment(key,cur_attach_name);
+        }
+    }
+     if(arraySize(csvAttach) !=0){
+        string  filePath = getAttachmentPath(key,  csvAttach[0]);
+        string[] csvRows = readFromCSVFile(filePath, true,"Windows-1251");
+       
+       article [] sss = readFromCSVFile(filePath, true,"Windows-1251");
+       for(article e in sss){
+           if(e.mgb == ""){
+                sss = arrayDeleteElement(sss, e);
+            }
+       }
+       
+      for(article e in sss){
+            answer += customfield_10702 + e +"\r\n";
+      }
+        string filePath2="D:/Atlassian/JIRA/Projects/QA/" + %myParent%.key +".csv";
+        createFile(filePath2);
+        printInFile(filePath2, replace(answer,"|",";"),"Windows-1251"); 
+   }

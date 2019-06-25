@@ -1,0 +1,3 @@
+string regex_zebra = ".*зебр(а|ы|е|ой|).*";
+string text_t_find = "Зебра не печатает";
+return matches(text_t_find, regex_zebra);

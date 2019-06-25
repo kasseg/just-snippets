@@ -1,0 +1,13 @@
+//used for workflow condition (Передать СА)
+//if there are any SA issue, linked to IT issue, then return false;
+
+string [] LIs = linkedIssues(key);
+boolean isSAlinkedIssues = false;
+for (string li in LIs) {
+    if (%li%.project=="SA") {
+        isSAlinkedIssues = true;
+        lfGlobalMessage("Уже есть связанная заявка в проекте SA!", "ERROR");
+    }
+}
+
+return !isSAlinkedIssues;

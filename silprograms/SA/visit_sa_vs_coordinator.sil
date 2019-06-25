@@ -1,0 +1,20 @@
+// validation visit coordinator or SA
+    
+if (customfield_13412=="")  //если не выбран са
+    { 
+     if (customfield_14228=="" or customfield_14000=="")
+     {
+      return false, "Если не выбран СА, то данные координатора и менеджера визита должны быть заполнены";
+     } else
+         { if (customfield_14229=="" or customfield_14001=="")
+        {
+        return false, "Заполни телефоны менеджера и координатора визита";
+        }
+      };
+    }
+else 
+    { 
+     if (customfield_14228!="" or customfield_14000!="")
+      {
+      return false, "Если выбран СА, то данные координатора и менеджера визита должны быть НЕ заполнены";};
+    }

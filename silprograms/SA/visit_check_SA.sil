@@ -1,0 +1,8 @@
+//add mail THD if THD = SA
+if (contains(customfield_13412, "THD")) {
+if (contains(customfield_10106, "thd@metrosystems.net")==false)  //Email Users
+    {   if (customfield_10106!="") {
+    customfield_10106+=", thd@metrosystems.net";
+        }
+     else {customfield_10106+="thd@metrosystems.net"; };
+     };};

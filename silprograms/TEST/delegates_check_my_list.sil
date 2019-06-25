@@ -1,0 +1,15 @@
+// evgeniy russkikh
+// Список всех делегирующих
+string [] allDelegates=split(getUserProperty(reporter, "delegates"),",");
+//string newDelegates="";
+string answer="Коллеги, с которыми у Вас выставлено делегирование:<ul>";
+for(string delegateWithdate in allDelegates){
+    string [] delegateUsernameAndDateByOne=split(delegateWithdate,"=");//0 = username, 1=until date
+    
+    /*if (DelegateByOne[1]>currentDate()-"1d"){
+        newDelegates+=delegateWithdate+",";
+    }*/
+    answer+="<br><li>"+delegateUsernameAndDateByOne[0]+" до "+delegateUsernameAndDateByOne[1]+"</li>";
+}
+answer+="</ul>";
+//lfDialogMessage(answer, "ERROR");
