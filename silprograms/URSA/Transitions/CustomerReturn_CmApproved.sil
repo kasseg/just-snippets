@@ -1,0 +1,2 @@
+//перевод запроса на утвержение УТЦ
+    autotransition("ToSMApprove", key,true,true,true);

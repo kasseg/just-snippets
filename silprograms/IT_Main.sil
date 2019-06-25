@@ -1,0 +1,24 @@
+lfWatch("reporter", {"reporter"}, "CheckEmailMessage.sil");/* проверка автора на наличие почты, а так же заполнение таблицы участников и подсказка для ФЛС*/
+lfInstantHook("reporter", "CheckEmailMessage.sil");/* проверка автора на наличие почты, а так же заполнение таблицы участников и подсказка для ФЛС*/
+//lfInstantHook("reporter", "MetroTeamIsNull.sil");/* проверка заполненности команды на форме просмотра инцидента*/
+
+lfWatch("customfield_12200", {"customfield_12200"}, "ResolveOnCreate.sil");/* решение инцидента после создания, если стоит галочка*/
+lfInstantHook("customfield_12200", "ResolveOnCreate.sil"); /* решение инцидента после создания, если стоит галочка*/
+
+lfWatch("assignee", {"assignee"}, "BurningKustov.sil");
+lfInstantHook("assignee", "BurningKustov.sil"); 
+
+lfWatch("customfield_10103", {"customfield_10103", "issueType"}, "IT_CheckServiceOnCreate.sil");
+lfInstantHook({"customfield_10103", "issueType"}, "IT_CheckServiceOnCreate.sil");
+
+lfWatch("customfield_11010", {"customfield_10103", "customfield_11010"}, "IT/CheckMetroTeamifMetroServiceChanged.sil");
+
+//
+
+//для FLS проверка заполнения номера телефона 
+/*if (userInGroup("MCC RU - FLS", currentUser()) and (isNull(customfield_11601))) {
+    lfShowFieldMessage("customfield_11601", "Не указан номер телефона, уверены что хотите продолжить без него?", "WARNING");
+}*/
+/*if (userInGroup("MCC RU - FLS", currentUser()) and (isNull(argv["customfield_11601"]))) {
+    lfShowFieldMessage("customfield_11601", "Не указан номер телефона, уверены что хотите продолжить без него?", "WARNING");
+}*/

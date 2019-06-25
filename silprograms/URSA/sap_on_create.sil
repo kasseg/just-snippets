@@ -1,0 +1,19 @@
+//назначение исполнителя для SAP задач
+include "URSA/sap_agents.sil";
+string SAPAgentName = "";
+function getSAPAgentAssignee(string storeNumber){
+runAs("remoteuser");
+SAPAgentName = "";
+for (SAP_agent curSAPAgent in allsap_agents){
+    if(curSAPAgent.index==storeNumber){
+        SAPAgentName = curSAPAgent.sap_agentName;
+        break;
+    }
+}
+    return SAPAgentName;
+}
+string storeNumber = chop(customfield_10702,4);
+// runAs("remoteuser");
+if((type == "Коррекция в SAP FI" || type == "Отражение в SAP FI") && labels != {"SM35"}){
+    assignee = getSAPAgentAssignee(storeNumber);
+}

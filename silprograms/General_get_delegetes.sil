@@ -1,0 +1,4 @@
+//Читает свойство delegates у запрошенного юзера (параметр arrayGetElement(argv, 0), пришедший из Ajax)
+string getUsername=arrayGetElement(argv, 0);
+string someresult=getUserProperty(getUsername, "delegates");
+return someresult;

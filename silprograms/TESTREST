@@ -1,0 +1,32 @@
+/*string myproject = "SIL";
+string mykey = "SIL-12";
+string myService = %mykey%.customfield_10300;
+string myPeriod = "-30d";
+string myJQL = "project = "+ myproject+" and 'Metro Service' = '"+myService+"' and resolved >startOfDay('"+myPeriod+"')";
+string [] keys = selectIssues(myJQL); 
+interval alldates;
+interval period;
+
+date timetowait;
+date createddate;
+date resolveddate;
+struct Myinfo{interval averagetime; string mypriority;}
+for(string myissue in keys){
+    JFieldChange [] mychanges = lastIssueChanges(myissue.key);
+    createddate = myissue.created;
+    resolveddate = mychanges[0].changeDate; 
+    period = resolveddate - createddate;
+    alldates = alldates + period;
+}
+Myinfo Info;
+Info.averagetime = alldates/size(keys);
+Info.mypriority = %mykey%.priority;
+return Info;*/
+string inform=arrayGetElement(argv, 0);
+//inform+="123";
+//addJSDComment("TEST-998", "admin-er", inform, true);
+addComment("TEST-998", "admin-er", inform);
+//string someresult=getUserProperty(getUsername, "delegates");
+string someresult="37";
+
+return someresult;

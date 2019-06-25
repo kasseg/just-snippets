@@ -1,0 +1,101 @@
+//Создание IT инцидента на основе данной задачи
+string dateFormatForInvoice = "dd.MM.yyyy";
+string summary_load_action = "догрузить инвойс/инвойсы";
+string summary_delete_action = "удалить инвойс";
+string invoice_summary_text = "";
+string invoice_action_text = "";
+string invoice_action_description_text = "";
+
+
+
+string storeLocation = customfield_10702;
+string storeNumber = chop(storeLocation,4);
+
+string invoice_action = customfield_14200;
+string invoice_date = customfield_14201;
+string invoice_number = customfield_14202;
+string cashdesk_number = customfield_14208;
+string summ_mmc = customfield_14203;
+string summ_bank = customfield_14204;
+string summ_credit = customfield_14205;
+string summ_delivery = customfield_14206;
+string summ_zReport = customfield_14207;
+string linkedFiTask = customfield_14211;
+
+
+
+switch(invoice_action){
+    case "Догрузить":
+    
+        invoice_action_text = summary_load_action;
+        invoice_action_description_text = summary_load_action;
+    break;
+    case "Удалить":
+        invoice_action_text = summary_delete_action + " " + invoice_number;
+        invoice_action_description_text = summary_delete_action;
+    break;
+}
+    string summary_text = "ТЦ " + storeLocation + " " + formatDate(invoice_date, dateFormatForInvoice) + " касса № " + cashdesk_number +" " + invoice_action_text;
+    string description_text = "Добрый день,\r\nв ТЦ " + storeLocation + " по кассе " + cashdesk_number + " за "+ formatDate(invoice_date, dateFormatForInvoice) + " прошу " + invoice_action_description_text;  
+    description_text += "\r\n" + invoice_number + "\r\n";
+    description_text += "\r\nСумма по ММС: " + summ_mmc + " руб.\r\n";
+    
+    if(isNotNull(summ_bank) || isNotNull(summ_credit) || isNotNull(summ_delivery)){
+        description_text += "В том числе:\r\n";
+        if(isNotNull(summ_bank)){
+            description_text += "Банк: " + summ_bank + " руб.\r\n";
+        }
+        if(isNotNull(summ_credit)){
+            description_text += "Кредит: " + summ_credit + " руб.\r\n";
+        }
+        if(isNotNull(summ_delivery)){
+            description_text += "Поставка: " + summ_delivery + " руб.\r\n";
+        }
+    }
+    description_text += "\r\nСумма в Z-отчете: " + summ_zReport + " руб.\r\n\r\n";
+    description_text += "Скан Z-отчетов по кассе " + cashdesk_number + " за "+ formatDate(invoice_date, dateFormatForInvoice) + " во вложении";
+    
+    
+    if(isNotNull(description)){
+        description_text +=  "\r\nКомментарий сотрудника МОЦО:\r\n"+ description;
+    }
+    
+    customfield_14211 = "";
+    
+string project_name = "IT";
+string issue_priority_name = "4";//поменять на актуальный приоритет
+string IT_issue_type_name = "Инцидент";//поменять на актуальный тип задачи
+string issue_summary = summary_text + " ТЕСТ!!!!!!";
+string[] issue_components = {"Metro Main Cashier (MMC)"};
+string[] custom_fields_mapping = "Metro Service|CRM & Checkout > MMC|Metro Team|Helpdesk Applications|Issue Location|MCoE (Самара)";
+string IT_issue_description = description_text;
+string custom_fields_mapping_store;
+    string IT_issue = createIssue(
+        project_name,
+        "", 
+        IT_issue_type_name,
+        issue_summary, 
+        issue_priority_name, 
+        IT_issue_description,
+        issue_components,"","","",custom_fields_mapping
+    );
+    %IT_issue%.reporter = currentUser();
+    linkIssue(key, %IT_issue%.key, "Relates");
+    linkIssue(key, linkedFiTask, "Relates");
+   
+    for(string s in key.attachments) {
+        copyAttachment(key, s, %IT_issue%.key);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

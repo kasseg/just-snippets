@@ -1,0 +1,297 @@
+include "ursa/childs";
+include "main/Stores.sil";
+string project_name = "FI";//
+string issue_priority_name = "4";//
+string[] issue_components = {""};
+
+struct TaskCheck{
+    string task_type;
+    string[] task_label;
+}
+TaskCheck CheckedTask;
+TaskCheck ExistTask;
+TaskCheck[] ExistTasks;
+
+TaskCheck MMC_TaskCheck = {"Отражение в SAP FI",{"SM35"}};
+// TaskCheck Delivery_TaskCheck = {"Отражение в SAP FI",{"SM35"}};
+TaskCheck Delivery_TaskCheck = {"Подзадача",{""}};
+TaskCheck Z_TaskCheck = {"Коррекция в SAP FI",{}};
+TaskCheck Other_TaskCheck = {"Отражение в SAP FI",{"76500000"}};
+TaskCheck Material_TaskCheck = {"Акт материалы",{}};
+TaskCheck DT_TaskCheck = {"Накладная ДТ",{}};
+TaskCheck Arenda_TaskCheck = {"УПД аренда",{}};
+function checkCreated(){
+    string formatForSearch = "yyyyMMdd";
+    string dateToSearch = formatDate(currentDate()-"1d", formatForSearch);
+    string myJQL = "project = FI AND issuetype = 'Store Revenue' AND text ~ '" + dateToSearch + "'";
+    string[] selected_issues = selectIssues(myJQL);
+    number isCount = countIssues(myJQL);
+    string answer = "Создано " + isCount + " задачи из " + arraySize(finance_pilot_stores);
+    sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{""},"test",answer);
+}
+
+function isTasksToCreateExist(string closedSubTaskKey){
+    string[] subtaskToCheck;
+    string parentkey = closedSubTaskKey.parent;
+    string[] subTasks = subtasks(parentkey);//список подзадач без линкованых задач
+
+    switch(closedSubTaskKey.type){
+        case "Обработка в MMC":
+            CheckedTask = MMC_TaskCheck;
+            break;
+        // case "Корректировка Доставка":
+        //     CheckedTask = Delivery_TaskCheck;
+        //     sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{""},"Test","Проверка ОК");
+        //     break;
+        case "Отражение в SAP FI":
+            if(closedSubTaskKey.labels == {"SM35"}){
+                CheckedTask = Other_TaskCheck;
+            }
+            break;
+        case "Проверка Z-отчетов":
+            CheckedTask = Z_TaskCheck;
+            subtaskToCheck = {"Коррекция в SAP FI"};
+            break;
+        case "Списание материалов":
+            CheckedTask = Material_TaskCheck;
+            subtaskToCheck = {"Акт материалы"};
+            break;
+        case "Расход ДТ":
+            CheckedTask = DT_TaskCheck;
+            subtaskToCheck = {"Накладная ДТ"};
+            break;
+        case "Счетчики арендаторов":
+            CheckedTask = Other_TaskCheck;
+            subtaskToCheck = {"УПД аренда"};
+            break; 
+        
+    }
+    
+    for(string curSubTask in subTasks){
+        ExistTask = {curSubTask.type,{curSubTask.labels}};
+        ExistTasks = arrayAddElement(ExistTasks, ExistTask);
+    }
+    for(TaskCheck curTaskCheck in ExistTasks){
+        if(curTaskCheck == CheckedTask){
+           
+             sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{""},"Test","Задача уже есть");
+             return true;
+        } 
+    }
+    
+    // sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{""},"Test","Задачи нет");
+    return false;
+    
+    
+    // for(string curSubTask in subTasks){
+    //     // ExistTask = {curSubTask.type,{curSubTask.labels}};
+    //     // ExistTasks = arrayAddElement(ExistTasks, ExistTask);
+        
+    //     if(elementExists(subtaskToCheck, curSubTask.type)){
+    //         return true;
+    //     }
+        
+    // }
+    
+}
+
+function getReporter(string current_store_group, string current_dept_group){
+    string cur_reporter;
+    string [] groups = {current_store_group,current_dept_group};
+    string [] user_list = usersInGroups(groups);//список пользователей с обеими группами
+    if(size(user_list)>0){
+        JUser usr = getUser(user_list[0]);
+        cur_reporter = usr.username;
+    }
+    return cur_reporter;
+}
+
+function isSubtaskDone(string closedSubTaskKey){
+    string parentkey = closedSubTaskKey.parent;
+    string[] subTasks = subtasks(parentkey);//список подзадач без линкованых задач
+    string[] subtaskToCheck;
+    string[] resolvedSubTasks;
+    
+    
+    switch(closedSubTaskKey.type){
+        case "Обработка в MMC":
+            subtaskToCheck = {"Обработка в MMC"};
+            break;
+        case "Корректировка Доставка":
+            subtaskToCheck = {"Корректировка Доставка"};
+            break;
+        case "Проверка Z-отчетов":
+            subtaskToCheck = {"Проверка Z-отчетов"};
+            break;
+        case "Отражение в SAP FI":
+            subtaskToCheck = {"Отражение в SAP FI"};
+            break;
+        case "Списание материалов":
+            subtaskToCheck = {"Списание материалов"};
+            break;
+        case "Расход ДТ":
+            subtaskToCheck = {"Расход ДТ"};
+            break;
+        case "Счетчики арендаторов":
+            subtaskToCheck = {"Счетчики арендаторов"};
+            break; 
+        case "Подзадача":
+            subtaskToCheck = {"Подзадача"};
+            break;  
+    }
+    for(string curSubTask in subTasks){
+        if(elementExists(subtaskToCheck, curSubTask.type)){
+            if(curSubTask.status=="Resolved"){
+                resolvedSubTasks = addElement(resolvedSubTasks, curSubTask);
+            }
+            if(arraySize(resolvedSubTasks)!=0 && arraySize(subtaskToCheck)==arraySize(resolvedSubTasks)){
+                return true;
+            }
+        }
+        
+    }
+    if(closedSubTaskKey.type=="Отражение в SAP FI" && closedSubTaskKey.labels== {"SM35"}){
+        return true;
+    }
+}
+function getTasksToCreate(string closedSubTaskKey){
+    MyChild[] new_Tasks;
+    string[] subtaskToCheck;
+    string parentkey = closedSubTaskKey.parent;
+    string[] subTasks = subtasks(parentkey);//список подзадач без линкованых задач
+   
+    
+    
+    switch(closedSubTaskKey.type){
+        case "Обработка в MMC":
+            new_Tasks = SAP_REG;
+            break;
+        case "Корректировка Доставка":
+            if(parentkey.customfield_10702=="1196 Fasol (virtual)"){
+                new_Tasks = Report_1196_Childs;
+                 }
+            else{
+                // new_Tasks = SAP_SAP;   включить
+            }                                  
+            break;
+        case "Проверка Z-отчетов":
+            // new_Tasks = SAP_COR;
+            break;
+        case "Отражение в SAP FI":
+            if(labels=={"SM35"}){
+                 new_Tasks = SAP_SAP;
+            }
+            break;
+        case "Списание материалов":
+            if(resolution!="Отклонён"){
+                new_Tasks = Material_Childs;
+            }
+            break;
+        case "Расход ДТ":
+         if(resolution!="Отклонён"){
+                 new_Tasks = Dt_Childs;;
+            }
+            break;
+        case "Счетчики арендаторов":
+         if(resolution!="Отклонён"){
+                new_Tasks = ArendaUPD_Childs;
+            }
+            break;
+       
+        case "Подзадача":
+       
+             if(labels=={"Перенос_оплаты"}){
+            ;
+                new_Tasks = Perenos_1196_Childs;
+            }
+            if(labels=={"Автоклиринг"}){               
+                new_Tasks = Clearing_1196_Childs;
+            }
+             if(labels=={"Выравнивание_в_0"}){     
+                new_Tasks = Vyravn_1196_Childs;
+            }
+            break;  
+    }
+    return new_Tasks;
+}
+
+function createTasks(MyChild Task,MyChild[] SubTasks, string dateformat,string reporter_group, Store current_store){
+    string issue_summary = ""; 
+    string cur_reporter = "";
+    if(reporter_group == "remoteuser"){
+                cur_reporter="remoteuser";
+                issue_summary = Task.child_summary + current_store.index + " " + formatDate(currentDate(), dateformat);
+                if(Task==CEB_SAP || Task==VTB_SAP || Task==Journal1){
+                    issue_summary = Task.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+                }
+               
+                
+    }
+    else if(reporter_group == "ekaterina.troshina"){
+                cur_reporter="ekaterina.troshina";
+                issue_summary = Task.child_summary + current_store.index + " " + formatDate(currentDate(), dateformat);
+    }
+    
+    else{
+        cur_reporter = getReporter(current_store.storegroup,reporter_group);
+        issue_summary = Task.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+    }
+         if(isNotNull(cur_reporter)){
+           
+            // if(current_store.index == "1202"){
+            //     cur_reporter="elena.shorokhova";
+            // }
+            string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", Task.fi_team);
+            custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+            string parent_issue = createIssue(
+                project_name,
+                "",
+                Task.name, 
+                issue_summary,
+                issue_priority_name,
+                Task.child_description,
+                issue_components,
+                "",
+                "",
+                "",
+                custom_fields_mapping_store);
+                
+                %parent_issue%.labels = Task.fi_labels;
+               
+            //создание подзадач на ТЦ
+            for(MyChild curchild in SubTasks){
+                custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", curchild.fi_team);
+                custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+                string cur_issue_summary = curchild.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+                string child_issue = createIssue(
+                    project_name, 
+                    parent_issue,  
+                    curchild.name, 
+                    cur_issue_summary,
+                    issue_priority_name, 
+                    curchild.child_description, 
+                    issue_components,
+                    "",
+                    "",
+                    "",
+                    custom_fields_mapping_store);
+                    
+                    %child_issue%.labels = curchild.fi_labels;
+                    
+                    // if(curchild.name == "Подзадача" && ){
+                    //      %child_issue%.customfield_13302 = %child_issue%.created +"9h";
+                    // }
+                    
+                    if(curchild.name == "Корректировка Доставка" || curchild.name == "Обработка в MMC" || curchild.name == "Проверка Z-отчетов"){
+                         %child_issue%.customfield_13302 = %child_issue%.created +"9h";
+                    }
+                    
+                    
+                   
+            }
+        }
+    return true;
+};
+
+
+

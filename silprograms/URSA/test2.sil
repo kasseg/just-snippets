@@ -1,0 +1,15 @@
+string myJQL = "project = FI AND issuetype = 'Finance Task' AND status = Open AND assignee in (anna.perova)";
+string[] selected_issues = selectIssues(myJQL); 
+string[] selected_issues2 = ""; 
+
+
+for (string curissue in selected_issues){
+    JFieldChange[] statusChanges = getFieldChanges(curissue, "status");
+    for(number j = 0; j<arraySize(statusChanges)-1; j++){
+        if ((statusChanges[j].oldVal=="Wait Customer"))  {
+          selected_issues2 = arrayAddElementIfNotExist(selected_issues2,curissue);
+        }
+    }
+ 
+}
+return selected_issues2;

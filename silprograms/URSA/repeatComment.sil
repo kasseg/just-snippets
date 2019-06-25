@@ -1,0 +1,6 @@
+JComment cmt = getLastComment(key);
+if(cmt.author != reporter){
+   string  commettext = "Повторный запрос от " + currentDate() + "\r\n" + cmt.text;
+   addJSDComment(key, currentUser(), commettext, true);
+   runnerLog(cmt.text);
+}

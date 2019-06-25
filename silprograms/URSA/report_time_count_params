@@ -1,0 +1,17 @@
+include "main/stores.sil";
+string[] store_list = {};
+string[] type_list = {
+    "Store Revenue","Обработка в MMC", "Корректировка Доставка", 
+    "Проверка Z-отчетов" , "Коррекция в SAP FI",
+    "ВТБ","SM35","76500000","76004000","1091999999","499999"
+};
+for(Store cur_store in finance_pilot_stores){
+   store_list = addElement(store_list, cur_store.name);
+}
+date curdate = currentDate()-"1d";
+gadget_createRadioGroup("Тип отчёта", {"Фамилия", "ТЦ"}, {"Фамилия"}, true, "Тип отчёта");
+//  gadget_createSelectList("Выбор действия", {"Назначить", "В работу", "Решить"}, "Назначить", true, "Выбор действия");
+//gadget_createUserPicker("На кого назначить?", "anna.perova",  false, "На кого назначить задачу?");
+gadget_createDatePicker("Создано", curdate, false, "Дата");
+//gadget_createMultiSelectList("Номер ТЦ", store_list, {}, true, "Необходимо выбрать номер ТЦ");
+gadget_createMultiSelectList("Тип задачи или метка", type_list, {}, true, "Необходимо выбрать тип задачи или метку");

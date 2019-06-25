@@ -1,0 +1,28 @@
+//Проверка корректности имени присланного файла Z-отчёта
+string store_number = matchText(summary, "1[0-4][0-9]{2}");
+string date_in_summary = matchText(summary, "20[1-2][0-9][0-1][0-9][0-3][0-9]");
+string date_in_attach = substring(date_in_summary, 2, 8);
+string attach_regex = store_number + "_[zZ]_" + date_in_attach + ".(xlsx|XLSX)";
+string attach_name = store_number + "_Z_" + date_in_attach + ".xlsx";
+string answer = "";
+number countattach = 0;
+if(type=="Проверка Z-отчетов" && store_number !=1202 && store_number !=1096){
+    for(string cur_attach_name in attachments){
+        if(matches(cur_attach_name,attach_regex)){
+            countattach+=1;
+        }
+    }
+    if(countattach==0){
+        autotransition("Начать работу", key, true, true, true);
+        autotransition("Запросить информацию", key, true, true, true);
+        answer = "Присланный файл не соответствует формату указанному в инструкции. Просьба сохранить файл с именем " + attach_name + " и прислать ответом на это письмо.\r\nЕсли в ответном письме не будет ни текста не подписи, данный запрос будет отправлен снова.\r\nТакже просьба убедиться, что файл содержит только один лист с именем Z\r\nДанное сообщение создано автоматически.";// 
+        sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{""},"test",answer);
+        addJSDComment(key, "remoteuser", answer, true);
+        assignee = "";
+        for(string cur_attach_name in attachments){
+            if(contains(cur_attach_name, "xls")||contains(cur_attach_name, "XLS") ){
+                deleteAttachment(key,cur_attach_name);
+            }
+        }
+    }
+}

@@ -1,0 +1,10 @@
+if (argv["screen"] == "create" and (argv["issueType"]=="Инцидент" or argv["issueType"]=="Ремонт" or argv["issueType"]=="Запрос / Эскалация")) {
+if (argv["customfield_10103"]=="None" or argv["customfield_10103"]=="Нет"){
+ lfShowFieldMessage("customfield_10103", "Нужно заполнить Metro Service и Metro Team!", "WARNING");
+ lfDisable("createIssueSubmit");
+ }else {
+    lfHideFieldMessage("customfield_10103");
+    lfEnable("createIssueSubmit");
+    }
+
+}

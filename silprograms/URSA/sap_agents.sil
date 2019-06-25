@@ -1,0 +1,119 @@
+struct SAP_agent{
+    string index;
+    string sap_agentName;
+}
+
+SAP_agent sap_agent1010 = {"1010","valeriy.sadovskiy"};
+SAP_agent sap_agent1011 = {"1011","dina.elyasova"};
+SAP_agent sap_agent1012 = {"1012","lali.kvachakhiya"};
+SAP_agent sap_agent1013 = {"1013","elena.kruglova"};
+SAP_agent sap_agent1014 = {"1014","valeriy.sadovskiy"};
+SAP_agent sap_agent1015 = {"1015","yuliya.polyakova"};
+SAP_agent sap_agent1016 = {"1016","yuliya.polyakova"};
+SAP_agent sap_agent1017 = {"1017","olga.sidorina"};
+SAP_agent sap_agent1018 = {"1018","elena.kruglova"};
+SAP_agent sap_agent1019 = {"1019","olga.sidorina"};
+SAP_agent sap_agent1020 = {"1020","dina.elyasova"};
+SAP_agent sap_agent1021 = {"1021","elena.kruglova"};
+SAP_agent sap_agent1022 = {"1022","valeriy.sadovskiy"};
+SAP_agent sap_agent1023 = {"1023","valeriy.sadovskiy"};
+SAP_agent sap_agent1024 = {"1024","yuliya.polyakova"};
+SAP_agent sap_agent1025 = {"1025","lali.kvachakhiya"};
+SAP_agent sap_agent1026 = {"1026","dina.elyasova"};
+SAP_agent sap_agent1027 = {"1027","lali.kvachakhiya"};
+SAP_agent sap_agent1028 = {"1028","dina.elyasova"};
+SAP_agent sap_agent1029 = {"1029","valeriy.sadovskiy"};
+SAP_agent sap_agent1030 = {"1030","elena.kruglova"};
+SAP_agent sap_agent1031 = {"1031","dina.elyasova"};
+SAP_agent sap_agent1032 = {"1032","lali.kvachakhiya"};
+SAP_agent sap_agent1033 = {"1033","lali.kvachakhiya"};
+SAP_agent sap_agent1034 = {"1034","olga.sidorina"};
+SAP_agent sap_agent1035 = {"1035","dina.elyasova"};
+SAP_agent sap_agent1036 = {"1036","valeriy.sadovskiy"};
+SAP_agent sap_agent1037 = {"1037","dina.elyasova"};
+SAP_agent sap_agent1038 = {"1038","olga.sidorina"};
+SAP_agent sap_agent1039 = {"1039","valeriy.sadovskiy"};
+SAP_agent sap_agent1040 = {"1040","yuliya.polyakova"};
+SAP_agent sap_agent1041 = {"1041","elena.kruglova"};
+SAP_agent sap_agent1042 = {"1042","olga.sidorina"};
+SAP_agent sap_agent1043 = {"1043","valeriy.sadovskiy"};
+SAP_agent sap_agent1044 = {"1044","yuliya.polyakova"};
+SAP_agent sap_agent1045 = {"1045","dina.elyasova"};
+SAP_agent sap_agent1046 = {"1046","olga.sidorina"};
+SAP_agent sap_agent1047 = {"1047","olga.sidorina"};
+SAP_agent sap_agent1048 = {"1048","elena.kruglova"};
+SAP_agent sap_agent1049 = {"1049","elena.kruglova"};
+SAP_agent sap_agent1050 = {"1050","yuliya.polyakova"};
+SAP_agent sap_agent1051 = {"1051","lali.kvachakhiya"};
+SAP_agent sap_agent1052 = {"1052","dina.elyasova"};
+SAP_agent sap_agent1053 = {"1053","elena.kruglova"};
+SAP_agent sap_agent1054 = {"1054","elena.kruglova"};
+SAP_agent sap_agent1055 = {"1055","lali.kvachakhiya"};
+SAP_agent sap_agent1056 = {"1056","valeriy.sadovskiy"};
+SAP_agent sap_agent1057 = {"1057","dina.elyasova"};
+SAP_agent sap_agent1058 = {"1058","elena.kruglova"};
+SAP_agent sap_agent1059 = {"1059","lali.kvachakhiya"};
+SAP_agent sap_agent1060 = {"1060","olga.sidorina"};
+SAP_agent sap_agent1061 = {"1061","dina.elyasova"};
+SAP_agent sap_agent1063 = {"1063","lali.kvachakhiya"};
+SAP_agent sap_agent1064 = {"1064","lali.kvachakhiya"};
+SAP_agent sap_agent1065 = {"1065","olga.sidorina"};
+SAP_agent sap_agent1066 = {"1066","elena.kruglova"};
+SAP_agent sap_agent1067 = {"1067","yuliya.polyakova"};
+SAP_agent sap_agent1068 = {"1068","yuliya.polyakova"};
+SAP_agent sap_agent1069 = {"1069","valeriy.sadovskiy"};
+SAP_agent sap_agent1070 = {"1070","valeriy.sadovskiy"};
+SAP_agent sap_agent1071 = {"1071","yuliya.polyakova"};
+SAP_agent sap_agent1072 = {"1072","olga.sidorina"};
+SAP_agent sap_agent1073 = {"1073","yuliya.polyakova"};
+SAP_agent sap_agent1074 = {"1074","dina.elyasova"};
+SAP_agent sap_agent1076 = {"1076","yuliya.polyakova"};
+SAP_agent sap_agent1077 = {"1077","elena.kruglova"};
+SAP_agent sap_agent1078 = {"1078","lali.kvachakhiya"};
+SAP_agent sap_agent1082 = {"1082","lali.kvachakhiya"};
+SAP_agent sap_agent1083 = {"1083","dina.elyasova"};
+SAP_agent sap_agent1086 = {"1086","lali.kvachakhiya"};
+SAP_agent sap_agent1088 = {"1088","lali.kvachakhiya"};
+SAP_agent sap_agent1094 = {"1094","lali.kvachakhiya"};
+SAP_agent sap_agent1095 = {"1095","olga.sidorina"};
+SAP_agent sap_agent1196 = {"1196","darya.salimova"};
+SAP_agent sap_agent1202 = {"1202","olga.sidorina"};
+SAP_agent sap_agent1303 = {"1303","yuliya.polyakova"};
+SAP_agent sap_agent1304 = {"1304","yuliya.polyakova"};
+SAP_agent sap_agent1306 = {"1306","elena.kruglova"};
+SAP_agent sap_agent1307 = {"1307","elena.kruglova"};
+SAP_agent sap_agent1308 = {"1308","valeriy.sadovskiy"};
+SAP_agent sap_agent1309 = {"1309","valeriy.sadovskiy"};
+SAP_agent sap_agent1310 = {"1310","yuliya.polyakova"};
+SAP_agent sap_agent1311 = {"1311","olga.sidorina"};
+SAP_agent sap_agent1317 = {"1317","olga.sidorina"};
+SAP_agent sap_agent1318 = {"1318","dina.elyasova"};
+SAP_agent sap_agent1320 = {"1320","valeriy.sadovskiy"};
+SAP_agent sap_agent1322 = {"1322","dina.elyasova"};
+SAP_agent sap_agent1336 = {"1336","valeriy.sadovskiy"};
+SAP_agent sap_agent1337 = {"1337","olga.sidorina"};
+SAP_agent sap_agent1340 = {"1340","lali.kvachakhiya"};
+SAP_agent sap_agent1342 = {"1342","valeriy.sadovskiy"};
+SAP_agent sap_agent1356 = {"1356","olga.sidorina"};
+SAP_agent sap_agent1357 = {"1357","dina.elyasova"};
+SAP_agent sap_agent1444 = {"1444","olga.sidorina"};
+
+
+SAP_agent[] allsap_agents = {
+sap_agent1010, sap_agent1011, sap_agent1012, sap_agent1013, sap_agent1014, sap_agent1015, 
+sap_agent1016, sap_agent1017, sap_agent1018, sap_agent1019, sap_agent1020, sap_agent1021, 
+sap_agent1022, sap_agent1023, sap_agent1024, sap_agent1025, sap_agent1026, sap_agent1027, 
+sap_agent1028, sap_agent1029, sap_agent1030, sap_agent1031, sap_agent1032, sap_agent1033, 
+sap_agent1034, sap_agent1035, sap_agent1036, sap_agent1037, sap_agent1038, sap_agent1039, 
+sap_agent1040, sap_agent1041, sap_agent1042, sap_agent1043, sap_agent1044, sap_agent1045, 
+sap_agent1046, sap_agent1047, sap_agent1048, sap_agent1049, sap_agent1050, sap_agent1051, 
+sap_agent1052, sap_agent1053, sap_agent1054, sap_agent1055, sap_agent1056, sap_agent1057,
+sap_agent1058, sap_agent1059, sap_agent1060, sap_agent1061, sap_agent1063, sap_agent1064, 
+sap_agent1065, sap_agent1066, sap_agent1067, sap_agent1068, sap_agent1069, sap_agent1070, 
+sap_agent1071, sap_agent1072, sap_agent1073, sap_agent1074, sap_agent1076, sap_agent1077, 
+sap_agent1078, sap_agent1082, sap_agent1083, sap_agent1086, sap_agent1088, sap_agent1094, 
+sap_agent1095, sap_agent1196, sap_agent1202, sap_agent1303, 
+sap_agent1304, sap_agent1306, sap_agent1307, sap_agent1308, sap_agent1309, sap_agent1310, 
+sap_agent1311, sap_agent1317, sap_agent1318, sap_agent1320, sap_agent1322, sap_agent1336, 
+sap_agent1337, sap_agent1340, sap_agent1342, sap_agent1356, sap_agent1357, sap_agent1444 
+};

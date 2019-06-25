@@ -1,0 +1,29 @@
+struct Document{
+   string name;
+   string doc_description;
+}
+Document Document_order = {"Приказ на командировку","Приложить приказ на командировку (с подписями руководителя и сотрудника)"};
+Document Document_report= {"Авансовый отчет","Приложить авансовый отчет в статусе Согласовано (с подписями руководителя и сотрудника)"};
+Document Document_tickets= {"Билеты и посадочные талоны","Приложить билеты и посадочные талоны (электронные билеты обязательно для самолета)"};
+Document Document_bills= {"Чеки","Приложить чеки"};
+Document Document_invoice= {"Квитанции","Приложить квитанции"};
+Document Document_laggage= {"Служебная записка на багаж","Приложить служебную записку на багаж"};
+Document Document_transport= {"Служебная записка транспорт","Приложить служебную записку на чем добирались до места командировки"};
+Document Document_acquaintance= {"Дата ознакомления","Прописать дату ознакомления на приказе"}; //ознакомление
+Document Document_document_tab= {"Вкладка документы","Заполнить вкладку документы на портале"}; 
+Document Document_order_signature= {"Подписи на приказе","Поставить подписи на приказе"};
+Document Document_report_signature= {"Подписи на АО","Поставить подписи на АО"};
+
+Document[] allDocuments = { 
+    Document_order,
+    Document_report,
+    Document_tickets,
+    Document_bills,
+    Document_invoice,
+    Document_laggage,
+    Document_transport,
+    Document_acquaintance,
+    Document_document_tab,
+    Document_order_signature,
+    Document_report_signature
+};

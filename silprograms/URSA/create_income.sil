@@ -1,0 +1,121 @@
+// Создание задач/подзадач для проекта URSA by Anatoliy Gundarov зашедулено на 	0 0 19-23,0,1,7,9,10,14,16 ? * *
+include "ursa/fi_functions.sil";
+//создание задачи на опредедённую таймзону
+for(Store current_store in finance_pilot_stores){
+   if(current_store.timezone == timezone){
+        if(day(currentDate())==25 ){
+            createTasks(Expenses, Expenses_Childs, formatForSummaryMonth, adminspec_group, current_store);
+            createTasks(Arenda, Arenda_Childs, formatForSummaryMonth, adminspec_group, current_store);
+        }
+        
+        if(day(currentDate())==28 ){
+            createTasks(Recycled, "", formatForSummaryMonth, adminspec_group, current_store);
+        }
+        
+        
+        MyChild[] MMC_Childs_To_Create = MMC_Childs;
+        if(current_store.index=="1196"){
+            MMC_Childs_To_Create=MMC_Childs_1196;
+        }
+        if(!(hour(currentDate()) == 1 && minute(currentDate()) == 40)){
+            createTasks(Revenue, MMC_Childs_To_Create, formatforsummary, dept_group,current_store);
+        }
+        
+    }
+}
+
+
+
+// Создание по будням задач по КЕБ, переносу оплат и выравниванию
+if(dayOfWeek(currentDate())!="Sun" && dayOfWeek(currentDate())!="Sat" ){
+    if(hour(currentDate())==14){
+        createTasks(CEB, CEB_Child, formatforsummary, "remoteuser",store_MCoE);
+        createTasks(VTB, VTB_Child, formatforsummary, "remoteuser",store_MCoE);
+    }
+    if(hour(currentDate())==10){
+        //  createTasks(vyravn_arenda, vyravn_arend_Childs, formatforsummary, "remoteuser",store_MCoE);
+    }
+    if(hour(currentDate())==7){
+        // for(Store current_store in finance_pilot_stores_test){
+        //     createTasks(Perenos, Perenos_Child, formatforsummary, "remoteuser",current_store);
+        // }
+        for(number issue_count = 0;issue_count<8;issue_count++){
+            createTasks(Federal, Federal_Child, formatforsummary, "remoteuser",store_MCoE);
+            createTasks(isklucheniya, isklucheniya_Childs, formatforsummary, "remoteuser",store_MCoE);
+            if(dayOfWeek(currentDate())=="Tue"){
+                createTasks(adcc, Adcc_Child, formatforsummary, "remoteuser",store_MCoE);
+            }
+            
+        }
+        createTasks(Vyravn, Vyravn_Child, formatforsummary, "remoteuser",store_MCoE);
+        createTasks(perenosDS, perenosDS_Childs, formatforsummary, "remoteuser",store_MCoE);
+        createTasks(vyravn_1091999999, vyravn_1091999999_Childs, formatforsummary, "remoteuser",store_MCoE);
+        
+        
+        // createTasks(autoclearing, autoclearing_Childs, formatforsummary, "remoteuser",store_MCoE);
+    } 
+   
+    
+    
+    
+    if(dayOfWeek(currentDate())=="Fri"){
+        if(hour(currentDate())==16){
+            createTasks(Perenos_Check, Perenos_Check_Childs, formatforsummary, "remoteuser",store_MCoE);
+        }
+        if(hour(currentDate())==7){
+           number dayindex = day(currentDate())/7;
+           if(dayindex >1 && dayindex<=2){
+            createTasks(vyravn_arenda, vyravn_arenda_Childs, formatforsummary, "remoteuser",store_MCoE); 
+            createTasks(vyravn_recycled, vyravn_recycled_Childs, formatforsummary, "remoteuser",store_MCoE);
+           }
+        }
+    }
+}
+if(hour(currentDate())==9){
+    createTasks(VTB_SAP, VTB_SAP_Child, formatforsummary, "remoteuser",store_MCoE);
+    createTasks(CEB_SAP, CEB_SAP_Child, formatforsummary, "remoteuser",store_MCoE);
+    if(day(currentDate())==25 ){
+        createTasks(autoclearing_off, autoclearing_off_Childs, formatforsummary, "remoteuser",store_MCoE);
+    }
+    // if((day(currentDate())==15 && (month(currentDate())==3 || month(currentDate())==10))){
+    if((day(currentDate())==15 && (month(currentDate())==3 || month(currentDate())==10))){
+         createTasks(ChangeCET, ChangeCET_Child, formatforsummary, "remoteuser",store_MCoE);
+    }
+    
+    
+    
+}
+
+
+if(hour(currentDate())==1 && minute(currentDate())==40){
+    createTasks(Journal1, Journal1_Child, formatforsummary, "remoteuser",store_MCoE);
+}
+
+
+
+if(hour(currentDate())==7){
+    
+   
+    if(day(currentDate())==1){ // 1го числа и каждую 2 пятницу
+        createTasks(vyravn_arenda, vyravn_arenda_Childs, formatforsummary, "remoteuser",store_MCoE); 
+        createTasks(vyravn_recycled, vyravn_recycled_Childs, formatforsummary, "remoteuser",store_MCoE); 
+    }
+    if(day(currentDate())==1 ){
+        createTasks(vyravn_cashiers, vyravn_cashiers_Childs, formatforsummary, "remoteuser",store_MCoE);
+    }
+   
+    //  if(day(currentDate())==2 ){
+    //     createTasks(NTK, NTK_Childs, formatforsummary, "remoteuser",store_MCoE);
+    // }
+     if(day(currentDate())==5 ){//3й рабочий день
+        createTasks(NTK, NTK_Childs, formatforsummary, "remoteuser",store_MCoE);
+        createTasks(Ikea, Ikea_Childs, formatforsummary, "remoteuser",store_MCoE);
+        createTasks(Sodekso, Sodekso_Childs, formatforsummary, "remoteuser",store_MCoE);
+         createTasks(YamRestorans, YamRestorans_Childs, formatforsummary, "remoteuser",store_MCoE);
+    }
+    
+    // функция в fi_functions проверка созданных задач
+    checkCreated();
+    
+}
+

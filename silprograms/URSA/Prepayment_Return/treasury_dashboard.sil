@@ -1,0 +1,6 @@
+string[] selected_issues = gadget_getMultiValues(argv, "Номер заявки");//
+for(string cur_issue in selected_issues){
+    autotransition("Решено", %cur_issue%.key, true, true,true);
+    string info = %cur_issue%.key + " в статусе Оплачено";
+    runnerLog(info);
+}

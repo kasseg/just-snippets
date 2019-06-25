@@ -1,0 +1,10 @@
+
+string[] dmopGroups = {"MCC RU MOW - District Managers",""};
+string[] user_list = usersInGroups(dmopGroups);
+
+if(customfield_10702 == "1451 HVS (virtual)"){
+    customfield_10100 = "Olga.Parshina";
+}
+else{
+    customfield_10100 = user_list;
+}

@@ -1,0 +1,57 @@
+include "main/stores.sil";//подключение структуры регионов
+string mykey = "TEST-931";
+if (%mykey%.customfield_10702=="" or %mykey%.customfield_10702=="FLS" or %mykey%.customfield_10702==11451){
+if (userInGroup("MCC RU - mbx - southplatform", %mykey%.reporter)){
+    %mykey%.customfield_10702="1416 Ростов-на-Дону (платформа)";
+} else if (userInGroup("MCC RU - Shared Center", %mykey%.reporter)){
+    %mykey%.customfield_10702="HR Shared Center (Ярославль)";
+} else if (%mykey%.reporter=="shop-service"){
+    %mykey%.customfield_10702="1097 E-Commerce (virtual)";
+} else if (%mykey%.reporter=="listing"){
+    %mykey%.customfield_10702="ЦО";
+} else {
+    string reporterstore;
+    string userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + %mykey%.reporter + ")","r4 domain LDAP");
+    if (isNull(userCompany)){
+        userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + %mykey%.reporter + ")","mgl domain LDAP");
+    }
+    
+    if (isNotNull(userCompany)){
+            if (userCompany=="3466") //если пользователь из  MCC, утверждение на его руководителя и соотв транзакция.
+            {
+                reporterstore=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" + %mykey%.reporter + ")","r4 domain LDAP");
+                reporterstore=substring(reporterstore, length(reporterstore)-4, length(reporterstore));
+            } else if (userCompany=="3113"){ //если пользователь из MGL - утверждение на Ларину и соотв транзакция.
+                reporterstore="1198";
+            }
+    } else { //если у пользователя нет metrocompanyCode, то его либо нет в r4 вообще, либо это ГПЯ
+                if (!contains(userFullName(%mykey%.reporter), "Store")){
+                    reporterstore="FLS";
+                    //addJSDComment(key, "remoteuser", "Невозможно определить месторасположение автора, локация выставляется FLS", false, false);
+                } else {
+                    number start=matchEnd(userFullName(%mykey%.reporter), ".*Store");
+                    number stop=length(userFullName(%mykey%.reporter));
+                    reporterstore=substring(userFullName(%mykey%.reporter),start,stop);
+                    reporterstore=substring(reporterstore,0,indexOf(reporterstore, " "));
+                    reporterstore=replace(reporterstore,",","");
+                    if (length(reporterstore)==2){
+                        reporterstore="10"+reporterstore;
+                    }
+                }
+            }
+            
+    for(Store current_store in all_stores){
+        if (reporterstore==current_store.index){
+            %mykey%.customfield_10702=current_store.name;
+            runnerLog(current_store.name);
+        }
+    }
+          if (reporterstore=="FLS"){
+        %mykey%.customfield_10702="FLS";
+        }else if (reporterstore=="1990"){
+        %mykey%.customfield_10702="FLS";
+        }else if (reporterstore=="1090"){
+        %mykey%.customfield_10702="ЦО";
+        }
+    }
+}

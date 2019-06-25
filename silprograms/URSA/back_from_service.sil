@@ -1,0 +1,18 @@
+//возврат из ожидания сервиса
+string myJQL = "project = FI and status =  'Wait Service'";
+string[] sel_issues = selectIssues(myJQL);
+ 
+    for(string parent_key in sel_issues){
+        JIssueLink[] jIssueLinks = getIssueLinksDetail(%parent_key%.key);//массив всех подзадач
+        for(JIssueLink jIssueLink in jIssueLinks){
+            if(jIssueLink.description == "causes"){
+                string my_linked_issue_key = jIssueLink[4];
+                if(%my_linked_issue_key%.status == "Resolved"){
+                    autotransition("Ответ получен", %parent_key%.key, true,true,true); 
+                } 
+            }
+            // if(customfield_12401 < currentDate() && isNotNull(customfield_12401)){
+            //     autotransition("Ответ получен", %parent_key%.key, true,true,true); 
+            // }
+        }
+    }

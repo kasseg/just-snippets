@@ -1,0 +1,348 @@
+//Структура подзадач для проекта FINANCE by Anatoliy Gundarov
+struct MyChild {
+    string name; 
+    string child_summary;
+    string child_description;
+    string fi_team;
+    string formatForSummary;
+    string[] fi_labels;
+}
+
+string minus_day="0d";
+string timezone="";
+switch(hour(currentDate())){//определение таймзоны
+    case 19:
+    timezone = "GMT+8";  break;
+    case 20:
+    timezone = "GMT+7";    break;
+    case 21:
+    timezone = "GMT+6";    break;
+    case 22:
+    timezone = "GMT+5";    break;
+    case 23:
+    timezone = "GMT+4";    break;
+    case 0:
+    timezone = "GMT+3";minus_day = "1d";    break;
+    case 1:
+    timezone = "GMT+2";minus_day = "1d";    break;
+    default:
+    timezone = "GMT+24";minus_day = "1d";
+}
+string dept_group = "MCC RU - Cashier Supervisor";
+string adminspec_group = "MCC RU - Admin Specialist";
+string[] custom_fields_mapping_toChange = "securityLevel|MCoE Finance|reporter|reporter_toChange|FI Команда|Group_toChange|Issue Location";
+string formatforsummary = "yyyyMMdd";
+string formatForSummaryMonth = "yyyyMM";
+string formatfordescription = "dd.MM.yyyy";
+
+
+
+string dt_table = " \n||Назначение||Потребление за июнь (литры)||\n|Отопление| |\n|Электричество| |\n|Топливо - грузовики, погрузчики| |\n||Остаток в хранилище (литры)| |\n||";
+
+
+
+
+string ACHTUNG = "\r\n(ВАЖНО! При ответе просьба не менять тему письма)";
+string zreport_description = "Добрый день! Просьба предоставить файл с данными Z-отчетов ответом на это письмо datetochange до 09:00 утра по вашему часовому поясу." + ACHTUNG;
+
+string podotchet_link = "[ссылке на Collaboration | https://collaborationtool.metrogroup-networking.com/sites/003295/Lists/List2/Allitemsg.aspx#InplviewHash1e12d3fe-3f22-484c-b78d-3ccadb5a6642=ShowInGrid%3DTrue";
+
+
+string material_link = "[ссылке на Collaboration | https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F082018%20%D0%9E%D1%82%D1%87%D0%B5%D1%82%D1%8B%20%D0%B8%D0%B7%201%D0%A1%20%D0%BF%D0%BE%20%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D1%8E%20%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D0%BE%D0%B2&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D]";
+// string materialAct_link = "[Подписано. | https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F092018%20%D0%90%D0%BA%D1%82%20%D0%BD%D0%B0%20%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D0%BE%D0%B2&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D]";
+string materialAct_link = "[Подписано. | https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F092018%20%D0%90%D0%BA%D1%82%20%D0%BD%D0%B0%20%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5%20%D0%BC%D0%B0%D1%82%D0%B5%D1%80%D0%B8%D0%B0%D0%BB%D0%BE%D0%B2&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D]";
+// string dt_link = "[ссылке на Collaboration|https://collaborationtool.metrogroup-networking.com/sites/003295/Lists/0820181/Allitemsg.aspx#InplviewHash9a55fa36-0602-4dd3-a3cf-0efd14d7c6fa=ShowInGrid%3DTrue]";
+string dt_link = "[ссылке на Collaboration|https://collaborationtool.metrogroup-networking.com/sites/003295/Lists/0920181/Allitemsg.aspx#InplviewHash41594664-08ec-4d21-bb5b-8c36e01cf7f5=ShowInGrid%3DTrue]";
+// string dtAct_link = "[Подписано на Collaboration | https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F082018%20%D0%A2%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%2D%D0%BD%D0%B0%D0%BA%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%20%D0%BF%D0%BE%20%D0%94%D0%A2&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D]";
+string dtAct_link = "[Подписано на Collaboration | https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F092018%20%D0%A2%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5%2D%D0%BD%D0%B0%D0%BA%D0%BB%D0%B0%D0%B4%D0%BD%D0%B0%D1%8F%20%D0%BF%D0%BE%20%D0%94%D0%A2&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D]";
+// string arendaCounter_link = "[ссылке на Collaboration | https://collaborationtool.metrogroup-networking.com/sites/003295/Lists/082018/Allitemsg.aspx#InplviewHash94c3947c-6e19-499a-b080-19f6f812c863=ShowInGrid%3DTrue]";
+string arendaCounter_link = "[ссылке на Collaboration | https://collaborationtool.metrogroup-networking.com/sites/003295/Lists/092018/Allitemsg.aspx#InplviewHashb1caf028-672d-4689-a532-7a7f975b8c3a=ShowInGrid%3DTrue]";
+// string arendaUPD_link = "[Ссылка на файл | https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F082018%20%D0%A3%D0%9F%D0%94%20%D0%BF%D0%BE%20%D0%B0%D1%80%D0%B5%D0%BD%D0%B4%D0%B0%D1%82%D0%BE%D1%80%D0%B0%D0%BC&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D]";
+string arendaUPD_link = "[Ссылка на файл | https://collaborationtool.metrogroup-networking.com/sites/003295/SitePages/WorkspaceHome.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F102018%20%D0%A3%D0%9F%D0%94%20%D0%BF%D0%BE%20%D0%B0%D1%80%D0%B5%D0%BD%D0%B4%D0%B0%D1%82%D0%BE%D1%80%D0%B0%D0%BC&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BAD2BA737%2D5157%2D4C13%2DB500%2D054945C95B1B%7D]";//02112018
+string onDoneText = " При завершении задачи просьба ответить Готово в ответ на это письмо.";
+string onProblemText = " Если у вас не открывается ссылка, просьба прислать скрин ошибки в ответном письме.";
+string arendatorIsEmpty = " В случае отсутствия арендатора в списке, просьба сообщить ответным письмом.";
+string dueTimeText1 = " за текущий месяц до 18:00 datetochange по вашему часовому поясу. ";
+string dueTimeText2 = " за текущий месяц (разница в показаниях на текущую и прошлую дату) до 18:00 datetochange по вашему часовому поясу. ";
+string autoCreateText = "Добрый день! Задача создана автоматически. Ожидайте дополнительного запроса информации.";
+
+string podotchet_description = "Добрый день.\r\nПросьба в течение 3-х (до 18.00 11.10.18)  дней заполнить файл по " 
++ podotchet_link +
+" по задолженности подотчетных лиц, указав причины задолженности свыше 30 дней и сроки когда будет предоставлен авансовый отчет или внесены денежные средства в кассу. По истечении срока файл будет закрыт для редактирования. "
++ onDoneText
++ " Если у вас не открывается ссылка, просьба прислать скрин ошибки в ответном письме." 
++ ACHTUNG;//письмо
+
+
+string material_description = "Добрый день!\r\nПросьба выложить файл из 1С «Отчет по закрытию месяца» в формате Excel – за текущий месяц, учитывая дату последнего предоставления отчета по " 
++ material_link +
+" до 18:00 datetochange по вашему часовому поясу. "
++ onDoneText
++ " Если у вас не открывается ссылка, просьба прислать скрин ошибки в ответном письме." 
++ ACHTUNG;//письмо
+
+
+string materialAct_description = "Добрый день!\r\nНеобходимо подписать акт в течение трех дней и выложить его скан в папку " 
++ materialAct_link 
++ onDoneText + ACHTUNG;
+
+string dt_description = "Добрый день!\r\nПросьба заполнить файл по " 
++ dt_link 
++ dueTimeText1 + onDoneText + onProblemText + ACHTUNG;
+// string dt_description = "Добрый день! Просьба предоставить данные по расходам дизельного топлива (по информации от инженера) ответом на это письмо до 18:00 datetochange по вашему часовому поясу ответом на это письмо." + ACHTUNG + dt_table;
+
+string dtAct_description = "Добрый день!\r\nНеобходимо подписать требование-накладную на списание ДТ в течение трех дней и и выложить его скан в папку " 
++ dtAct_link + onDoneText + onProblemText + ACHTUNG;
+
+string arendaCounter_description = "Добрый день!\r\nПросьба заполнить файл по " 
++ arendaCounter_link 
++ dueTimeText2 + arendatorIsEmpty + onDoneText + onProblemText + ACHTUNG;
+
+string arendaUPD_description = "Добрый день!\r\nНеобходимо распечатать УПД в двух экземплярах, подписать со стороны МСС и передать арендаторам. Подписанный арендатором экземпляр заархивировать. " 
++ arendaUPD_link 
++ onDoneText + onProblemText + ACHTUNG;
+
+
+
+//// string internal_description = "Добрый день! Необходимо подписать акт в течение трех дней и выложить его скан в папку [Подписано|https://collaborationtool.metrogroup-networking.com/sites/003295/SitePages/WorkspaceHome.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F082018%20%D0%90%D0%BA%D1%82%D1%8B%20%D0%BF%D0%BE%20%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B5%D0%BD%D0%BD%D0%B5%D0%BC%D1%83%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E%2F082018%20%D0%9D%D0%B0%20%D0%BF%D0%BE%D0%B4%D0%BF%D0%B8%D1%81%D1%8C&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BAD2BA737%2D5157%2D4C13%2DB500%2D054945C95B1B%7D] При завершении задачи просьба ответить Готово в ответ на это письмо.";
+//092018 новая string internal_description = "Добрый день! Необходимо подписать акт в течение трех дней и выложить его скан в папку [Подписано|https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F092018%20%D0%90%D0%BA%D1%82%D1%8B%20%D0%BF%D0%BE%20%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B5%D0%BD%D0%BD%D0%B5%D0%BC%D1%83%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D] При завершении задачи просьба ответить Готово в ответ на это письмо.";
+//102018 новая string internal_description = "Добрый день! Необходимо подписать акт в течение трех дней и выложить его скан в папку [Подписано|https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F092018%20%D0%90%D0%BA%D1%82%D1%8B%20%D0%BF%D0%BE%20%D0%B2%D0%BD%D1%83%D1%82%D1%80%D0%B5%D0%BD%D0%BD%D0%B5%D0%BC%D1%83%20%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E%2F092018%20%D0%9D%D0%B0%20%D0%BF%D0%BE%D0%B4%D0%BF%D0%B8%D1%81%D1%8C&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D] При завершении задачи просьба ответить Готово в ответ на это письмо.";
+
+string internal_description = autoCreateText;
+
+//// string recycled_description = "Добрый день! Необходимо распечатать УПД в двух экземплярах, подписать со стороны МСС и передать покупателям. Подписанный покупателем экземпляр заархивировать. [Ссылка на файл | https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F082018%20%D0%A3%D0%9F%D0%94%20%D0%BD%D0%B0%20%D0%B2%D1%82%D0%BE%D1%80%D1%81%D1%8B%D1%80%D1%8C%D0%B5&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D] При завершении задачи просьба ответить Готово в ответ на это письмо";
+//092018новая string recycled_description = "Добрый день! Необходимо распечатать УПД в двух экземплярах, подписать со стороны МСС и передать покупателям. Подписанный покупателем экземпляр заархивировать. [Ссылка на файл | https://collaborationtool.metrogroup-networking.com/sites/003295/Shared%20Documents/Forms/AllItems.aspx?RootFolder=%2Fsites%2F003295%2FShared%20Documents%2F092018%20%D0%A3%D0%9F%D0%94%20%D0%BD%D0%B0%20%D0%B2%D1%82%D0%BE%D1%80%D1%81%D1%8B%D1%80%D1%8C%D0%B5&FolderCTID=0x0120004AD334D56898A94AB4B9A5CC0A2B44E9&View=%7BC2637821%2DCB2C%2D4A1F%2D8A5F%2DFA09EC11ADC3%7D] При завершении задачи просьба ответить Готово в ответ на это письмо";
+
+string recycled_description = autoCreateText;
+
+
+string CEB_description = "Выравнивание открытых позиций по дебитору 113817 КЕБ.\r\nЕсли за выравниваемую дату сумма BN и S1 не выравнивается в 0, сообщите об этом в группу Доходы письмом, предварительно уведомив своего специалиста/супервайзера";
+string ROSBANK_description = "Выравнивание открытых позиций РОСБАНК";
+string VTB_description = "Выравнивание открытых позиций ВТБ.\r\nЕсли за выравниваемую дату сумма BN и S1 не выравнивается в 0, сообщите об этом в группу Доходы письмом, предварительно уведомив своего специалиста/супервайзера";
+
+string ChangeCET_description = "Открыть IT-инцидент на изменение времени регулярных заданий SAP FI.\r\nВремя по часовому поясу CET изменяется в последнее воскресенье данного месяца.\r\nИнцидент следует открыть заранее (среда/четверг) на последней неделе данного месяца.";
+
+string Journal1_description = "Следует проверить полноту формирования Журналов 1.\r\nФайл с проверкой вложить в задачу.\r\nВ случае необходимости провести Журнал 1, он должен быть проведен после 09:00 (Иркутск).";
+
+
+string Ikea_description = "Памятку по сверки с клиентом Икеа вы можете найти в папке N:\\MCC\\Project Data\\MCoE\\Financial Services\\005_Clearing_Support Group\\Clearing\\01_Федеральные клиенты\\Акты сверки\\5047076050 ИКЕА";
+string Sodekso_description = "Акт сверки Содексо\r\nНеобходимо произвести сверку с клиентом Содексо.\r\nРезультаты сверки необходимо выложить в папку N:\\MCC\\Project Data\\MCoE\\Financial Services\\005_Clearing_Support Group\\Clearing\\01_Федеральные клиенты\\Акты сверки\\7722267655 Содексо";
+string YamRestorans_description = "Акт сверки Содексо\r\nНеобходимо произвести сверку с клиентом Ям Ресторанс Раша. Результаты сверки необходимо выложить в папку N:\\MCC\\Project Data\\MCoE\\Financial Services\\005_Clearing_Support Group\\Clearing\\01_Федеральные клиенты\\Акты сверки\\7722561551 Ям Ресторанс";
+
+
+
+
+string Perenos_Check_description = "Необходимо проверить сальдо по 51* счетам за текущий открытый период. Описание проверки расположено в папке по адресу N:\\MCC\\Project Data\\MCoE\\Financial Services\\005_Clearing_Support Group\\03_Financial Services\\04_Перенос ДС.";
+
+
+string isklucheniya_description = "Необходимо выровнять вручную дебиторов, исключенных из автоматического выравнивания. Файл с исключенными дебиторам расположен в папке N:\\MCC\\Project Data\\MCoE\\Financial Services\\005_Clearing_Support Group\\Clearing\\02_Дебиторы-исключения";
+string autoclearing_description = "Необходимо запустить автоматическое выравнивание по отрасли CRLM. Транзакция J3RCALD, вариант CL_CRLM – Дебиторы с кредитным лимитом. Количество запусков – 4";
+string autoclearing_off_description = "Необходимо проверить, требуется ли в данном закрытии отключение автоклиринга.\r\nЕсли последний день отчетного месяца выпадает на Пятницу или Субботу, то автоклиринг обязательно необходимо выключить!";
+
+string perenosDS_description = "Необходимо перенести ДС с дебитора на дебитора по клиентам из файла:N:\\MCC\\Project Data\\MCoE\\Financial Services\\005_Clearing_Support Group\\03_Financial Services\\04_Перенос ДС";
+string vyravn_1091999999_description = "Вариант отчета-/MCE_CL_9*\r\n1. Первый этап – Закрыть все НЕ трехзначные присвоения в 0 (только те присвоения, при подсуммировании которых итог равен 0).\r\n2. Второй этап – Необходимо выровнять между собой НЕ трехзначные присвоения не в 0. В результате выравнивания на этапе 2 не должно остаться Нетрехзначных присвоений, которые выравниваются между собой в 0\r\n3. Третий этап – Выравнивание в рамках Трехзначного присвоения. Фильтруем трехзначное присвоение и делаем подсуммирование по Дате документа. Задача выровнять суммы в 0 между датами.\r\n\r\nВыравнивать можно в одном документе:\r\n-Прошлые периоды - первым числом текущего\r\nТекущий период – последней датой текущего периода";
+string vyravn_arenda_description = "Необходимо выровнять дебиторов-арендаторов. Оплаты с начислениями.";
+string vyravn_recycled_description = "Необходимо выровнять дебиторов вторсырья.";
+string vyravn_cashiers_description = "Необходимо выровнять кредиторов-кассиров";
+
+
+string Vyravn_1196_description = "Выравнивание в 0 наличных клиентов.\r\nДля выгрузки списка дебиторов, формируем в транзакции FBL5N открытые позиции на текущую дату, формат выбираем /1196, интервал дебиторов с 1196000000 по 1196999999.\r\nКак сформируются открытые позиции, отобрать ч/з фильтр в колонке “текст”, значения  *cash* и *credit card*\r\nПолученный список через Excel сохраняем себе для выравнивания.";
+string BN_1196_description = "Выравнивание BN.\r\nНужно выровнять дебиторов из списка ниже, можно частично, но БЕРЕМ ТОЛЬКО S1 с текстом CREDIT-Customer……!!!!!!!!!!!!!!!!!!!! Выравнивание в 0 наличных клиентов.\r\nДля выгрузки списка дебиторов, формируем в транзакции FBL5N открытые позиции на текущую дату, формат выбираем /1196, через множественный выбор отбираем отрасли ADCC, ADDL, NOCL и пустые значения, интервал дебиторов с 1196000000 по 1196999999.\r\nПолученный список через Excel сохраняем себе для выравнивания.";
+
+
+string NTK_description = "Перенести отгрузки с дебитора НТК (ИНН 7723662471) на кредитора 111656";
+
+
+string VTB_SAP_description = "Эквайринг ВТБ";
+string CEB_SAP_description = "Эквайринг КЕБ";
+string Perenos_description = "Перенести оплаты за вчерашний день (в понедельник - за пятницу) и выровнять позиции";
+string Vyravn_description = "Выравнивание открытых позиций на счете 76500010 за вчерашний день (в понедельник - за пятницу и выходные)";
+
+string Federal_description = "Необходимо выровнять отгрузки/оплаты федеральных клиентов. Внимание! Для выравнивания необходимо воспользоваться файлом по адресу:N:\\MCC\\Project Data\\MCoE\\Financical Services\\005_Clearing_Support Group\\01_Федеральные клиенты Файл – Федеральные клиенты_СВОД_08062018.xlsx. При выравнивании Федеральных клиентов Обязательно изучить информацию из файла (у каждого дебитора своя специфика)!";
+string adcc_description = "Необходимо выровнять отгрузки/оплаты клиентов отрасли ADCC. Файл с дебиторами находится N:\\MCC\\Project Data\\MCoE\\Financial Services\\005_Clearing_Support   Group\\Clearing\\04_Выравнивание.\r\nОбратите внимание, в том списке который вы определяете для междебеторского выравнивания, в назначении платежа в BN вы увидите текст в виде “ Fдесяти значный номер дебитораF  ” , то такие BN между дебиторами выравнивать нельзя!";
+
+date report_date = currentDate()-minus_day;
+date zreport_date = report_date+"1d";
+date expenses_date = report_date+"1d";
+date closing_date = zreport_date+"2d";
+zreport_description = replace(zreport_description, "datetochange", formatDate(zreport_date, formatfordescription));
+material_description = replace(material_description, "datetochange", formatDate(closing_date, formatfordescription));
+dt_description = replace(dt_description, "datetochange", formatDate(closing_date, formatfordescription));
+dtAct_description = replace(dtAct_description, "datetochange", formatDate(closing_date, formatfordescription));
+arendaCounter_description = replace(arendaCounter_description, "datetochange", formatDate(closing_date, formatfordescription));
+arendaUPD_description = replace(arendaUPD_description, "datetochange", formatDate(closing_date, formatfordescription));
+
+CEB_description = replace(CEB_description, "datetochange", formatDate(zreport_date, formatfordescription));
+
+MyChild Revenue= {"Store Revenue","Выручка ТЦ ","Заявка выручка","SAP Group Leader",formatforsummary,{""}};
+MyChild Mcc = {"Обработка в MMC","Обработка в MMC ","","MMC Group",formatforsummary,{""}};
+MyChild Delivery = {"Корректировка Доставка","Корректировка Доставка ","","MMC Group",formatforsummary,{""}};
+MyChild Z = {"Проверка Z-отчетов","Проверка Z-отчетов ",zreport_description,"MMC Group",formatforsummary,{""}};//письмо
+MyChild Reg = {"Отражение в SAP FI","Отражение в SAP FI ","Отражение в SAP FI","SAP FI Group",formatforsummary,{""}};
+MyChild Cor = {"Коррекция в SAP FI","Коррекция в SAP FI ","Коррекция в SAP FI","SAP FI Group",formatforsummary,{"Коррекция"}};
+
+MyChild Reg_SM35 = {"Отражение в SAP FI","SM35 ","Отражение в SAP FI","SAP FI Group",formatforsummary,{"SM35"}};
+
+
+
+// MyChild Reg_76500000 = {"Отражение в SAP FI","76500000 SAP FI ","Отражение в SAP FI","SAP FI Group",formatforsummary,{"76500000"}};
+// MyChild Reg_76004000 = {"Отражение в SAP FI","76004000 SAP FI ","Отражение в SAP FI","SAP FI Group",formatforsummary,{"76004000"}};
+// MyChild Reg_1091999999 = {"Отражение в SAP FI","1091999999 SAP FI ","Отражение в SAP FI","SAP FI Group",formatforsummary,{"1091999999"}};
+// MyChild Reg_499999 = {"Отражение в SAP FI","499999 SAP FI ","Отражение в SAP FI","SAP FI Group",formatforsummary,{"499999"}};
+
+//03.10.2018
+MyChild Reg_76500000 = {"Отражение в SAP FI","76500000 SAP FI ","","SAP FI Group",formatforsummary,{"76500000"}};
+MyChild Reg_76004000 = {"Отражение в SAP FI","76004000 SAP FI ","","SAP FI Group",formatforsummary,{"76004000"}};
+MyChild Reg_1091999999 = {"Отражение в SAP FI","1091999999 SAP FI ","","SAP FI Group",formatforsummary,{"1091999999"}};
+MyChild Reg_499999 = {"Отражение в SAP FI","499999 SAP FI ","","SAP FI Group",formatforsummary,{"499999"}};
+
+
+
+
+
+
+MyChild Reg_VTB = {"Отражение в SAP FI","ВТБ ","Отражение в SAP FI","SAP FI Group",formatforsummary,{"ВТБ"}};
+
+
+
+MyChild Podotchet = {"Finance Task","Контроль выдачи денежных средств под отчет ", podotchet_description,"Expenses",formatForSummaryMonth,{""}};
+
+MyChild Expenses = {"Закрытие","Расходы ТЦ ","Расходы ТЦ","Expenses",formatForSummaryMonth,{""}};
+MyChild Material = {"Списание материалов","Списание материалов ",material_description,"Expenses",formatForSummaryMonth,{""}};//письмо
+MyChild MaterialAct = {"Акт материалы","Акт на списание материалов ",materialAct_description,"Expenses",formatForSummaryMonth,{""}};
+MyChild Dt = {"Расход ДТ","Расход дизельного топлива ",dt_description,"Expenses",formatForSummaryMonth,{""}};//письмо
+MyChild DtAct = {"Накладная ДТ","Требование-накладная на ДТ ",dtAct_description,"Expenses",formatForSummaryMonth,{""}};
+
+MyChild Internal = {"Внутреннее использование","Внутреннее использование ",internal_description,"Expenses",formatForSummaryMonth,{""}};
+
+MyChild Arenda = {"Закрытие","Аренда ","Аренда","Other Income",formatForSummaryMonth,{""}};
+MyChild ArendaCounter = {"Счетчики арендаторов","Показания счётчиков арендаторов ",arendaCounter_description,"Other Income",formatForSummaryMonth,{""}};//письмо
+MyChild ArendaUPD = {"УПД аренда","Оформление УПД арендаторы ",arendaUPD_description,"Other Income",formatForSummaryMonth,{""}};//письмо
+
+MyChild Recycled = {"Закрытие","Продажа вторсырья ", recycled_description,"Other Income", formatForSummaryMonth,{"Вторсырьё"}};
+
+MyChild CEB = {"Finance Task","Выравнивание КЕБ ",CEB_description,"Clearing",formatforsummary,{"КЕБ"}};
+MyChild ROSBANK = {"Finance Task","Выравнивание РОСБАНК ",ROSBANK_description,"Clearing",formatforsummary,{"РОСБАНК"}};
+MyChild VTB = {"Finance Task","Выравнивание ВТБ  ",VTB_description,"Clearing",formatforsummary,{"ВТБ"}};
+
+MyChild ChangeCET = {"Finance Task","Изменить время заданий по CET SAP FI ",ChangeCET_description,"Head of FinServ",formatForSummaryMonth,{""}};
+
+
+MyChild Ikea = {"Finance Task","Акт сверки ИКЕА ",Ikea_description,"Financial Support",formatforsummary,{""}};
+MyChild Sodekso = {"Finance Task","Акт сверки Содексо ",Sodekso_description,"Financial Support",formatforsummary,{""}};
+MyChild YamRestorans = {"Finance Task","Акт сверки Ям Ресторанс ",YamRestorans_description,"Financial Support",formatforsummary,{""}};
+
+MyChild Perenos_Check = {"Finance Task","Проверка Переносов оплат ",Perenos_Check_description,"Financial Support",formatforsummary,{""}};
+
+
+MyChild VTB_SAP = {"Finance Task","Отражение ВТБ ",VTB_SAP_description,"SAP FI Group",formatforsummary,{"ВТБ"}};
+MyChild CEB_SAP = {"Finance Task","Отражение КЕБ ",CEB_SAP_description,"SAP FI Group",formatforsummary,{"КЕБ"}};
+MyChild Journal1 = {"Finance Task","Проверка Ж1 ",Journal1_description,"Accounts Receivable Group",formatforsummary,{"SM35"}};
+
+
+MyChild Perenos = {"Finance Task","Перенос оплат ",Perenos_description,"Clearing",formatforsummary,{""}};
+MyChild Vyravn = {"Finance Task","Выравнивание счета_76500010 ",Vyravn_description,"Clearing",formatforsummary,{""}};
+MyChild Federal = {"Finance Task","Выравнивание ФЕДЕРАЛЬНЫХ клиентов ",Federal_description,"Clearing",formatforsummary,{""}};
+
+
+MyChild Perenos_1196 = {"Подзадача","Перенос денежных средств ","Перенос денежных средств","Financial Support",formatforsummary,{"Перенос_оплаты"}};
+MyChild Clearing_1196 = {"Подзадача","Запустить автоклиринг ","Запустить автоклиринг","Clearing",formatforsummary,{"Автоклиринг"}};
+MyChild BN_1196 = {"Подзадача","Выравнивание BN ",BN_1196_description,"Clearing",formatforsummary,{"Выравнивание_BN"}};
+MyChild Report_1196 = {"Подзадача","Выслать отчет ПДЗ ","Выслать отчет ПДЗ","Financial Support",formatforsummary,{"Отчёт"}};
+MyChild Vyravn_1196 = {"Подзадача","Выравнивание в 0 наличных клиентов ",Vyravn_1196_description,"Clearing",formatforsummary,{"Выравнивание_в_0"}};
+
+
+MyChild isklucheniya = {"Finance Task","Выравнивание исключений ",isklucheniya_description,"Clearing",formatforsummary,{""}};
+MyChild autoclearing = {"Finance Task","Запуск автоклиринга по CRLM ",autoclearing_description,"Clearing",formatforsummary,{""}};
+MyChild autoclearing_off = {"Finance Task","Закрытие: отключение автоклиринга ",autoclearing_off_description,"Clearing",formatforsummary,{""}};
+MyChild perenosDS = {"Finance Task","Перенос ДС ",perenosDS_description,"Financial Support",formatforsummary,{"Перенос_оплаты"}};
+MyChild vyravn_1091999999 = {"Finance Task","Выравнивание_1091999999 ",vyravn_1091999999_description,"Clearing",formatforsummary,{""}};
+MyChild vyravn_arenda = {"Finance Task","Выравнивание дебиторов-арендаторов ",vyravn_arenda_description,"Clearing",formatforsummary,{""}};
+MyChild vyravn_recycled = {"Finance Task","Выравнивание дебиторов вторысьё ",vyravn_recycled_description,"Clearing",formatforsummary,{""}};
+MyChild vyravn_cashiers = {"Finance Task","Выравнивание_кредиторов-кассиров ",vyravn_cashiers_description,"Clearing",formatforsummary,{""}};
+MyChild adcc = {"Finance Task","Выравнивание ADCC ",adcc_description,"Clearing",formatforsummary,{""}};
+
+MyChild NTK = {"Finance Task","Перенос отгрузок на 111656  ",NTK_description,"Financial Support",formatForSummaryMonth,{"Регулярные_задачи"}};
+
+
+
+MyChild[] isklucheniya_Childs={};
+MyChild[] autoclearing_Childs={};
+MyChild[] autoclearing_off_Childs={};
+MyChild[] perenosDS_Childs={};
+MyChild[] vyravn_1091999999_Childs={};
+MyChild[] vyravn_arenda_Childs={};
+MyChild[] vyravn_recycled_Childs={};
+MyChild[] vyravn_cashiers_Childs={};
+
+
+MyChild[] NTK_Childs={};
+MyChild[] Ikea_Childs={};
+MyChild[] Sodekso_Childs={};
+MyChild[] YamRestorans_Childs={};
+
+
+
+MyChild[] Perenos_Check_Childs={};
+
+
+// MyChild[] Perenos_1196_Childs={Clearing_1196};
+// MyChild[] Clearing_1196_Childs={BN_1196};
+// MyChild[] BN_1196_Childs={Report_1196};
+// MyChild[] Report_1196_Childs={Vyravn_1196};
+
+
+
+
+
+MyChild[] Perenos_1196_Childs={Clearing_1196};
+// MyChild[] Clearing_1196_Childs={BN_1196};
+MyChild[] Clearing_1196_Childs={Report_1196};
+MyChild[] Report_1196_Childs={Vyravn_1196};
+MyChild[] Vyravn_1196_Childs={BN_1196};
+// MyChild[] BN_1196_Childs={Report_1196};
+MyChild[] BN_1196_Childs={};
+
+MyChild[] Podotchet_Childs={};
+
+// MyChild[] MMC_Childs={Mcc,Delivery,Z,Reg_VTB};
+MyChild[] MMC_Childs={Mcc,Delivery,Z,Cor};
+MyChild[] MMC_Childs_1196={Mcc,Delivery,Perenos_1196};
+MyChild[] SAP_Childs={Reg};
+MyChild[] Expenses_Childs={Material,Internal,Dt};
+MyChild[] Arenda_Childs={ArendaCounter};
+MyChild[] Dt_Childs={DtAct};
+MyChild[] Material_Childs={MaterialAct};
+MyChild[] ArendaUPD_Childs={ArendaUPD};
+MyChild[] SAP_REG={Reg_SM35};
+// MyChild[] SAP_COR={Cor};
+MyChild[] CEB_Child={};
+MyChild[] ROSBANK_Child={};
+MyChild[] ChangeCET_Child={};
+MyChild[] VTB_Child={};
+MyChild[] Journal1_Child={};
+
+MyChild[] VTB_SAP_Child={};
+MyChild[] CEB_SAP_Child={};
+MyChild[] Perenos_Child={};
+MyChild[] Vyravn_Child={};
+MyChild[] Federal_Child={};
+MyChild[] Adcc_Child={};
+// MyChild[] SAP_COR={Cor};
+
+MyChild[] SAP_SAP={Reg_76500000,Reg_76004000,Reg_1091999999,Reg_499999};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

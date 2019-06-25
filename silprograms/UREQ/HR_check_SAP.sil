@@ -1,0 +1,14 @@
+string errorMsg1 = "SAP-номер должен состоять из 8 символов";
+string errorMsg2 = "В номере не должно быть букв";
+string errorMsg3 = "Дата начала позднее даты окончания";
+if(length(customfield_12104)!=8) {
+   return false, "customfield_12104", errorMsg1;
+}else{
+if (!isDigit(customfield_12104)){
+    return false, "customfield_12104", errorMsg2;
+}
+}
+
+if (customfield_12109 >= dueDate and isNotNull(customfield_12109) and isNotNull(dueDate)){
+    return false, "customfield_12109", errorMsg3;
+}

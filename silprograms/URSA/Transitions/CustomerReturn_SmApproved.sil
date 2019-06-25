@@ -1,0 +1,23 @@
+//автоматический перевод на подтверждение District Manager если сумма больше лимита
+number limit_summ = 150000;
+number limit2_summ = 1250000;
+
+if(isNotNull(labels)){
+    if(customfield_13007>limit_summ){
+        autotransition("ToDmApprove", key,true,true,true);
+    }
+     else{
+        if(labels == {"Назначение_платежа"}){
+            autotransition("К возврату", key, true,true,true);
+        }
+    }
+}
+else{
+    if(customfield_13007>limit_summ && customfield_13007<limit2_summ && customfield_10702 != "1097 E-Commerce (virtual)"){
+        autotransition("ToDmApprove", key,true,true,true);
+    }
+    else if (customfield_13007>limit2_summ  && customfield_10702 != "1097 E-Commerce (virtual)"){
+       autotransition("toDmOperationsApproved", key,true,true,true);
+    }
+   
+}

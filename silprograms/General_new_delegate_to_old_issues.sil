@@ -1,0 +1,11 @@
+//После того, как добавлен пользователь через самоделегирование, ищет заявки на рассмотрении добавляет нового человека в них
+string attributes=arrayGetElement(argv, 0);
+string [] usernames=split(attributes,"=");//0 = mainUser, 1=addedUser
+//return "From remote", mainUser, newUser;
+string jql= "(project = \"Customer Manager Requests\" or project =\"IT Requests\" ) and Одобрения ="+usernames[0];
+string [] SelIss = selectIssues (jql);
+sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "самоделегирование","Сейчас на утверждении у "+usernames[0]+" вот столько задач: "+size(SelIss)+"<br>Добавлен делегейт: "+usernames[1]);
+for (string isc in SelIss) {
+    %isc%.customfield_10100+=usernames[1];
+    admReindexIssue(isc);
+}

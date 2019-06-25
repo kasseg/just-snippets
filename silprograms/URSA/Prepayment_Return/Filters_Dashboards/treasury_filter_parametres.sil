@@ -1,0 +1,15 @@
+struct mydata{
+    
+    string debnum;
+    date myupdated;
+}
+
+string filePath="D:/Atlassian/JIRA/Projects/FI/myfilter.txt";
+mydata mydata_2 = readFromTextFile(filePath);
+
+string mydatadebnum = mydata_2.debnum;
+date mydatamyupdated = mydata_2.myupdated;
+
+
+gadget_createInput("Номер дебитора/счёта",  mydatadebnum, true, "Номер дебитора/счёта");
+gadget_createDatePicker("Обновлено",mydatamyupdated, true, "Дата");

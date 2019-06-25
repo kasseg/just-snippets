@@ -1,0 +1,26 @@
+include "main/stores.sil";
+string[] store_list = {};
+string[] type_list = {
+    "Store Revenue","Обработка в MMC", "Корректировка Доставка", 
+    "Проверка Z-отчетов" , "Коррекция в SAP FI",
+    "ВТБ","SM35","76500000","76004000","1091999999","499999"
+};
+
+// string myJQL = "project = FI and status != Resolved AND assignee in (darya.salimova)";
+// string [] selected_issues = selectIssues(myJQL); 
+// for (string cur_issue in selected_issues){
+//     store_list = arrayAddElementIfNotExist(store_list, %cur_issue%.customfield_10702);
+// }
+
+for(Store cur_store in finance_pilot_stores){
+  store_list = addElement(store_list, cur_store.name);
+}
+store_list = arraySort(store_list, false);
+date curdate = currentDate()-"1d";
+
+gadget_createMultiSelectList("Номер ТЦ", store_list, {}, false, "Необходимо выбрать номер ТЦ");
+gadget_createInput("Номер ТЦ цифрами", "", false, "Номер ТЦ в формате 1ХХХ");
+gadget_createDatePicker("Создано", curdate, false, "Дата");
+gadget_createMultiSelectList("Тип задачи", type_list, {}, true, "Необходимо выбрать тип задачи");
+gadget_createRadioGroup("Переоткрыть", {"Нет", "Да"}, {"Нет"}, true, "Переоткрыть");
+gadget_createTextArea("Описание ошибки (до 150 символов)", "", 2, false,"");

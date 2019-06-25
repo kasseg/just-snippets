@@ -1,0 +1,62 @@
+string format = "yyyy/MM/dd";
+string jql;
+string answer="IssueKey,footballCount,whoResolved,whoAssisted\r\n";
+string filePath="C:/install/forBelov/IssueStatistics.txt";
+if(fileExists(filePath)){
+    deleteFile(filePath);
+}
+createFile(filePath);
+if (gadget_getSingleValue(argv, "Date")=="Текущий месяц"){
+    jql = "project = \"METRO - MSSC Finance\"";
+    runnerLog("Ищем инциденты с начала текущего месяца");
+} else if (gadget_getSingleValue(argv, "Date")=="Предыдущий месяц"){
+    date previousMonth;
+    if (month(currentDate())==1){
+        previousMonth=toDate(year(currentDate())-1,12,1);
+    } else {
+        previousMonth=toDate(year(currentDate()),month(currentDate())-1,1);
+    }
+    string PrevMonthStart=formatDate(startOfMonth(previousMonth), format);
+    string PrevMonthEnd=formatDate(endOfMonth(previousMonth), format);
+    jql = "project = \"METRO - IT SUPPORT\" AND status in (resolved, Closed) AND issuetype = Инцидент AND resolutiondate >\""+PrevMonthStart+"\" AND resolutiondate< \""+PrevMonthEnd+"\"";
+    runnerLog("Ищем инциденты с "+PrevMonthStart+" по "+PrevMonthEnd);
+} else {
+jql = "project = \"METRO - IT SUPPORT\" AND status in (resolved, Closed) AND issuetype = Инцидент AND resolutiondate >\""+ formatDate(gadget_getDateValue(argv, "Start Date"), format)+"\" AND resolutiondate< \""+ formatDate(gadget_getDateValue(argv, "End Date"), format)+"\"";
+runnerLog("Ищем инциденты с "+formatDate(gadget_getDateValue(argv, "Start Date"), format)+" по "+formatDate(gadget_getDateValue(argv, "End Date"), format));
+}
+string [] resolvedKeys=selectIssues(jql);
+runnerLog("Найдено "+ size(resolvedKeys)+" инцидентов");
+runnerLog("Создаём файлик...");
+for(string oneKey in resolvedKeys){
+   JFieldChange[] teamChanges  = getFieldChanges(oneKey, "customfield_11010");
+    number count=0;
+    string resolver;
+    string passer;
+    if (teamChanges[0].oldVal==""){
+        count=size(teamChanges)-1;
+    } else {
+         count=size(teamChanges);
+    }
+    passer=teamChanges[size(teamChanges)-1].user;
+    
+    JFieldChange[] statusChanges  = getFieldChanges(oneKey, "status");
+    if (statusChanges[size(statusChanges)-1].newVal=="Resolved"){
+        resolver=statusChanges[size(statusChanges)-1].user;
+    } else if (statusChanges[size(statusChanges)-1].newVal=="Closed"){
+        resolver=statusChanges[size(statusChanges)-2].user;
+    }
+    if (resolver=="remoteuser"){
+        resolver=oneKey.assignee;
+    }
+    answer+=oneKey+","+count+","+resolver+","+passer+"\r\n";
+}
+printInFile(filePath, answer);
+runnerLog("Файлик создан и выложен по пути: \\\\MOW11APP408\\forBelov\\Statistics.txt");
+sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{},"test","1.tpl","C:/install/forBelov/IssueStatistics.txt");
+
+if(fileExists("C:/install/forBelov/IssueStatistics.txt")){
+    runnerLog("The file exists!");
+} else {
+    runnerLog("The file does not exist!");
+}
+

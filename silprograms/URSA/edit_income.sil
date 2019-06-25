@@ -1,0 +1,229 @@
+//Установка меток и команды по ключевым словам
+include "URSA/maincashiers.sil";
+
+include "main/Stores.sil";
+struct Change_data{string[] ch_labels; string ch_type; string ch_fi_team;string customer_type;}
+Change_data change_data;
+string text_t_find = summary +" "+ description;
+string ended = "(а|ы|е|ой|я|ем|и|ю|у|ом|ый|ая|ые|ого)";
+string regex_avance = "ао_?\\s.*|.*авансов"+ended+"\\s.*.*отч(е|ё)т"+ended+"?.*|.*зар(а|о)ботн"+ended+"\\s.*.*плата"+ended+"?\\s.*|.*зарплат"+ended+"?\\s.*|.*депонент"+ended+"?\\s.*|.*выдать д/с\\s.*|.*внести д/с\\s.*";
+string regex_pl = ".*pl\\s.*|.*расшифровать\\s.*|.*детализировать\\s.*";
+string regex_balance = ".*баланс.*|.*остат(ок|ка).*";//+
+string regex_act = ".*(акт|скан)"+ended+"?.*сверк"+ended+"?\\s.*|.*сверк"+ended+"? с клиентом.*";//+
+string regex_perenos = ".*перен(о|е)с.*(оплат(ы|у)|\\sд\\/?с\\s|денег).*|.*(пере|раз)нес.*(ден(ги|ежн)|платеж).*";//+
+string regex_vyrav = ".*(вы|с)р(а|о)вн(ивани(е|я)|ять|ить).*";
+string regex_vyrav_creditora = ".*(вы|с)р(а|о)вн(ивани(е|я)|ять|ить).*кредитор.*";
+string regex_arenda = ".*аренд.*";
+string regex_vozvrat = ".*(вернут|возврат|перечисл).*(дс|деньг|денеж|ср.*в|остат).*";
+string cashierName = "";
+string cashiergroup = "MCC RU - Cashier Supervisor";
+string storegroup = "";
+
+ 
+function getCashierAssignee(string storeNumber){
+cashierName = "";
+for (MainCashier curCashier in allCashiers){
+    if(curCashier.index==storeNumber){
+        cashierName = curCashier.CashierName;
+        break;
+    }
+}
+    return cashierName;
+}
+
+number matchregex = 0;
+string[] regexes = {
+    regex_avance,
+    regex_pl,
+    regex_vozvrat,
+    regex_act,
+    regex_perenos,
+    regex_vyrav_creditora,
+    regex_vyrav,
+    regex_balance,
+    regex_arenda
+};
+string[] garbage_array = {".",",","!","?",";",":","\r","\n","_","  ","  "};
+for(string current_garbage in garbage_array){
+    text_t_find = replace(text_t_find,current_garbage, " ");
+}
+for(string current_regex in regexes){
+    if (matches(toLower(text_t_find), current_regex)){
+        break;
+    }
+    matchregex += 1;
+}
+
+string storeNumber = chop(customfield_10702,4);
+string assigneeuser = getCashierAssignee(storeNumber);
+if(!(hour(currentDate())>=1 && hour(currentDate())<=10)){
+    if(assigneeuser == "aleksandr.kuzyakin"){// до 2.08
+        assigneeuser = "tatyana.turaeva";
+    }
+}
+
+// if(day(currentDate())==12){
+//      if(!(hour(currentDate())>=13 && hour(currentDate())<=16)){
+//         if(assigneeuser == "M.Sokolova"){// до 2.08
+//             assigneeuser = "Elena.Mayzina";
+//         }
+//     }
+// }
+ if(day(currentDate())==22){
+        if(assigneeuser == "M.Sokolova"){// до 16.10
+          assigneeuser = "";
+        }
+  }
+ if(day(currentDate())>21 && day(currentDate())<27){
+        if(assigneeuser == "Larisa.Sidorshina"){// до 27.10
+           assigneeuser = "";
+        }
+   }
+ if(day(currentDate())>21 && day(currentDate())<27){
+        if(assigneeuser == "vera.vasileva"){// до 27.10
+           assigneeuser = "";
+        }
+   }
+//  if(day(currentDate())==11 && hour(currentDate())>=10 && hour(currentDate())<=16){
+//         if(assigneeuser == "Tatyana.Golovina"){// до 6.10
+//           assigneeuser = "";
+//         }
+//   }
+ 
+//   if(assigneeuser == ""){// до 21
+//     assigneeuser = "";
+//   }
+
+
+switch(matchregex){
+    case 0:change_data = {"Авансовый_отчёт","Finance Task","T&E and Petty Cash",""};
+    break;
+    case 1:change_data = {{"PL"},"Finance Task","Financial Support","Прочее"};
+    break;
+    case 2:change_data = {{"Возврат_ДС_клиенту"},"Finance Task","Financial Support","Прочее"};
+    break;
+    case 3:change_data = {{"Акт_сверки"},"Finance Task","Financial Support","Акт сверки"};
+        assignee = assigneeuser;
+    break;
+    case 4:change_data = {{"Перенос_оплаты"},"Finance Task","Financial Support","Перенос д/с по п/п"};
+        assignee = assigneeuser;
+    break;
+    case 5:change_data = {{"Расходы_выравнивание"},"Finance Task","Expenses","Прочее"};
+    break;
+    case 6:change_data = {{"Выравнивание"},"Finance Task","Clearing","Прочее"};
+        break;
+    case 7:change_data = {{"Баланс"},"Finance Task","Financial Support","Баланс клиента"};
+        assignee = assigneeuser;
+    break;
+    case 8:change_data = {{"Аренда"},"Finance Task","Other Income","Прочее"};
+    break;
+    
+}
+if(isNotNull(change_data)){
+    labels = change_data.ch_labels;
+    customfield_13001 = change_data.ch_fi_team;
+    type = change_data.ch_type;
+     
+    admReindexIssue(key);
+}
+// customfield_10001 = "Прочее";
+// prio = "4";
+string regex_store = ".*тц\\s[0-9]{2,3}.*";
+string regex_store_start = "тц\\s[0-9]{2,3}.*";
+string regex_store_stop = ".*тц\\s[0-9]{2,3}";
+
+
+string regex_tabnumber = ".*33[0-9]{6}.*";
+string regex_tabnumber_start = "33[0-9]{6}.*";
+string regex_tabnumber_stop = ".*33[0-9]{6}";
+
+string regex_date = ".*[0-3][0-9].[0-1][0-9].20[0-9]{2}.*";
+string regex_date_start = "[0-3][0-9].[0-1][0-9].20[0-9]{2}.*";
+string regex_date_stop = ".*[0-3][0-9].[0-1][0-9].20[0-9]{2}";
+
+
+
+
+string [] groups ={};
+string [] user_list = {};
+storeNumber="";
+string tabNumber="";
+string strDate="";
+string dateFormat = "yyyyMMdd";
+
+
+ if (summary =="Расчет недостач кассира"){
+    if (matches(toLower(text_t_find), regex_store)){
+        number stopIndex = matchEnd(toLower(text_t_find), regex_store_stop);
+        number startIndex = matchStart(toLower(text_t_find), regex_store_start);
+        storeNumber = substring(text_t_find, startIndex+3, stopIndex);
+   
+        if(length(storeNumber)==2){storeNumber = "10" + storeNumber;}
+        if(length(storeNumber)==3){storeNumber = "1" + storeNumber;}
+        for(Store current_store in all_stores){
+            if(current_store.index==storeNumber){
+                customfield_10702 = current_store.name;
+                storegroup = current_store.storegroup;
+                groups = {storegroup,cashiergroup};
+                user_list = usersInGroups(groups);
+                break;
+            }
+        }
+        if(isNotNull(user_list)){
+            reporter = user_list[0];
+        }   
+    }
+    
+    if (matches(toLower(text_t_find), regex_tabnumber)){
+        number startIndex = matchStart(toLower(text_t_find), regex_tabnumber_start);
+        number stopIndex = startIndex+8;
+        tabNumber = substring(text_t_find, startIndex, stopIndex);
+    }
+    
+     if (matches(toLower(text_t_find), regex_date)){
+        number startIndex = matchStart(toLower(text_t_find), regex_date_start);
+        number stopIndex = startIndex+10;
+        strDate = substring(text_t_find, startIndex, stopIndex);
+        
+        date toDate = parseDate("dd MM yyyy", strDate);
+        strDate = formatDate(toDate, dateFormat);
+        customfield_13302 = toDate;
+    }
+ 
+    summary += " " + strDate + " " + tabNumber;
+    customfield_13001 = "SAP FI Group";
+    autotransition("Начать работу", key, true, true, true);
+    autotransition("Ожидание задачи", key, true, true, true);
+ }
+string text_to_find2 = description;
+string regex_fi = ".*fi.[0-9]{3,6}.*";
+string regex_fi_stop = ".*fi.[0-9]{3,6}";
+string regex_fi_start = "fi.[0-9]{3,6}.*";
+
+for(string current_garbage in garbage_array){
+    text_to_find2 = replace(text_to_find2,current_garbage, " ");
+}
+
+ if (matches(toLower(text_to_find2), regex_fi)){
+
+    number stopIndex = matchEnd(toLower(text_to_find2), regex_fi_stop);
+    number startIndex = matchStart(toLower(text_to_find2), regex_fi_start);
+    string finumber = substring(text_to_find2, startIndex, stopIndex);
+    linkIssue( toUpper(finumber),key, "Problem/Incident");
+   
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

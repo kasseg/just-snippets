@@ -1,0 +1,4 @@
+include "main/stores.sil";
+string myjql = "project = FI AND issuetype = 'Prepayment return' AND status = 'Tresuary HO'";
+string[]  tasks_list = selectIssues(myjql);
+gadget_createMultiSelectList("Номер заявки", tasks_list, {}, false, "Необходимо выбрать номера оплаченных заявок");

@@ -1,0 +1,3 @@
+if(customfield_13007>150000){
+    autotransition("ToDmApprove", key,true,true,true);
+}

@@ -1,0 +1,120 @@
+//создание 2 задач на группу SAP после решения 3х задач by Anatoliy Gundarov повесить на транзакцию Решено
+include "ursa/fi_functions.sil";
+
+number notresolved = 0;
+number needToCreate;
+number needToResolve;
+string summaryDateText = substring(summary, length(summary)-8,length(summary));
+
+string current_store_number= chop(%parent%.key.customfield_10702,4);//номер ТЦ
+string parentlocation = %parent%.key.customfield_10702;//Локейшн
+string cur_project_name = %parent%.key.project;//Проект
+string parent_issue = %parent%.key;//родительский номер
+string parent_reporter = %parent%.key.reporter;//автор задачи
+string cur_issue_priority_name =  %parent%.key.priority;//приоритет
+string cur_issue_components={""};
+MyChild[] new_Tasks;
+
+if(isNotNull(parent)){//если есть родительская задача
+    JIssueLink[] jIssueLinks = getIssueLinksDetail(%parent%.key);//массив всех подзадач
+   
+    for(JIssueLink curLinkedIssue in jIssueLinks){
+        string curIssuename = curLinkedIssue.issue;
+        if(!%curIssuename%.status=="Resolved" && curLinkedIssue.name=="jira_subtask_link"){//проверка, что связанные - подзадачи и подсчёт нерешенных
+            notresolved ++;
+        }
+    }
+    if(notresolved==0){//если все решены
+        switch(arraySize(subtasks(%parent%.key))){
+            case 1:
+                if(type=="Счетчики арендаторов" && resolution=="Отклонён"){
+                    autotransition("Начать работу", %parent%.key, true,true,true); 
+                    autotransition("Решить", %parent%.key, true,true,true); 
+                }
+            break;
+            case 2:
+                if(%parent%.type=="Other Income"){
+                    autotransition("Начать работу", %parent%.key, true,true,true); 
+                    autotransition("Решить", %parent%.key, true,true,true); 
+                }
+            break;
+            case 5:
+                if(%parent%.type=="Expenses"){
+                    autotransition("Начать работу", %parent%.key, true,true,true); 
+                    autotransition("Решить", %parent%.key, true,true,true); 
+                }
+            break;
+            case 4:
+                if(%parent%.type=="Store Revenue"){
+                    new_Tasks = SAP_SAP;
+                }
+                // if(%parent%.type=="Expenses"){
+                //     new_Tasks = Expenses_Childs;
+                // }      
+            break;
+            case 9:
+                if(%parent%.type=="Store Revenue"){
+                    autotransition("Начать работу", %parent%.key, true,true,true); 
+                    autotransition("Закрыть", %parent%.key, true,true,true); 
+                }
+            break;
+        }
+    } 
+    
+    string debug = "";
+//   if(isSubtaskDone(key)){
+//         sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{""},"Test","kagjhaga");
+//   };
+   
+    
+    
+    if(isSubtaskDone(key) && isNotNull(getTasksToCreate(key)) && isTasksToCreateExist(key)!=true){
+        new_Tasks = getTasksToCreate(key);
+    }
+}
+
+
+
+if(isNotNull(new_Tasks)){
+    for(MyChild Cur_Task in new_Tasks){
+        string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+parentlocation, "Group_toChange", Cur_Task.fi_team);
+        custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", parent_reporter);
+        // string cur_issue_summary = Cur_Task.child_summary + current_store_number + " " + formatDate(summaryDate, Cur_Task.formatForSummary);
+        string cur_issue_summary = Cur_Task.child_summary + current_store_number + " " + summaryDateText;
+        string child_issue = createIssue(
+                    cur_project_name, 
+                    parent_issue,  
+                    Cur_Task.name, 
+                    cur_issue_summary,
+                    cur_issue_priority_name, 
+                    Cur_Task.child_description, 
+                    cur_issue_components,
+                    "",
+                    "",
+                    "",
+                    custom_fields_mapping_store
+        );
+        if (isNotNull(child_issue)){
+            %child_issue%.labels = Cur_Task.fi_labels;
+            // if(Cur_Task.fi_labels == "76500000" || Cur_Task.fi_labels == "76004000" ||Cur_Task.fi_labels == "1091999999" ||Cur_Task.fi_labels == "499999"){
+            //     %child_issue%.assignee = "anna.perova";
+            // }
+            if(Cur_Task.fi_labels == "1091999999"){
+                string  myJQL = "project = FI AND text ~ '1091999999 SAP FI " + current_store_number + "' ORDER BY created DESC";
+                string[] selected_issues = selectIssues(myJQL); 
+                string previous_key = selected_issues[1].key;
+                %child_issue%.description = %previous_key%.description;
+            }
+           
+            
+            if(type == "Проверка Z-отчетов" && resolution=="С расхождением"){
+                %child_issue%.labels= "Инвойс";
+            }
+            if(type == "Подзадача" && current_store_number=="1196"){
+                %child_issue%.reporter = "remoteuser";
+            }
+            
+        }
+       
+    }
+}

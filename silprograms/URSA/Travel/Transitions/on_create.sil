@@ -1,0 +1,22 @@
+include "ursa/travel/documents.sil";
+
+string[] documents_to_check = customfield_14223;
+string desc_pref = "Добрый день.\r\nНеобходимо выполнить действия на портале с командировкой:\r\n";
+string desc_post = "\r\nСогласно «Политике по командировкам» Вам необходимо в течение 3 рабочих дней после получения такого уведомления исправить все замечания и приложить необходимые документы.\r\nПосле исправления, просим в ответ на это письмо НЕ МЕНЯЯ темы письма ответить «Готово»\r\n";
+string desc_body = "";
+for(Document cur_document in allDocuments){
+    if(elementExists(documents_to_check, cur_document.name)){
+        desc_body+= "* " + cur_document.doc_description + "\r\n";
+    }
+}
+description = desc_pref + desc_body + desc_post + description;
+
+
+
+string tab_number = customfield_14224;
+string user_name=ldapUserAttr("sAMAccountName", "(extensionAttribute1=" + tab_number + ")","r4 domain LDAP");
+summary = "Командировка т/н " + tab_number;
+reporter = getUser(user_name).username;
+customfield_13001 = "T&E and Petty Cash";
+customfield_10002 = currentUser();
+autotransition("Запрос пользователя", key, true, true, true);

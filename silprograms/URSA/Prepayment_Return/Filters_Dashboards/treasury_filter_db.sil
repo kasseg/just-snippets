@@ -1,0 +1,15 @@
+struct mydata{
+  
+    string debnum;
+    date myupdated;
+}
+string filePath="D:/Atlassian/JIRA/Projects/FI/myfilter.txt";
+string format = "YYYY-MM-dd";
+
+string debnum = gadget_getSingleValue(argv, "Номер дебитора/счёта");
+date myupdated = gadget_getDateValue(argv, "Обновлено");
+mydata mydata_1 = {debnum,myupdated};
+
+deleteFile(filePath);
+printInFile(filePath, mydata_1);
+runnerLog(mydata_1);

@@ -1,0 +1,7 @@
+//фильтр для САП группы все задачи за вчера кроме статуса Решен
+string formatforsearch = "yyyyMMdd";
+string text_in_file = formatDate(currentDate()-"1d", formatforsearch);
+string myJQL = "project = FI AND status != Resolved AND 'FI Команда' = 'SAP FI Group' AND text ~ " + text_in_file + " ";
+string[] selected_issues = selectIssues(myJQL); 
+
+return selected_issues;

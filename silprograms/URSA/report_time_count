@@ -1,0 +1,149 @@
+//назначение агентов на задачи проекта Finance
+string format = "YYYYMMdd";
+string for_date = gadget_getDateValue(argv, "Создано");//
+// string[] selected_stores = gadget_getMultiValues(argv, "Номер ТЦ");
+string[] selected_types = gadget_getMultiValues(argv, "Тип задачи или метка");//
+string action = gadget_getSingleValue(argv, "Тип отчёта");//
+string mytext = formatDate(for_date, format);
+interval[] timespent; 
+interval totaltimespent = 0;
+
+//string allstores = "";
+function getStatusesTimeSpent(string issueKey) {
+    number FLSUserTimeSpent_seconds=0;
+    JFieldChange[] statusChanges = getFieldChanges(issueKey, "status");
+    interval FLSUserTimeSpent = 0;
+  
+    for(number j = 0; j<arraySize(statusChanges)-1; j++){
+        if ((statusChanges[j].oldVal=="Open"))  {
+//            if (statusChanges[j].user=="daniil.bass" || statusChanges[j].user=="ivan.shitov" || statusChanges[j].user=="sergey.pimenov" || statusChanges[j].user=="andrey.bushev" || statusChanges[j].user=="sergey.medvedev") {
+            
+                FLSUserTimeSpent =  FLSUserTimeSpent + statusChanges[j+1].changeDate-statusChanges[j].changeDate;
+        }
+                    
+    };
+    FLSUserTimeSpent_seconds = FLSUserTimeSpent["DAY"]*24*60*60 +FLSUserTimeSpent["HOUR"]*60*60 + FLSUserTimeSpent["MINUTE"]*60+ FLSUserTimeSpent["SECOND"];
+    runnerLog(mytext +"," + issueKey+","+%issueKey%.assignee+","+FLSUserTimeSpent_seconds+","+%issueKey%.type+","+%issueKey%.labels+","+%issueKey%.customfield_10702 +","+%issueKey%.summary);   
+    return FLSUserTimeSpent;
+}
+//for(string cur_store in selected_stores){
+   // allstores += "'"+cur_store+"',";
+//}
+
+string[] label_list = {
+    "ВТБ","SM35","76500000","76004000","1091999999","499999"
+};
+string[] type_list = {
+    "Store Revenue","Обработка в MMC", "Корректировка Доставка", 
+    "Проверка Z-отчетов" , "Коррекция в SAP FI"
+};
+
+label_list = arrayIntersect(label_list, selected_types);
+type_list = arrayIntersect(type_list, selected_types);
+
+string alltypes = "";
+for(string cur_type in type_list){
+    alltypes += "'"+cur_type+"',";
+}
+string alllabels = "";
+for(string cur_label in label_list){
+    alllabels += "'"+cur_label+"',";
+}
+
+//number store_len = length(allstores)-1;
+number type_len = length(alltypes)-1;
+number label_len = length(alllabels)-1;
+//allstores = chop(allstores, store_len);
+alltypes = chop(alltypes, type_len);
+alllabels = chop(alllabels, label_len);
+
+if(alltypes==""){
+    alltypes="''";
+}
+if(alllabels==""){
+    alllabels="''";
+}
+string myJQL = "";
+string[] selected_issues = "";
+
+switch(action){
+    case "Фамилия":
+        // myJQL = "project = FI AND issuetype = 'Обработка в MMC' AND text ~ '20180625'";
+        // myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND (status in (Resolved)) AND text ~ '"+mytext+"'";
+        // myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND (status in (Resolved)) AND text ~ '201807*'";
+    myJQL = "project = FI  AND status = Resolved AND 'FI Команда' in ('MMC Group') AND created >= 2018-07-30 and assignee not in (anna.perova,admin-ag)";
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+            // myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND 'Issue Location' in ("+allstores+") AND text ~ '"+mytext+"' AND (status in (Open, 'Wait Service', 'Wait Customer','In Progress')) and (assignee is EMPTY or assignee = anna.perova)";
+       
+       
+        runnerLog(myJQL);
+        selected_issues = selectIssues(myJQL);
+        for(string cur_issue in selected_issues){
+            getStatusesTimeSpent(cur_issue);
+        
+        
+        
+        
+        
+        
+       // runnerLog(%cur_issue%.key);
+        }
+    
+            
+            
+            
+            
+            
+            
+            
+    break;
+    // case "В работу":
+    //     myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND status = Open AND 'Issue Location' in ("+allstores+") AND text ~ '"+mytext+"' and (assignee is EMPTY or assignee = anna.perova)";
+    //  selected_issues = selectIssues(myJQL);
+    //     for(string cur_issue in selected_issues){
+    //              %cur_issue%.assignee = "anna.perova";
+    //              autotransition("Начать работу", %cur_issue%.key, true,true,true); 
+    //              string hhh = "Задача "+%cur_issue%.key+" назначена на "+%cur_issue%.assignee;
+    //         runnerLog(hhh);
+    //      }
+    // break;
+    // case "Решить":
+    //     myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND status in ('In Progress', 'Waiting for approval') AND 'Issue Location' in ("+allstores+") AND text ~ '"+mytext+"' and assignee = anna.perova";
+    //     selected_issues = selectIssues(myJQL);
+    //     for(string cur_issue in selected_issues){
+            
+    //         autotransition("Решить", %cur_issue%.key, true,true,true); 
+    //         %cur_issue%.resolution = "Готово";
+    //         string hhh = "Задача "+%cur_issue%.key+" решена с резолюцией "+ %cur_issue%.resolution;
+    //         runnerLog(hhh);
+    //      }
+    // break;
+}
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

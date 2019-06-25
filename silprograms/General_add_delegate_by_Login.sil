@@ -1,0 +1,52 @@
+//Добавляет людей в делегирование через "самообслуживание"
+string getData=arrayGetElement(argv, 0);
+string username=substring(getData,0,indexOf(getData,"*"));
+string wannaBeDelegate=toLower(substring(getData,indexOf(getData,"*")+1,-1));
+string userDelegate=toLower(getUserProperty(username, "delegates"));
+
+
+
+string [] userDelegatesNameAndDate=split(userDelegate,",");//0 = username, 1=until date
+string [] wannaBeNameAndDate=split(wannaBeDelegate,"=");//0 = username, 1=until date
+if (contains(wannaBeNameAndDate[0],"@")){
+    wannaBeNameAndDate[0]=toLower(getUserByEmail(wannaBeNameAndDate[0]).username);
+}
+if (userExists(wannaBeNameAndDate[0])){
+    if (wannaBeNameAndDate[1]>currentDate()){
+        string newDelegates="";
+        boolean userExists=false;
+        if (userDelegate!="null" && userDelegate!="Null"){
+            for(string delegateWithdate in userDelegatesNameAndDate){
+                string [] DelegateByOne=split(delegateWithdate,"=");//0 = username, 1=until date
+                if (DelegateByOne[0]!=wannaBeNameAndDate[0]){
+                    newDelegates+=delegateWithdate+",";
+                } else {
+                   newDelegates+=DelegateByOne[0]+"="+wannaBeNameAndDate[1]+",";
+                   userExists=true;
+                }
+            }
+        }
+        if (!userExists){
+            newDelegates+=wannaBeNameAndDate[0]+"="+wannaBeNameAndDate[1]+",";
+        }
+        
+        if (isNotNull(newDelegates)){
+            newDelegates=chop(newDelegates,length(newDelegates)-1);
+        }
+        if (newDelegates==""){
+            newDelegates="null";
+        }
+        
+        setUserProperty(username, "delegates", newDelegates);
+        
+        if (userExists){
+            return "AlreadyWas*"+wannaBeNameAndDate[0];
+        } else {
+            return "Added*"+wannaBeNameAndDate[0];
+        }
+    } else {
+        return "WrongDate";
+    }
+} else {
+    return "WrongLogin";
+}

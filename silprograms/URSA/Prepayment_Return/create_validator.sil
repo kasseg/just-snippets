@@ -1,0 +1,35 @@
+//Валидатор создания by Anatoliy.Gundarov
+string regexinn = "(^[0-9]{10}$|[0-9]{12})";
+if(!matches(customfield_14005,regexinn)){
+    return false, "Неверно введён ИНН";
+}
+string regexkpp = "[0-9]{9}";
+if(!(isNull(customfield_13009))){
+   
+   if(!matches(customfield_13009,regexkpp)){
+        return false, "Неверно введён КПП";
+    }
+}
+if(userInGroup("MCC RU - MCOE Accounts Receivable", currentUser()) || userInGroup("jira-finance-prepayment-agent", currentUser()) || userInGroup("jira-administrators", currentUser())){
+    string regex_deb_number = "[0-9]{1,10}";
+    if(!matches(customfield_14100,regex_deb_number)){
+        return false, "Неверно введён номер дебитора. Должен состоять не более чем из десяти цифр";
+    }
+    string regexdocument = "[0-9]{10}";
+        if(!matches(customfield_14101,regexdocument)){
+            return false, "Неверно введён номер документа к возврату. Должен состоять из десяти цифр";
+        }
+    
+    if(isNull(customfield_14111)){
+        return false, "Не заполнено поле Тип оплаты";
+    }
+    if(isNull(customfield_14112)){
+        return false, "Не заполнено поле Тип контрагента";
+    }
+    if(isNull(customfield_14113)){
+        return false, "Не заполнено поле Тип организации";
+    }
+    if(isNull(customfield_14400)){
+        return false, "Не заполнено поле Возвращать на реквизиты";
+    }
+}

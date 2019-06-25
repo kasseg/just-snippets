@@ -1,0 +1,19 @@
+//перевод на утверждение при создании
+if(userInGroup("jira-finance-prepayment-agent", currentUser()) || userInGroup("jira-administrators", currentUser())){
+    autotransition("ToCmApprove", key,true,true,true);
+}
+// if (isNull(customfield_10001)){ 
+   
+// }
+else{
+    autotransition("ToSMApprove", key,true,true,true);
+}
+
+if(reporter== "vera.vasileva"){
+    customfield_10702 = "1097 E-Commerce (virtual)";
+}
+
+
+string storeNumber = chop(customfield_10702,4);
+summary = "Возврат д/с клиенту ТЦ " + storeNumber;
+customfield_14115 = year(currentDate());

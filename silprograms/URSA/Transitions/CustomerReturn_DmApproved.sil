@@ -1,0 +1,4 @@
+
+    if(labels == {"Назначение_платежа"}){
+        autotransition("К возврату", key, true,true,true);
+    }

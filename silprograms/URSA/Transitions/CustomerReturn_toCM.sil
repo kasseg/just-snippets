@@ -1,0 +1,101 @@
+// установка типа запроса
+include "main/stores.sil";
+
+function getReporter(string current_store_group, string current_dept_group){
+    if(isNotNull(usersInGroups({current_store_group,current_dept_group}))){
+        return usersInGroups({current_store_group,current_dept_group});//список пользователей с обеими группами
+    }
+}
+
+function getUserListByStore(string[] store_group, string cur_store_group){
+    string[] UserListByStore;
+    string[] user_list_all = {};
+    for(string cur_group in store_group){
+        string[] current_user_list = getReporter(cur_store_group,cur_group);   
+        if(isNotNull(current_user_list)){
+            UserListByStore = arrayUnion(UserListByStore,current_user_list); 
+        }
+    }
+    return  UserListByStore;
+}
+
+function getRealUserNames(string[] usernames){
+    string[] RealUserNames;
+    for(string cur_user in usernames){
+        RealUserNames = addElement(RealUserNames,getUser(cur_user).username);
+    }
+    return  RealUserNames;
+}
+customfield_10001 = "ursa/1969fee1-5a1f-4344-bb53-8a69ad4f652b";
+labels = {"Назначение_платежа"};
+
+string store_group_for_CS = {
+    "MCC RU - Customer Service Volga", "MCC RU - Customer Service South", 
+    "MCC RU - Customer Service Syberia", "MCC RU - Customer Service Ural", "MCC RU - Customer Service North-West",
+    "MCC RU - Customer Service Moscow1", "MCC RU - Customer Service Moscow2",
+    "MCC RU - Customer Service Center1", "MCC RU - Customer Service Center2"
+ };
+
+
+string[] gpya = "";
+string[] notgpya = "";
+string storeNumber = chop(customfield_10702,4);
+string storegroup = "";
+    string[] allUsersCustomerService = ""; 
+    string[] HVS = "";
+    string[] KeyAccount = "";
+
+
+if(storeNumber != "1451"){
+    storegroup = store_%storeNumber%.storegroup;
+    allUsersCustomerService = getUserListByStore(store_group_for_CS,storegroup); 
+    HVS = getRealUserNames(getReporter(storegroup, "MCC RU - HVS"));
+    KeyAccount = getRealUserNames(getReporter(storegroup, "MCC RU - Key Accounts"));
+
+    for(string cur_user in allUsersCustomerService){
+        if(getUserDirectoryName(cur_user) == "GroupMailboxes"){// поиск гпя
+            gpya = addElement(gpya,cur_user);
+        }
+        else{
+            notgpya = addElement(notgpya,cur_user);
+        }
+    }
+}
+
+summary = "Возврат д/с клиенту (некорректное назначение платежа) ТЦ " + storeNumber;
+
+
+
+if(storeNumber == "1451"){
+    gpya = {"yuliya.belkova"};
+    HVS = {""};
+    KeyAccount = {""};
+    notgpya = {"yuliya.belkova"};
+}
+reporter = gpya;
+customfield_10002 = arrayUnion(HVS,KeyAccount);
+// customfield_10100 = getReporter(storegroup,"MCC RU - APP - Jira_CMREQ_CreditLimits");
+customfield_10100 = notgpya;
+addJSDComment(key, "remoteuser", "Уважаемые коллеги,\r\nна расчетный счет МЕТРО поступил платеж с некорректным назначением платежа.\r\nКомпания инициирует возврат денежных средств клиенту. Платежное поручение во вложении.\r\nПожалуйста, подтвердите, что вы не отгрузили клиента в счет этого платежного поручения, нажав кнопку «Утвердить»\r\nЕсли вы произвели отгрузку в счет этих денежных средств, нажмите кнопку «Отказаться»\r\nобязательно указав дату и сумму отгрузки в комментарии.", true, false);
+
+
+
+
+
+
+
+
+// string storeNumber = chop(customfield_10702,4);
+// customfield_10100 = getStoreManager(storeNumber);
+
+
+
+
+
+
+
+
+
+
+
+// 

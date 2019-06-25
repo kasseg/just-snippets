@@ -1,0 +1,155 @@
+//назначение агентов на задачи проекта Finance
+include "main/Stores.sil";
+string format = "YYYYMM";
+string for_user = getUser(gadget_getSingleValue(argv, "На кого назначить?")).username;
+string for_date = gadget_getDateValue(argv, "Создано");
+string[] selected_stores = gadget_getMultiValues(argv, "Номер ТЦ");
+string[] selected_types = gadget_getMultiValues(argv, "Тип задачи или метка");
+string action = gadget_getSingleValue(argv, "Выбор действия");
+string mytext = formatDate(for_date, format);
+string allstores = "";
+
+string selected_stores_list_text = gadget_getSingleValue(argv, "Номер ТЦ списком");
+string[] bb = "";
+number len = length(selected_stores_list_text);
+number start = 0;
+number i = 0;
+if(len!=0){
+   do {
+        start = i*5;
+        number stop = start+4;
+        string tc = substring(selected_stores_list_text, start, stop);
+        bb = arrayAddElementIfNotExist(bb, tc);
+        i = i + 1;
+    } while(start < len);
+    // for(Store curstore in finance_pilot_stores){
+    for(Store curstore in finance_pilot_stores){
+       
+        if(arrayElementExists(bb, curstore.index)){
+            allstores += "'"+curstore.name+"',";
+         
+        }
+    }
+   
+}
+else{
+    for(string cur_store in selected_stores){
+        allstores += "'"+cur_store+"',";
+    }
+}
+
+
+
+
+
+string[] label_list = {
+    "Вторсырьё"
+};
+string[] type_list = {
+    "Акт материалы",
+    "Внутреннее использование", 
+    "Накладная ДТ", 
+    "Расход ДТ", 
+    "Списание материалов",
+    "Счетчики арендаторов", 
+    "УПД аренда"
+};
+
+label_list = arrayIntersect(label_list, selected_types);
+type_list = arrayIntersect(type_list, selected_types);
+
+string alltypes = "";
+for(string cur_type in type_list){
+    alltypes += "'"+cur_type+"',";
+}
+string alllabels = "";
+for(string cur_label in label_list){
+    alllabels += "'"+cur_label+"',";
+}
+
+number store_len = length(allstores)-1;
+number type_len = length(alltypes)-1;
+number label_len = length(alllabels)-1;
+allstores = chop(allstores, store_len);
+alltypes = chop(alltypes, type_len);
+alllabels = chop(alllabels, label_len);
+
+if(alltypes==""){
+    alltypes="''";
+}
+if(alllabels==""){
+    alllabels="''";
+}
+string myJQL = "";
+string[] selected_issues = "";
+string AsTotal = "";
+switch(action){
+    case "Назначить":
+        if(for_user=="" || for_user=="anna.perova"){
+             myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND 'Issue Location' in ("+allstores+") AND text ~ '"+mytext+"' AND (status in (Open, 'Wait Service', 'Wait Customer')) ";
+        }
+        else{
+            myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND 'Issue Location' in ("+allstores+") AND text ~ '"+mytext+"' AND (status in (Open, 'Wait Service', 'Wait Customer','In Progress')) ";
+        }
+        // 
+       
+        //  runnerLog(myJQL);
+        selected_issues = selectIssues(myJQL);
+        for(string cur_issue in selected_issues){
+        runnerLog(%cur_issue%.key);
+            %cur_issue%.assignee = for_user;
+            if(%cur_issue%.status == "In Progress"){
+               autotransition("Остановить работу", %cur_issue%.key, true,true,true); 
+              runnerLog(%cur_issue%.key);
+            }
+            string hhh = "Задача "+%cur_issue%.key+" назначена на "+for_user;
+            runnerLog(hhh);
+         }
+         AsTotal = "Всего назначено " + size(selected_issues) + " задач.";
+         runnerLog(AsTotal);
+    break;
+    case "В работу":
+        myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND status = Open AND 'Issue Location' in ("+allstores+") AND text ~ '"+mytext+"'";
+     selected_issues = selectIssues(myJQL);
+        for(string cur_issue in selected_issues){
+                 %cur_issue%.assignee = currentUser();
+                 autotransition("Начать работу", %cur_issue%.key, true,true,true); 
+                 string hhh = "Задача "+%cur_issue%.key+" назначена на "+%cur_issue%.assignee;
+            runnerLog(hhh);
+         }
+         AsTotal = "Всего взято в работу " + size(selected_issues) + " задач.";
+         runnerLog(AsTotal);
+    break;
+    case "Решить":
+        myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND status in ('In Progress', 'Waiting for approval') AND 'Issue Location' in ("+allstores+") AND text ~ '"+mytext+"'";
+        selected_issues = selectIssues(myJQL);
+        for(string cur_issue in selected_issues){
+            
+            autotransition("Решить", %cur_issue%.key, true,true,true); 
+            %cur_issue%.resolution = "Готово";
+            string hhh = "Задача "+%cur_issue%.key+" решена с резолюцией "+ %cur_issue%.resolution;
+            runnerLog(hhh);
+         }
+         AsTotal = "Всего решено " + size(selected_issues) + " задач.";
+         runnerLog(AsTotal);
+    break;
+}
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

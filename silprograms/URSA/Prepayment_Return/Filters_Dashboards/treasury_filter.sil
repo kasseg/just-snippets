@@ -1,0 +1,28 @@
+//фильтр для САП группы все задачи за вчера кроме статуса Решен
+
+
+struct mydata{
+    string debnum;
+    date myupdated;
+}
+
+string filePath="D:/Atlassian/JIRA/Projects/FI/myfilter.txt";
+mydata mydata_2 = readFromTextFile(filePath);
+
+string formatforsearch = "yyyy-MM-dd";
+
+string debnum = mydata_2.debnum;
+date myupdated = mydata_2.myupdated;
+date myupdated2 = myupdated + "1d";
+string myupdated3 = formatDate(mydata_2.myupdated,formatforsearch);
+string myupdated4 = formatDate(myupdated2,formatforsearch);
+
+
+string myJQL = "project = FI AND issuetype = 'Prepayment return' AND 'Номер дебитора/счёта' ~ '" + debnum + "*' AND updated >= " + myupdated3 + " AND updated <= " + myupdated4;
+string[] selected_issues = selectIssues(myJQL); 
+
+return selected_issues;
+
+
+
+

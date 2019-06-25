@@ -1,0 +1,21 @@
+//смотрит пользователей в группе All Users на наличие делигирующих и очищает просроченные записи
+string [] allUsers=usersInGroups("jirasd-allusers-portal");
+for (string oneUser in allUsers){
+    if(getUserProperty(oneUser, "delegates")!="Null" && getUserProperty(oneUser, "delegates")!="null" && isNotNull(getUserProperty(oneUser, "delegates"))){
+        string [] allDelegates=split(getUserProperty(oneUser, "delegates"),",");
+        string newDelegates="";
+        for(string delegateWithdate in allDelegates){
+            string [] DelegateByOne=split(delegateWithdate,"=");//0 = username, 1=until date
+            if (DelegateByOne[1]>currentDate()-"1d"){
+                newDelegates+=delegateWithdate+",";
+            }
+        }
+        if (isNotNull(newDelegates)){
+            newDelegates=chop(newDelegates,length(newDelegates)-1);
+        }
+        if (newDelegates==""){
+            newDelegates="null";
+        }
+        setUserProperty(oneUser, "delegates", newDelegates);
+    }
+}

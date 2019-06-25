@@ -1,0 +1,5 @@
+include "ursa/prepayment_return/strings.sil";
+if(isNotNull(labels)){
+    // assignee = "aleksandr.kuzyakin";
+    customfield_13001 = team2;
+}

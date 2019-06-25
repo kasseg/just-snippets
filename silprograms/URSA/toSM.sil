@@ -1,0 +1,21 @@
+include "General_excludeListOfApprovers";//подключение списка исключений
+
+function getStoreManager(string storeNumber){
+    string [] storeManager;
+    string district;
+    string districtUserName;
+    
+    if (storeNumber=="1491"){
+        storeManager=ldapUserList({"sAMAccountName"},"(&(description=Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1491 - Everybody,OU=ST1491-SIP,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+    }
+    else if (storeNumber=="1492"){
+        storeManager=ldapUserList({"sAMAccountName"},"(&(description=Store Manager*)(!(description=*Assistant*))(!(description=*Deputy*))(memberOf=CN=MCC RU ST1492 - Everybody,OU=ST1492-SVT,OU=Stores,OU=Groups,OU=RU,OU=MCC,DC=r4,DC=madm,DC=net))","r4 domain LDAP");
+    }
+    else {
+        storeManager=ldapUserList({"sAMAccountName"}, "(&(metroStoreNumber=RU.3466.0000"+storeNumber+")(!(description=*Assistant*))(!(description=*Deputy*))(|(description=*Store Manager*)(metroJobTitle=Store Manager)))","r4 domain LDAP");
+    }
+    return storeManager;
+}
+
+string storeNumber = chop(customfield_10702,4);
+customfield_10100 = getStoreManager(storeNumber);

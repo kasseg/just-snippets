@@ -1,0 +1,59 @@
+// Создание задач/подзадач для проекта URSA by Anatoliy Gundarov
+include "ursa/childs";
+include "main/Stores.sil";
+include "ursa/fi_functions.sil";
+
+string project_name = "FI";//
+string issue_priority_name = "4";//
+string[] issue_components = {""};
+
+
+function createTasks(MyChild Task, string dateformat,string reporter_group,Store current_store,MyChild[] SubTasks){
+    string issue_summary = Task.child_summary + current_store.index + " " + formatDate(expenses_date, dateformat); 
+    string cur_reporter = getReporter(current_store.storegroup,reporter_group);
+        if(isNotNull(cur_reporter)){
+            string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", Task.fi_team);
+            custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+            runnerLog(custom_fields_mapping_store);
+            string parent_issue = createIssue(
+                project_name,
+                "",
+                Task.name, 
+                issue_summary,
+                issue_priority_name,
+                Task.child_description,
+                issue_components,
+                "",
+                "",
+                "",
+                custom_fields_mapping_store);
+            //создание подзадач на ТЦ
+            for(MyChild curchild in SubTasks){
+                custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", curchild.fi_team);
+                custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+                string cur_issue_summary = curchild.child_summary + current_store.index + " " + formatDate(expenses_date, dateformat);
+                string child_issue = createIssue(
+                    project_name, 
+                    parent_issue,  
+                    curchild.name, 
+                    cur_issue_summary,
+                    issue_priority_name, 
+                    curchild.child_description, 
+                    issue_components,
+                    "",
+                    "",
+                    "",
+                    custom_fields_mapping_store
+                );
+            }
+        }
+    return false;
+};
+
+
+//создание задачи на опредедённую таймзону
+for(Store current_store in finance_pilot_stores){
+    if(current_store.timezone == timezone){
+        createTasks(Expenses, formatforExpensesummary, adminspec_group,current_store,Expenses_Childs);
+    }
+}

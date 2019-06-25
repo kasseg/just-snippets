@@ -1,0 +1,14 @@
+if (argv["screen"] == "create") {
+lfHide("customfield_12201"); 
+if (argv["customfield_12200"]=="resolve after create"){
+lfShow("customfield_12201"); 
+ }
+ else{
+     lfHide("customfield_12201");
+      
+ }
+ }
+ if (argv["screen"] == "edit" or argv["screen"] == "view") {
+lfHide("customfield_12201");
+lfHide("customfield_12200");
+}

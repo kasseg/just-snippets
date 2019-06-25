@@ -1,0 +1,148 @@
+//назначение агентов на задачи проекта Finance
+include "main/Stores.sil";
+string format = "YYYYMMdd";
+string for_user = getUser(gadget_getSingleValue(argv, "На кого назначить?")).username;
+string for_date = gadget_getDateValue(argv, "Создано");
+string[] selected_stores = gadget_getMultiValues(argv, "Номер ТЦ");
+string[] selected_types = gadget_getMultiValues(argv, "Тип задачи");
+string action = gadget_getSingleValue(argv, "Переоткрыть");
+string mytext = formatDate(for_date, format);
+string allstores = "";
+string mistake = gadget_getSingleValue(argv, "Описание ошибки (до 150 символов)");
+string selected_stores_list_text = gadget_getSingleValue(argv, "Номер ТЦ цифрами");
+string[] bb = "";
+number len = length(selected_stores_list_text);
+number start = 0;
+number i = 0;
+if(len!=0){
+   do {
+        start = i*5;
+        number stop = start+4;
+        string tc = substring(selected_stores_list_text, start, stop);
+        bb = arrayAddElementIfNotExist(bb, tc);
+        i = i + 1;
+    } while(start < len);
+    // for(Store curstore in finance_pilot_stores){
+    for(Store curstore in finance_pilot_stores){
+       
+        if(arrayElementExists(bb, curstore.index)){
+            allstores += "'"+curstore.name+"',";
+         
+        }
+    }
+}
+else{
+    for(string cur_store in selected_stores){
+        allstores += "'"+cur_store+"',";
+    }
+}
+
+string[] label_list = {
+    "ВТБ","SM35","76500000","76004000","1091999999","499999"
+};
+string[] type_list = {
+    "Store Revenue","Обработка в MMC", "Корректировка Доставка", 
+    "Проверка Z-отчетов" , "Коррекция в SAP FI"
+};
+
+label_list = arrayIntersect(label_list, selected_types);
+type_list = arrayIntersect(type_list, selected_types);
+
+string alltypes = "";
+for(string cur_type in type_list){
+    alltypes += "'"+cur_type+"',";
+}
+string alllabels = "";
+for(string cur_label in label_list){
+    alllabels += "'"+cur_label+"',";
+}
+
+number store_len = length(allstores)-1;
+number type_len = length(alltypes)-1;
+number label_len = length(alllabels)-1;
+
+allstores = chop(allstores, store_len);
+alltypes = chop(alltypes, type_len);
+alllabels = chop(alllabels, label_len);
+
+if(alltypes==""){
+    alltypes="''";
+}
+if(alllabels==""){
+    alllabels="''";
+}
+
+string myJQL = "";
+string[] selected_issues = "";
+
+
+//14219 - ошибка
+//14219 - текст ошибки
+
+
+
+// if(mistake!=""){
+//   mistake = "Описание ошибки: " + mistake;
+// }
+    myJQL = "project = FI AND (issuetype in ("+ alltypes +") or labels in("+ alllabels +")) AND 'Issue Location' in ("+allstores+") AND text ~ '"+mytext+"'";
+    selected_issues = selectIssues(myJQL);
+    
+    string curIssue = selected_issues[0].key;
+    string mistake2=mistake;
+    
+    if(mistake=="" && (currentUser()=="mariya.nagaeva" || currentUser()=="admin-ag" || currentUser()=="darya.salimova")){
+         %curIssue%.customfield_14218 = "";
+         %curIssue%.customfield_14219 = "";
+         runnerLog("Поля ошибки очищены");
+    }
+    else{
+        if(action=="Да"){
+            if(%curIssue%.status == "Resolved"){
+                autotransition("Переоткрыть", %curIssue%.key, true,true,true);
+                mistake2 = mistake2 + "\r\nЗадача была переоткрыта";
+            }
+          
+        }
+        %curIssue%.customfield_14218 = "Ошибка";
+        %curIssue%.customfield_14219 += mistake + " ";
+        string error_message = "Задача " + curIssue + " отмечена, как содержащая ошибку. " + mistake2; 
+        runnerLog(myJQL);
+        runnerLog(error_message);
+    }
+   
+    
+    
+    
+    
+    
+  //  %curIssue%.key
+    
+    
+    
+        // for(string cur_issue in selected_issues){
+        // runnerLog(%cur_issue%.key);
+        //     %cur_issue%.assignee = for_user;
+        //     if(%cur_issue%.status == "In Progress"){
+        //       autotransition("Остановить работу", %cur_issue%.key, true,true,true); 
+        //       runnerLog(%cur_issue%.key);
+        //     }
+        //     string hhh = "Задача "+%cur_issue%.key+" назначена на "+for_user;
+        //     runnerLog(hhh);
+        //  }
+        //  AsTotal = "Всего назначено " + size(selected_issues) + " задач.";
+        //  runnerLog(AsTotal);
+   
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

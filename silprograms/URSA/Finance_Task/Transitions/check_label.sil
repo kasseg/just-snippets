@@ -1,0 +1,4 @@
+//проверка меток
+if(isNull(labels)){
+    return false, "Не заполнена метка";
+}

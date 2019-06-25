@@ -1,0 +1,308 @@
+//deprecated
+string targetgroup;
+if (userInGroup("MCC RU ST10 - MBX_HR", reporter)){
+    reporter="hr.store10";
+    targetgroup="MCC RU ST10 - MBX_HR";
+    } else if (userInGroup("MCC RU ST11 - MBX_HR", reporter)){
+    reporter="hr.store11";
+    targetgroup="MCC RU ST11 - MBX_HR";
+    } else if (userInGroup("MCC RU ST12 - MBX_HR", reporter)){
+    reporter="hr.store12";
+     targetgroup="MCC RU ST12 - MBX_HR";
+    } else if (userInGroup("MCC RU ST13 - MBX_HR", reporter)){
+    reporter="hr.store13";
+     targetgroup="MCC RU ST13 - MBX_HR";
+    } else if (userInGroup("MCC RU ST14 - MBX_HR", reporter)){
+    reporter="hr.store14";
+     targetgroup="MCC RU ST14 - MBX_HR";
+    } else if (userInGroup("MCC RU ST15 - MBX_HR", reporter)){
+    reporter="hr.store15";
+     targetgroup="MCC RU ST15 - MBX_HR";
+    } else if (userInGroup("MCC RU ST16 - MBX_HR", reporter)){
+    reporter="hr.store16";
+     targetgroup="MCC RU ST16 - MBX_HR";
+    } else if (userInGroup("MCC RU ST17 - MBX_HR", reporter)){
+    reporter="hr.store17";
+     targetgroup="MCC RU ST17 - MBX_HR";
+    } else if (userInGroup("MCC RU ST18 - MBX_HR", reporter)){
+    reporter="hr.store18";
+     targetgroup="MCC RU ST18 - MBX_HR";
+    } else if (userInGroup("MCC RU ST19 - MBX_HR", reporter)){
+    reporter="hr.store19";
+     targetgroup="MCC RU ST19 - MBX_HR";
+    } else if (userInGroup("MCC RU ST20 - MBX_HR", reporter)){
+    reporter="hr.store20";
+     targetgroup="MCC RU ST20 - MBX_HR";
+    } else if (userInGroup("MCC RU ST21 - MBX_HR", reporter)){
+    reporter="hr.store21";
+     targetgroup="MCC RU ST21 - MBX_HR";
+    } else if (userInGroup("MCC RU ST22 - MBX_HR", reporter)){
+    reporter="hr.store22";
+     targetgroup="MCC RU ST22 - MBX_HR";
+    } else if (userInGroup("MCC RU ST23 - MBX_HR", reporter)){
+    reporter="hr.store23";
+     targetgroup="MCC RU ST23 - MBX_HR";
+    } else if (userInGroup("MCC RU ST24 - MBX_HR", reporter)){
+    reporter="hr.store24";
+     targetgroup="MCC RU ST24 - MBX_HR";
+    } else if (userInGroup("MCC RU ST25 - MBX_HR", reporter)){
+    reporter="hr.store25";
+     targetgroup="MCC RU ST25 - MBX_HR";
+    } else if (userInGroup("MCC RU ST26 - MBX_HR", reporter)){
+    reporter="hr.store26";
+     targetgroup="MCC RU ST26 - MBX_HR";
+    } else if (userInGroup("MCC RU ST27 - MBX_HR", reporter)){
+    reporter="hr.store27";
+     targetgroup="MCC RU ST27 - MBX_HR";
+    } else if (userInGroup("MCC RU ST28 - MBX_HR", reporter)){
+    reporter="hr.store28";
+     targetgroup="MCC RU ST28 - MBX_HR";
+    } else if (userInGroup("MCC RU ST29 - MBX_HR", reporter)){
+    reporter="hr.store29";
+     targetgroup="MCC RU ST29 - MBX_HR";
+    } else if (userInGroup("MCC RU ST30 - MBX_HR", reporter)){
+    reporter="hr.store30";
+     targetgroup="MCC RU ST30 - MBX_HR";
+    } else if (userInGroup("MCC RU ST31 - MBX_HR", reporter)){
+    reporter="hr.store31";
+     targetgroup="MCC RU ST31 - MBX_HR";
+    } else if (userInGroup("MCC RU ST32 - MBX_HR", reporter)){
+    reporter="hr.store32";
+     targetgroup="MCC RU ST32 - MBX_HR";
+    } else if (userInGroup("MCC RU ST33 - MBX_HR", reporter)){
+    reporter="hr.store33";
+     targetgroup="MCC RU ST33 - MBX_HR";
+    } else if (userInGroup("MCC RU ST34 - MBX_HR", reporter)){
+    reporter="hr.store34";
+     targetgroup="MCC RU ST34 - MBX_HR";
+    } else if (userInGroup("MCC RU ST35 - MBX_HR", reporter)){
+    reporter="hr.store35";
+     targetgroup="MCC RU ST35 - MBX_HR";
+    } else if (userInGroup("MCC RU ST36 - MBX_HR", reporter)){
+    reporter="hr.store36";
+     targetgroup="MCC RU ST36 - MBX_HR";
+    } else if (userInGroup("MCC RU ST37 - MBX_HR", reporter)){
+    reporter="hr.store37";
+     targetgroup="MCC RU ST37 - MBX_HR";
+    } else if (userInGroup("MCC RU ST38 - MBX_HR", reporter)){
+    reporter="hr.store38";
+     targetgroup="MCC RU ST38 - MBX_HR";
+    } else if (userInGroup("MCC RU ST39 - MBX_HR", reporter)){
+    reporter="hr.store39";
+     targetgroup="MCC RU ST39 - MBX_HR";
+    } else if (userInGroup("MCC RU ST40 - MBX_HR", reporter)){
+    reporter="hr.store40";
+     targetgroup="MCC RU ST40 - MBX_HR";
+    } else if (userInGroup("MCC RU ST41 - MBX_HR", reporter)){
+    reporter="hr.store41";
+     targetgroup="MCC RU ST41 - MBX_HR";
+    } else if (userInGroup("MCC RU ST42 - MBX_HR", reporter)){
+    reporter="hr.store42";
+     targetgroup="MCC RU ST42 - MBX_HR";
+    } else if (userInGroup("MCC RU ST43 - MBX_HR", reporter)){
+    reporter="hr.store43";
+     targetgroup="MCC RU ST43 - MBX_HR";
+    } else if (userInGroup("MCC RU ST44 - MBX_HR", reporter)){
+    reporter="hr.store44";
+     targetgroup="MCC RU ST44 - MBX_HR";
+    } else if (userInGroup("MCC RU ST45 - MBX_HR", reporter)){
+    reporter="hr.store45";
+     targetgroup="MCC RU ST45 - MBX_HR";
+    } else if (userInGroup("MCC RU ST46 - MBX_HR", reporter)){
+    reporter="hr.store46";
+     targetgroup="MCC RU ST46 - MBX_HR";
+    } else if (userInGroup("MCC RU ST47 - MBX_HR", reporter)){
+    reporter="hr.store47";
+     targetgroup="MCC RU ST47 - MBX_HR";
+    } else if (userInGroup("MCC RU ST48 - MBX_HR", reporter)){
+    reporter="hr.store48";
+     targetgroup="MCC RU ST48 - MBX_HR";
+    } else if (userInGroup("MCC RU ST49 - MBX_HR", reporter)){
+    reporter="hr.store49";
+     targetgroup="MCC RU ST49 - MBX_HR";
+    } else if (userInGroup("MCC RU ST50 - MBX_HR", reporter)){
+    reporter="hr.store50";
+     targetgroup="MCC RU ST50 - MBX_HR";
+    } else if (userInGroup("MCC RU ST51 - MBX_HR", reporter)){
+    reporter="hr.store51";
+     targetgroup="MCC RU ST51 - MBX_HR";
+    } else if (userInGroup("MCC RU ST52 - MBX_HR", reporter)){
+    reporter="hr.store52";
+     targetgroup="MCC RU ST52 - MBX_HR";
+    } else if (userInGroup("MCC RU ST53 - MBX_HR", reporter)){
+    reporter="hr.store53";
+     targetgroup="MCC RU ST53 - MBX_HR";
+    } else if (userInGroup("MCC RU ST54 - MBX_HR", reporter)){
+    reporter="hr.store54";
+     targetgroup="MCC RU ST54 - MBX_HR";
+    } else if (userInGroup("MCC RU ST55 - MBX_HR", reporter)){
+    reporter="hr.store55";
+     targetgroup="MCC RU ST55 - MBX_HR";
+    } else if (userInGroup("MCC RU ST56 - MBX_HR", reporter)){
+    reporter="hr.store56";
+     targetgroup="MCC RU ST56 - MBX_HR";
+    } else if (userInGroup("MCC RU ST57 - MBX_HR", reporter)){
+    reporter="hr.store57";
+     targetgroup="MCC RU ST57 - MBX_HR";
+    } else if (userInGroup("MCC RU ST58 - MBX_HR", reporter)){
+    reporter="hr.store58";
+     targetgroup="MCC RU ST58 - MBX_HR";
+    } else if (userInGroup("MCC RU ST59 - MBX_HR", reporter)){
+    reporter="hr.store59";
+     targetgroup="MCC RU ST59 - MBX_HR";
+    } else if (userInGroup("MCC RU ST60 - MBX_HR", reporter)){
+    reporter="hr.store60";
+     targetgroup="MCC RU ST60 - MBX_HR";
+    } else if (userInGroup("MCC RU ST60 - MBX_HR", reporter)){
+    reporter="hr.store60";
+     targetgroup="MCC RU ST60 - MBX_HR";
+    } else if (userInGroup("MCC RU ST61 - MBX_HR", reporter)){
+    reporter="hr.store61";
+     targetgroup="MCC RU ST61 - MBX_HR";
+    } else if (userInGroup("MCC RU ST63 - MBX_HR", reporter)){
+    reporter="hr.store63";
+     targetgroup="MCC RU ST63 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1064 - MBX_HR", reporter)){
+    reporter="hr.store1064";
+     targetgroup="MCC RU ST1064 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1064 - MBX_HR", reporter)){
+    reporter="hr.store65";
+     targetgroup="MCC RU ST65 - MBX_HR";
+    } else if (userInGroup("MCC RU ST66 - MBX_HR", reporter)){
+    reporter="hr.store66";
+     targetgroup="MCC RU ST66 - MBX_HR";
+    } else if (userInGroup("MCC RU ST67 - MBX_HR", reporter)){
+    reporter="hr.store67";
+     targetgroup="MCC RU ST67 - MBX_HR";
+    } else if (userInGroup("MCC RU ST68 - MBX_HR", reporter)){
+    reporter="hr.store68";
+     targetgroup="MCC RU ST68 - MBX_HR";
+    } else if (userInGroup("MCC RU ST69 - MBX_HR", reporter)){
+    reporter="hr.store69";
+     targetgroup="MCC RU ST69 - MBX_HR";
+    } else if (userInGroup("MCC RU ST70 - MBX_HR", reporter)){
+    reporter="hr.store70";
+     targetgroup="MCC RU ST70 - MBX_HR";
+    } else if (userInGroup("MCC RU ST71 - MBX_HR", reporter)){
+    reporter="hr.store71";
+     targetgroup="MCC RU ST71 - MBX_HR";
+    } else if (userInGroup("MCC RU ST72 - MBX_HR", reporter)){
+    reporter="hr.store72";
+     targetgroup="MCC RU ST72 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1073 - MBX_HR", reporter)){
+    reporter="hr.store1073";
+     targetgroup="MCC RU ST1073 - MBX_HR";
+    } else if (userInGroup("MCC RU ST74 - MBX_HR", reporter)){
+    reporter="hr.store74";
+     targetgroup="MCC RU ST74 - MBX_HR";
+    } else if (userInGroup("MCC RU ST76 - MBX_HR", reporter)){
+    reporter="hr.store76";
+     targetgroup="MCC RU ST76 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1077 - MBX_HR", reporter)){
+    reporter="hr.store1077";
+     targetgroup="MCC RU ST1077 - MBX_HR";
+    } else if (userInGroup("MCC RU ST78 - MBX_HR", reporter)){
+    reporter="hr.store78";
+     targetgroup="MCC RU ST78 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1082 - MBX_HR", reporter)){
+    reporter="hr.store1082";
+     targetgroup="MCC RU ST1082 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1083 - MBX_HR", reporter)){
+    reporter="hr.store1083";
+     targetgroup="MCC RU ST1083 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1085 - MBX_HR", reporter)){
+    reporter="hr.store1085";
+     targetgroup="MCC RU ST1085 - MBX_HR";
+    } else if (userInGroup("MCC RU ST86 - MBX_HR", reporter)){
+    reporter="hr.store86";
+     targetgroup="MCC RU ST86 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1088 - MBX_HR", reporter)){
+    reporter="hr.store1088";
+     targetgroup="MCC RU ST1088 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1094 - MBX_HR", reporter)){
+    reporter="hr.store1094";
+     targetgroup="MCC RU ST1094 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1095 - MBX_HR", reporter)){
+    reporter="hr.store1095";
+     targetgroup="MCC RU ST1095 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1202 - MBX_HR", reporter)){
+    reporter="hr.store1202";                             
+     targetgroup="MCC RU ST1202 - MBX_HR";                 
+    } else if (userInGroup("MCC RU ST1303 - MBX_HR", reporter)){
+    reporter="hr.store1303";
+     targetgroup="MCC RU ST1303 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1304 - MBX_HR", reporter)){
+    reporter="hr.store1304";
+     targetgroup="MCC RU ST1304 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1306 - MBX_HR", reporter)){
+    reporter="hr.store1306";
+     targetgroup="MCC RU ST1306 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1307 - MBX_HR", reporter)){
+    reporter="hr.store1307";
+     targetgroup="MCC RU ST1307 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1308 - MBX_HR", reporter)){
+    reporter="hr.store1308";
+     targetgroup="MCC RU ST1308 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1309 - MBX_HR", reporter)){
+    reporter="hr.store1309";
+     targetgroup="MCC RU ST1309 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1310 - MBX_HR", reporter)){
+    reporter="hr.store1310";
+     targetgroup="MCC RU ST1310 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1311 - MBX_HR", reporter)){
+    reporter="hr.store1311";
+     targetgroup="MCC RU ST1311 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1314 - MBX_HR", reporter)){
+    reporter="hr.store1314";
+     targetgroup="MCC RU ST1314 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1317 - MBX_HR", reporter)){
+    reporter="hr.store1317";
+     targetgroup="MCC RU ST1317 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1318 - MBX_HR", reporter)){
+    reporter="hr.store1318";
+     targetgroup="MCC RU ST1318 - MBX_HR";
+    } else if (userInGroup("MCC RU ST1320 - MBX_HR", reporter)){
+    reporter="hr.store1320";
+     targetgroup="MCC RU ST1320 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1321 - MBX_HR", reporter)){
+    reporter="hr.store1321";
+     targetgroup="MCC RU ST1321 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1322 - MBX_HR", reporter)){
+    reporter="hr.store1322";
+     targetgroup="MCC RU ST1322 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1336 - MBX_HR", reporter)){
+    reporter="hr.store1336";
+     targetgroup="MCC RU ST1336 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1337 - MBX_HR", reporter)){
+    reporter="hr.store1337";
+     targetgroup="MCC RU ST1337 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1340 - MBX_HR", reporter)){
+    reporter="hr.store1340";
+     targetgroup="MCC RU ST1340 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1342 - MBX_HR", reporter)){
+    reporter="hr.store1342";
+     targetgroup="MCC RU ST1342 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1356 - MBX_HR", reporter)){
+    reporter="hr.store1356";
+     targetgroup="MCC RU ST1356 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1357 - MBX_HR", reporter)){
+    reporter="hr.store1357";
+     targetgroup="MCC RU ST1357 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1363 - MBX_HR", reporter)){
+    reporter="hr.store1363";
+     targetgroup="MCC RU ST1363 - MBX_HR"; 
+    }else if (userInGroup("MCC RU ST1444 - MBX_HR", reporter)){
+    reporter="hr.store1444";
+     targetgroup="MCC RU ST1444 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1491 - MBX_HR", reporter)){
+    reporter="hr.store1491";
+     targetgroup="MCC RU ST1491 - MBX_HR";
+    }else if (userInGroup("MCC RU ST1492 - MBX_HR", reporter)){
+    reporter="hr.store1492";
+     targetgroup="MCC RU ST1492 - MBX_HR";
+    }else if (userInGroup("MCC RU ST65 - MBX_Fish", reporter)){
+    reporter="sss.east";
+     targetgroup="MCC RU ST65 - MBX_Fish";
+    }
+
+customfield_10002=usersInGroups(targetgroup);

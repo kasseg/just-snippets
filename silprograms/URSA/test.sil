@@ -1,0 +1,3455 @@
+// include "main/stores.sil";
+// include "ursa/fi_functions.sil";
+include "main/regions.sil";
+include "qa/strings.sil";
+include "qa/buying.sil";
+include "ursa/travel/documents.sil";
+
+include "main/phone_structure.sil";//подключение структуры телефонов
+// function getReporter(string current_store_group, string current_dept_group){
+//     if(isNotNull(usersInGroups({current_store_group,current_dept_group}))){
+//         return usersInGroups({current_store_group,current_dept_group});//список пользователей с обеими группами
+//     }
+// }
+
+// function getUserListByStore(string[] store_group, string cur_store_group){
+//     string[] UserListByStore;
+//     string[] user_list_all = {};
+//     for(string cur_group in store_group){
+//         string[] current_user_list = getReporter(cur_store_group,cur_group);   
+//         if(isNotNull(current_user_list)){
+//             UserListByStore = arrayUnion(UserListByStore,current_user_list); 
+//         }
+//     }
+//     return  UserListByStore;
+// }
+
+// function getRealUserNames(string[] usernames){
+//     string[] RealUserNames;
+//     for(string cur_user in usernames){
+//         RealUserNames = addElement(RealUserNames,getUser(cur_user).username);
+//     }
+//     return  RealUserNames;
+// }
+
+
+
+
+ // East={"east","Регион Восток", east_stores, "sss.east","Igor.Lukashin"};
+runnerLog(East.stores[0]);
+
+
+
+
+// string[] OU=ldapUserAttr("OU", "(sAMAccountName="+"natalya.moshina"+")","r4 domain LDAP");
+// if (OU[0]=="HQ02-SMR") {
+//     runnerLog("Ok");
+// }
+// string reg = "[0-9]{2,4}";
+// string ggg = "ST23-KZN";
+// string ggg1 = "ST1023-KZN";
+// runnerLog(matchText(ggg1,reg));
+
+
+// switch (ggg){
+//     case "ST23-KZN": runnerLog("1");
+//     break;
+//     case "ST23-KZN3": runnerLog("2");
+//      break;
+// }
+
+
+
+// if(5>2  && ("2" == "1097 E-Commerce (virtual)" || "2" == "2")){
+//       runnerLog("Jr");
+//     }
+
+
+
+//  setUserProperty("eduard.pugachev", "delegates", "");
+
+// string[] test = "";
+// string[] undertest = {"2","3"};
+// string[] undertest2 = {"4","5"};
+
+
+// if(hour(currentDate())==14 && minute(currentDate())==5){
+//   runnerLog("Ок");
+// }
+
+
+// test[0] ={"2","3"};
+// test[1] = undertest2;
+// runnerLog(test);
+// string mykey = "IT-150075";
+// string fff = %mykey%.creator;
+// runnerLog(%mykey%.creator);
+
+
+//создание задачи на опредедённую таймзону
+// for(Store current_store in finance_pilot_stores){
+//   if(current_store.timezone == "GMT+2"){
+       
+//         if(!(hour(currentDate()) == 10 && minute(currentDate()) == 13)){
+//           runnerLog("Ок");
+//         }
+        
+//     }
+// }
+
+            // string [] groups = {"MCC RU IZK - store71","MCC RU - Deputy Store Managers"};
+            // string [] user_list = usersInGroups(groups);
+            // runnerLog(user_list);
+// struct mydata{
+//     string INN;
+//     string debnum;
+//     date myupdated;
+// }
+
+// string filePath="D:/Atlassian/JIRA/Projects/FI/myfilter.txt";
+// mydata mydata_2 = readFromTextFile(filePath);
+
+// string formatforsearch = "yyyy-MM-dd";
+// string INN = mydata_2.INN;
+// string debnum = mydata_2.debnum;
+// date myupdated = mydata_2.myupdated;
+// date myupdated2 = myupdated + "1d";
+// string myupdated3 = formatDate(mydata_2.myupdated,formatforsearch);
+// string myupdated4 = formatDate(myupdated2,formatforsearch);
+
+
+// string myJQL = "project = FI AND issuetype = 'Prepayment return' AND ИНН ~ '" + INN + "' AND 'Номер дебитора/счёта' ~ '" + debnum + "' AND updated >= " + myupdated3 + " AND updated <= " + myupdated4;
+// // string[] selected_issues = selectIssues(myJQL); 
+
+// // return selected_issues;
+// runnerLog(myJQL);
+
+
+
+
+// // customfield_10001 = "ursa/1969fee1-5a1f-4344-bb53-8a69ad4f652b";
+// // labels = {"Назначение_платежа"};
+
+// string store_group_for_QA_participants = {
+//     "MCC RU - Customer Service Volga", "MCC RU - Customer Service South", 
+//     "MCC RU - Customer Service Syberia", "MCC RU - Customer Service Ural", "MCC RU - Customer Service North-West",
+//     "MCC RU - Customer Service Moscow1", "MCC RU - Customer Service Moscow2",
+//     "MCC RU - Customer Service Center1", "MCC RU - Customer Service Center2"
+//  };
+
+// for(string cur_group in qa_task_addresses_group){
+//     string[] sss1 = usersInGroups(cur_group);
+//     runnerLog(sss1);
+// }
+// for(string cur_group in noginsk_addresses_group){
+//     string[] sss2 = usersInGroups(cur_group);
+//     runnerLog(sss2);
+// }
+// for(string cur_group in fsd_addresses_group){
+//     string[] sss3 = usersInGroups(cur_group);
+//     runnerLog(sss3);
+// }
+// string curIssue = "QA-165";
+//  string[] copies = %curIssue%.customfield_14226;
+//  string[] all_part = "";
+//     runnerLog(copies);
+//     for(string cur_copy in copies){
+//         switch (cur_copy){
+//             case "1":
+//                 for(string cur_group in qa_task_addresses_group){
+//                     string[] sss1 = usersInGroups(cur_group);
+//                      all_part = arrayUnion(all_part, sss1);
+                      
+//                 }
+//             runnerLog( %curIssue%.customfield_10002);  
+//             break;
+//             case "Noginsk":
+//                 for(string cur_group in noginsk_addresses_group){
+//                     string[] sss2 = usersInGroups(cur_group);
+//                     all_part =arrayUnion(all_part, sss2);
+//                 }
+//             break;
+//             case "FSD":
+//                 for(string cur_group in fsd_addresses_group){
+//                     string[] sss3 = usersInGroups(cur_group);
+//                      all_part = arrayUnion(all_part, sss3);
+//                 }
+//             break;
+//             case "E-Commerce":
+//                      all_part = arrayUnion(all_part, ecommerce_users);
+//                 break;
+//             case "Lobnya":
+//                  all_part = arrayUnion(all_part, lobnya_users);
+//             break;
+//         }
+    
+//     }
+
+
+// string user_name=ldapUserAttr("sAMAccountName", "(extensionAttribute1=33013894)","r4 domain LDAP");
+// // runnerLog(all_part);
+// // AND created >= -12w
+
+
+
+
+
+
+
+
+// string  myJQL = "project = FI AND issuetype = 'Store Revenue' and level is EMPTY";
+// string[] selected_issues = selectIssues(myJQL); 
+// for(string ddddd in selected_issues){
+//     if(%ddddd%.securityLevel == ""){
+//         %ddddd%.securityLevel = "MCoE Finance";
+//         runnerLog( %ddddd%.key);
+//     }
+// }
+
+
+
+
+
+
+
+
+// string curIssue = "FI-123684";
+// runnerLog(%curIssue%.customfield_14223);
+
+
+// string[] documents_to_check = %curIssue%.customfield_14223;
+// string desc_pref = "Добрый день.\r\nНеобходимо выполнить следующие действия на портале с командировкой:\r\n";
+// string desc_post = "\r\nСогласно «Политике по командировкам» Вам необходимо в течение 3 рабочих дней после получения такого уведомления исправить все замечания и приложить необходимые документы.\r\nПосле исправления, просим в ответ на это письмо НЕ МЕНЯЯ темы письма ответить «Готово»\r\n";
+// string desc_body = "";
+// for(Document cur_document in allDocuments){
+//     if(elementExists(documents_to_check, cur_document.name)){
+//         desc_body+= "* " + cur_document.doc_description + "\r\n";
+//     }
+// }
+// %curIssue%.description = desc_pref + desc_body + desc_post + %curIssue%.description;
+
+// for(Store current_store in finance_pilot_stores){
+//      createTasks(Podotchet, Podotchet_Childs, formatforsummary, adminspec_group,current_store);
+// }
+
+
+// string curIssue = "QA-170";
+// string cma = %curIssue%.customfield_13604;
+//  for(Buying current_buying_dept in AllBuyings){
+//     if(current_buying_dept.fieldValue == cma){
+//             if(isNotNull(current_buying_dept.email)){
+//                 %curIssue%.customfield_10002 += usersInGroups(current_buying_dept.email);
+                
+//             }
+//             if(isNotNull(current_buying_dept.buying_users)){
+//             runnerLog(current_buying_dept.buying_users[0]);
+//                 arrayUnion(%curIssue%.customfield_10002,current_buying_dept.buying_users); 
+//             }
+//         }
+//     }
+//     string[] stores_to_create = %curIssue%.customfield_10702;
+//     if(%curIssue%.customfield_10702=={"Все ТЦ MCC"}){
+//      for(Store current_store in all_stores){
+//         stores_to_create = addElementIfNotExist(stores_to_create, current_store.name);
+//      }
+// }   
+//     for(Store current_store in all_stores){
+//         if(elementExists(stores_to_create, current_store.name)){
+            
+//         }
+//     }
+
+// string [] groups = {"MCC RU IZK - store71","MCC RU - Deputy Store Managers"};
+//             string [] user_list = usersInGroups(groups);
+
+// string mykey = "IT-191168";
+// string text_to_find2 = %mykey%.description;
+// string[] garbage_array = {".",",","!","?",";",":","\r","\n","_","  ","  "};
+
+// for(string current_garbage in garbage_array){
+//     text_to_find2 = replace(text_to_find2,current_garbage, " ");
+// }
+// string [] projects = allProjects();
+// for(string curPrjName in projects){
+//     string regex_isKey = curPrjName + "-[0-9]{1,7}";
+//     string relates_isKey = matchText(text_to_find2, regex_isKey);
+//     linkIssue( toUpper(relates_isKey),mykey, "Relates");
+//     runnerLog(relates_isKey);
+// }
+
+
+
+
+
+
+// for(string current_garbage in garbage_array){
+//     text_to_find2 = replace(text_to_find2,current_garbage, " ");
+// }
+
+//  if (matches(toLower(text_to_find2), regex_fi)){
+
+//     number stopIndex = matchEnd(toLower(text_to_find2), regex_fi_stop);
+//     number startIndex = matchStart(toLower(text_to_find2), regex_fi_start);
+//     string finumber = substring(text_to_find2, startIndex, stopIndex);
+//     runnerLog(finumber);
+//      linkIssue( toUpper(finumber),mykey, "Problem/Incident");
+   
+//  }
+// string  current_store = "";
+// string dept_num = "19";
+// string store_pref = "174";
+//     for(Store cur_store in all_stores){//IssueLocation по префиксу
+//         if(cur_store.phonepref==store_pref){
+           
+//             current_store = cur_store.storegroup;
+//         }
+//     }
+// for(Store_phone current_department in allphones){
+//         if(arrayElementExists(current_department.phone_number,dept_num)){//получение данных отдела по номеру телефона
+//                 string [] user_list2 = getUserListByStore(current_department.group,"current_store");
+//                 string to__send = user_list2+"--------"+current_store+"--------";
+//                 sendEmail("it-support@metro-cc.ru" , {"anatoliy.gundarov@metro-cc.ru"}, {}, "Группы", to__send);
+           
+//             for(string current_department_group in current_department.group){//перебор групп (доставка по регионам)
+//                 string [] groups = {current_store,current_department_group};
+//                 string [] user_list = usersInGroups(groups);//список пользователей с обеими группами
+//                 runnerLog(groups);
+//             //    string to__send = user_list+"--------"+current_store+"--------";
+//              //   sendEmail("it-support@metro-cc.ru" , {"anatoliy.gundarov@metro-cc.ru"}, {}, "Группы", to__send);
+//                 if(size(user_list)>0){
+                
+//                     for(string current_user in user_list){
+//                         if(!(arrayElementExists(named_exception,dept_num))){
+//                             if(getUserDirectoryName(current_user) == "GroupMailboxes"){// поиск гпя
+//                                 JUser usr = getUser(current_user);
+//                                 runnerLog(usr.username);
+//                                 break;
+//                             }
+//                         }
+//                         else{
+//                             JUser usr = getUser(current_user);
+//                             break;
+//                         }
+//                     }   
+                    
+//                 }
+//             }
+//         break;
+//         }
+//     }
+
+
+// string[] dmopGroups = {"MCC RU MOW - Treasury Cash Management",""};
+// string[] user_list = usersInGroups(dmopGroups);
+// runnerLog(user_list);
+// for(string cur_user in user_list){
+//     addUserToGroup(cur_user, "jira-finance-PILOT");
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// string curIssue = "QA-167";
+// runnerLog(%curIssue%.attachments);
+
+//  for(string cur_attach_name in %curIssue%.attachments){
+//     string ddd =  getAttachmentPath(curIssue, cur_attach_name);
+//     runnerLog(cur_attach_name);
+//     }
+// string fff = "https://jira.r4.madm.net/secure/attachment/558283/report.csv";
+
+
+
+
+// runnerLog(%curIssue%.customfield_10702);
+// runnerLog(stores_to_create);
+//перевесить все задачи с одного на другого
+// function change_assignee(){
+//   string  myJQL = "project = FI AND status in (Open, 'In Progress', 'Wait Service', 'Wait Customer') AND assignee in (lali.kvachakhiya) AND text ~ '20181007'";
+
+// string curIssue = "FI-117231";
+    // runnerLog(%curIssue%.customfield_14218);
+    // runnerLog(%curIssue%.customfield_14219);
+// %curIssue%.securityLevel = "MCoE Finance";
+// runnerLog(%curIssue%.securityLevel);
+
+
+// string  myJQL = "project = FI AND text ~ '1091999999 SAP FI " + "1023" + "' ORDER BY created DESC";
+                // string[] selected_issues = selectIssues(myJQL); 
+//                 string previous_key = selected_issues[1].key;
+//     runnerLog(selected_issues[1]);
+    // for(string ddddd in selected_issues){
+    //     switch (chop(%ddddd%.customfield_10702,4)){
+    //         case "1028":
+    //       %ddddd%.assignee = "darya.salimova";
+    //       break;
+    //         case "1034":
+    //       %ddddd%.assignee = "valeriy.sadovskiy";
+    //         break;
+    //         case "1050":
+    //       %ddddd%.assignee = "dina.elyasova";
+    //         break;
+    //         case "1063":
+    //       %ddddd%.assignee = "olga.sidorina";
+    //         break;
+    //         case "1074":
+    //       %ddddd%.assignee = "dina.elyasova";
+    //         break;
+    //         case "1076":
+    //       %ddddd%.assignee = "darya.salimova";
+    //         break;
+    //         case "1088":
+    //       %ddddd%.assignee = "valeriy.sadovskiy";
+    //         break;
+    //         case "1094":
+    //       %ddddd%.assignee = "valeriy.sadovskiy";
+    //         break;
+    //         case "1303":
+    //       %ddddd%.assignee = "olesya.dobina";
+    //         break;
+    //         case "1308":
+    //       %ddddd%.assignee = "olga.sidorina";
+    //         break;
+    //         case "1320":
+    //       %ddddd%.assignee = "dina.elyasova";
+    //         break;
+    //         case "1356":
+    //       %ddddd%.assignee = "olesya.dobina";
+    //         break;
+    //         case "1322":
+    //       %ddddd%.assignee = "olga.sidorina";
+    //         break;
+    //         case "1077":
+    //       %ddddd%.assignee = "olga.sidorina";
+    //         break;
+           
+    //     }
+    // }
+// }
+
+
+
+
+
+
+
+
+
+// string storeNumber = chop(customfield_10702,4);
+
+// string storegroup = store_%storeNumber%.storegroup;
+
+
+// string[] sss = getUserListByStore(store_group_for_QA_participants,"MCC RU KZN - store23");
+// string[] gpya = "";
+// string[] notgpya = "";
+// for(string cur_us in sss){
+//     if(getUserDirectoryName(cur_us) == "GroupMailboxes"){// поиск гпя
+//         gpya = addElement(gpya,cur_us);
+//     }
+//     else{
+//         notgpya = addElement(notgpya,cur_us);
+//     }
+// }
+
+
+
+
+
+// // runnerLog(gpya);
+// // runnerLog(notgpya);
+
+
+// runnerLog(isNull(%ddddd%.customfield_13001));
+// string myJQL = "project = FI AND issuetype in ('Коррекция в SAP FI', 'Отражение в SAP FI') AND status = Open AND created >= -2d";
+// string[] selected_issues = selectIssues(myJQL); 
+// for(string ddddd in selected_issues){
+//     if(%ddddd%.assignee=="dina.elyasova "){
+//     %ddddd%.assignee="dina.elyasova";
+//      runnerLog(%ddddd%.key); 
+        
+//     }
+  
+// }
+
+
+
+// string formatforsearch = "yyyyMMdd";
+// string text_in_file = formatDate(currentDate()-"1d", formatforsearch);
+// // string myJQL = "project = FI AND status != Resolved AND 'FI Команда' = 'SAP FI Group' AND text ~ " + text_in_file + " ";
+// string myJQL = "project = FI and status != Resolved AND assignee in (darya.salimova)";
+// string[] selected_issues = selectIssues(myJQL); 
+
+
+
+// printInFile("D:/Atlassian/JIRA/Projects/sap_filter_today_open.txt", selected_issues);
+
+// runnerLog(selected_issues);
+// runnerLog(getRealUserNames(getReporter("MCC RU KZN - Store23", "MCC RU - Cashier Supervisor")));
+
+// string[] usersm = getRealUserNames(getReporter("MCC RU - Cashier Supervisor",""));
+// for(string cur_us in usersm){
+//     runnerLog(userEmailAddress(cur_us));
+// }
+
+
+// string mykey = "IT-176378";
+// string [] my_linked_issue_keys = linkedIssues(mykey);
+// for(string linkedKey in my_linked_issue_keys){
+//     if(%linkedKey%.type == "Invoices"){
+//         if(%linkedKey%.status == "Wait Service"){
+//             autotransition("Ответ получен", linkedKey, true, true, true);
+//             runnerLog("OK");
+//         }
+//     }
+// }
+
+
+
+
+
+
+// include "ursa/toDM_operations.sil";
+
+
+// runAs("remoteuser");
+// runnerLog(currentUser());
+// runAs("admin-ag");
+// runnerLog(currentUser());
+
+
+// include "qa/strings.sil";
+// include "qa/buying.sil";
+// string store_number = "1023";
+
+
+
+// getDistrict2("1023");
+
+
+
+
+// function numberOfWorkingDay(number n){
+// number x =0;
+//     if(dayOfWeek(currentDate())!="Sat" && dayOfWeek(currentDate())!="Sun"){
+//         switch (dayOfWeek(currentDate())){
+//             case "Mon": x=2;
+//             break;
+//             case "Tue": x=1;
+//         }
+        
+//         number index = day(currentDate())-x;
+//         if (n == index){
+//             return true;
+//         }
+//     }
+// }
+
+
+
+// string mykey = "FI-100703";
+// runnerLog(year(currentDate()));
+
+// number limit_summ = 150000;
+
+// if(%mykey%.customfield_13007>limit_summ){
+//     autotransition("ToDmApprove", key,true,true,true);
+// }
+// else{
+//     // if(%mykey%.labels == {"Назначение_платежа"}){
+//         autotransition("К возврату", mykey, true,true,true);
+//     // }
+// }
+// runnerLog(%mykey%.customfield_10001);
+
+
+// struct Region2 {string index; string name;  string reporter; string coordinator;Store[] stores;}
+// // Region2 East2={"east","Регион Восток", "sss.east","Igor.Lukashin",east_stores};
+// Region2 East2;
+// East2.index = "east";
+// East2.name = "Регион Восток";
+// East2.reporter = "Igor.Lukashin";
+// East2.stores = east_stores;
+//  runnerLog(East.stores[1]);
+// for(string curstore in East.stores){
+// Store cur_store = curstore;
+// runnerLog(cur_store.index);
+    
+// }
+
+// struct mystruct {string a;string b;}
+// mystruct c = {"east","Регион Восток"};
+// mystruct g = {"west","Регион Запад"};
+// mystruct[] zzz = {c,g};
+// mystruct fff = zzz[0];
+// runnerLog(zzz[0]);
+// struct mystruct2{string d; mystruct[] q;}
+// mystruct2 z;
+// z.d = "aaa";
+// z.q = {c,g};
+// runnerLog(z.q[0]);
+
+
+// string mykey = "FI-91793";
+
+// string regexeinn = "(^[0-9]{10}$|[0-9]{12})";
+
+// if (%mykey%.customfield_13005<1000000000 || (%mykey%.customfield_13005>9999999999 && %mykey%.customfield_13005<100000000000) || %mykey%.customfield_13005>999999999999){
+//       return false, "Неверно введён ИНН";
+// }
+// if (%mykey%.customfield_13009<100000000 || %mykey%.customfield_13005>999999999){
+//       return false, "Неверно введён КПП";
+// }
+
+
+
+
+// if(!matches(%mykey%.customfield_13005,regexeinn)){
+// string fff = %mykey%.customfield_13005;
+// runnerLog(fff);
+//     return false, "Неверно введён ИНН";
+// }
+// string regexekpp = "[0-9]{9}";
+// if(!matches(%mykey%.customfield_13009,regexekpp) || !(isNull(%mykey%.customfield_13009))){
+//     return false, "Неверно введён КПП";
+// }
+
+
+
+
+
+
+
+// function getReporter(string current_store_group, string current_dept_group){
+//     if(isNotNull(usersInGroups({current_store_group,current_dept_group}))){
+//         return usersInGroups({current_store_group,current_dept_group});//список пользователей с обеими группами
+//     }
+// }
+
+// function getUserListByStore(string[] store_group, string cur_store_group){
+//     string[] UserListByStore;
+//     string[] user_list_all = {};
+//     for(string cur_group in store_group){
+//         string[] current_user_list = getReporter(cur_store_group,cur_group);   
+//         if(isNotNull(current_user_list)){
+//             UserListByStore = arrayUnion(UserListByStore,current_user_list); 
+//         }
+//     }
+//     return  UserListByStore;
+// }
+
+// function getRealUserNames(string[] usernames){
+//     string[] RealUserNames;
+//     for(string cur_user in usernames){
+//         RealUserNames = addElement(RealUserNames,getUser(cur_user).username);
+//     }
+//     return  RealUserNames;
+// }
+// string[] finance_users = getRealUserNames(getReporter("MCC RU - FOL_Project_MCoE_Customer_Balances_RO",""));
+// for(string cur_user in finance_users){
+//     addUserToGroup(cur_user, "jira-finance-users");
+//     runnerLog(cur_user);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// runnerLog(getRealUserNames(getReporter("MCC RU - Cashier Supervisor","")));
+ 
+// addUserToGroup("admin-ag", "jira-finance-users");
+
+// string myJQL = "project = QA AND issuetype = Подзадача";
+// string[]   selected_issues = selectIssues(myJQL);
+// for(string cur_issue in selected_issues){
+//     string storeNumber = chop(%cur_issue%.customfield_10702,4);
+//     runnerLog(storeNumber);
+//     for(Store cur_store in all_stores){
+//         if(cur_store.index==storeNumber){
+//             %cur_issue%.customfield_10002 =  getRealUserNames(getUserListByStore(store_group, cur_store.storegroup));
+//             runnerLog(getRealUserNames(getUserListByStore(store_group, cur_store.storegroup)));
+//         }
+//     }
+// }
+
+
+// string mykey = "QA-4";
+// string fff = %mykey%.customfield_13604;
+// for(Buying cur_buying in AllBuyings){
+//     if (cur_buying.fieldValue == fff){
+//         runnerLog(getReporter(cur_buying.email,""));
+//     }
+// }
+
+//   ----------------------------------------------QA
+
+
+
+
+
+
+
+
+
+
+
+// -------------------------------------------- Отчёт по решенным задачам баланса------------
+  
+//   string myJQL = "project = FI AND issuetype = 'Finance Task' AND status = Resolved AND labels = Баланс AND assignee in (marina.surkova, marina.kozer, mariya.pakhomova, aksana.vorobeva)";
+// string[]   selected_issues = selectIssues(myJQL);
+// for(string cur_issue in selected_issues){
+//     string mytext = cur_issue.key + ";" + cur_issue.assignee + ";" + cur_issue.created + ";" + cur_issue.updated + ";" + getLastComment(cur_issue.key).text;
+//     runnerLog(mytext);
+// }
+  
+//   --------------------------------------------
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+//   include "ursa/fi_functions.sil";
+  
+  
+  
+//  include "URSA/sap_agents.sil";
+// string SAPAgentName = "";
+// function getSAPAgentAssignee(string storeNumber){
+// SAPAgentName = "";
+// for (SAP_agent curSAPAgent in allsap_agents){
+//     if(curSAPAgent.index==storeNumber){
+//         SAPAgentName = curSAPAgent.sap_agentName;
+//         break;
+//     }
+// }
+//     return SAPAgentName;
+// }
+
+
+
+
+
+
+// string myJQL = "project = FI AND issuetype in ('Коррекция в SAP FI', 'Отражение в SAP FI') AND assignee in (EMPTY) AND text ~ '20180903'";
+// string[]   selected_issues = selectIssues(myJQL);
+// for(string cur_issue in selected_issues){
+// string storeNumber = chop(%cur_issue%.customfield_10702,4);
+//     if(%cur_issue%.type == "Коррекция в SAP FI" || %cur_issue%.type == "Отражение в SAP FI"){
+//       runnerLog(%cur_issue%.key + getSAPAgentAssignee(storeNumber) );
+      
+//       %cur_issue%.assignee = getSAPAgentAssignee(storeNumber);
+//     } 
+// }  
+// runnerLog(arraySize(selected_issues));  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ //checkCreated();
+ 
+//  string regexemail="^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$";
+// if(!matches(customfield_13423,regexemail)){
+//     return false, "Неверно введён E-mail";
+// }
+
+ 
+ 
+ 
+ 
+//  include "main/Stores.sil";
+//  project_name = "IT";
+//  issue_priority_name = "4";//поменять на актуальный приоритет
+// string parent_issue_type_name = "Инцидент";//поменять на актуальный тип задачи
+// string child_issue_type_name = "Подзадача";//поменять на актуальный тип подзадачи
+// string issue_summary = "Месячный Backup ";
+// issue_components = {"Backup"};
+// string[] custom_fields_mapping = "Metro Service|Storage & Backup > Backup & Archiving > Files Backup & Archiving|Metro Team|Local IT Support|Issue Location";
+// string parent_issue_description = "Необходимо заменить месячную backup ленту согласно инструкции: 3.18.6 Проведение процедуры резервного копирования данных.doc ";
+// string child_issue_description = "Необходимо заменить месячную backup ленту согласно инструкции: 3.18.6 Проведение процедуры резервного копирования данных.doc в ТЦ ";
+// string custom_fields_mapping_store;
+// // Region[] all_regions2 = {East};//массив регионов. поменять на {East,West,Center,South,Siberia,Mow}
+//     //создание задачи на регион
+// for(Region current_region in all_regions){
+
+//     string custom_fields_mapping_region = custom_fields_mapping+current_region.name;
+//     runnerLog(custom_fields_mapping_region);
+//     string parent_issue = createIssue(
+//         project_name,
+//         "", 
+//         parent_issue_type_name,
+//         issue_summary + current_region.name, 
+//         issue_priority_name, 
+//         parent_issue_description + current_region.name,
+//         issue_components,"","","",custom_fields_mapping_region
+//     );
+//     runnerLog(parent_issue);
+//     %parent_issue%.reporter = current_region.reporter;
+    
+//     // создание подзадач на ТЦ
+   
+//     // for(string curstore in current_region.stores){
+//     for(Store curstore in all_stores){
+//         if (curstore.region == current_region.index){
+//             string custom_fields_mapping_store = custom_fields_mapping+curstore.name;
+//             string child_issue = createIssue(
+//             project_name,
+//             parent_issue,
+//             child_issue_type_name,
+//             issue_summary + curstore.name,
+//             issue_priority_name,
+//             child_issue_description + curstore.name,
+//             issue_components,"","","",custom_fields_mapping_store
+//         );
+//         %child_issue%.reporter = current_region.reporter;
+//         runnerLog(curstore.index);
+//         }
+    
+    
+    
+//         // Store current_store = curstore;
+        
+       
+//     }   
+// }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ //----------------------------------------------QA
+ 
+ 
+// return sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"}, {""}, "test", "attach",{"D:\\\\Atlassian\\\\*.txt"});//C:/gifts/jira-users*.gift   {"C:/install/finance/*}"
+ 
+ 
+//  string mykey = "QA-4";
+//  project_name = "QA";
+ 
+//  string custom_fields_mapping= "reporter|reporter_toChange|Issue Location";
+// string[] stores_to_create = %mykey%.customfield_10702;
+// string parent_issue = mykey;
+
+// if(elementExists(stores_to_create, "Все ТЦ MCC") ){
+// runnerLog("Ok");
+//     for(Store current_store in all_stores){
+//           string custom_fields_mapping_store = replace(custom_fields_mapping + current_store.name, "reporter_toChange", "admin-ag");
+//                 string cur_issue_summary = current_store.name + current_store.index ;
+//                 string child_issue = createIssue(
+//                     project_name, 
+//                     parent_issue,  
+//                     "Подзадача", 
+//                     cur_issue_summary,
+//                     issue_priority_name, 
+//                     "description", 
+//                     "",
+//                     "",
+//                     "",
+//                     "",
+//                     custom_fields_mapping_store);
+//     }
+// }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ //-------------------------------------------- добавление значений в поле
+ 
+//  string[] brands = {"A LA CARTE", "ACTIVE", "ALASKA", "ANTIK", "AQUA COLLEONI", "ARMENION", "ARO", "ARTHINA", "AUTHENTIC", "BAKERSTREET", "BALTIC", "BERGHOV", 
+//  "BILOXXI", "BUDGET", "CALI", "CAR JACK", "CASA ROMA", "CASCINA VERDESOLE", "CHAMPAIGN", "CHARLES HOUSE", "CHEVALIER ROYAL", "CHINA GARDEN", "CLAYTON", "COBB", 
+//  "COLUMBUS", "CONSUL", "CORVINUS", "CROSSWIND", "DANISH FANTASIY", "DANTONS", "DAZZLERS", "DELAITRE", "DESIGNERS", "DISNEY MAGIC", "DOLMABAHCE", "DON DIEGO", 
+//  "DON PABLO", "DREAMING", "EVITA", "FAIRLINE", "FEEL-X", "FELSGOLD", "FIDES", "FINE DREAMING", "FINE FOOD", "FINE FOOD BIO", "FINE FOOD FAIRTRADE", "FINE FOOD FINESTRO",
+//  "FINE LIFE", "FJOROWKA", "FJROWKA", "FOR SEASON", "FRANCESCO FORELLI", "GILBERT", "GLEN BROCH", "GLENGANNON", "GUT NEUBURG", "H-LINE", "HOMEFIT", "HORECA SELECT", "HUIFKAR",
+//  "HÜTTENGLUT", "IPC", "JAGDGLÜCK", "KLEINER KOBOLD", "KORNHERR", "KREPOST ORESHEK", "KRÄUTERBARON", "L.LAMBERTAZZI", "LANDHAUS", "LATITZA", "LAURA DI SARPI", "LENINOVSKAYA",
+//  "LION HEART", "LUXANA", "MADRUZZO", "MAISON DU FROMMAGE", "MANGUUN", "MASO ALTO", "MAURO FERRINI", "MEDI SELF", "MEISTER", "METRO / MAKRO QUALITY", "METRO CHEF", "METRO PREMIUM",
+//  "METRO PROFESSIONAL", "MINKOFF", "MIRIOS", "MISTROVSKÉ KOUSKY ANTONÍN RICHTER", "MY LITTLE BEAR", "NATURA VERDE", "O LACY S", "OBJECTA", "OCEAN QUEEN", "OLANDO", "OLD NOBILITY",
+//  "OUTDOOR", "PAN TOYS", "PERDENT", "PISANO", "POWER UP", "REAL,-BIO", "REAL,-QUALITY", "REAL,-SELECTION", "REGADONT", "RIOBA", "ROCHAMBEAU", "ROUSTADOU", "SABORES LUSITANOS",
+//  "SEA LORD", "SEÑORIO DEL QUESO", "SIGMA", "SILVERTREE", "SPARKLING", "SPARKLING WINE", "STARS & STRIPES", "STEINBACH", "TAILOR & SON", "TAPAS", "TARINO", "TARRINGTON HOUSE",
+//  "TARRINGTON-HOUSE AMBIENTE", "TARRINGTON-HOUSE PARKLANE", "TERRADENA", "TIMOR", "TIP", "TWIST", "VAN LINNEN", "VARESA", "VERA GRECA", "VILLA MAZZOLINI", "VILLA NOBLESSE",
+//  "WATSON", "WHITE DIAMONDS", "WILD ONE", "WINE AUSTRIA", "WINE BELGIUM", "WINE BULGARIA", "WINE CHINA", "WINE CROATIA", "WINE CZECH REPUBLIC", "WINE DANMARK", "WINE FRANCE",
+//  "WINE GERMANY", "WINE GREECE", "WINE HUNGARY", "WINE INDIA", "WINE ITALY", "WINE JAPAN", "WINE MACEDONIA", "WINE MOROCCO", "WINE NETHERLAND", "WINE NEW WORLD", "WINE POLAND", 
+//  "WINE PORTUGAL", "WINE ROMANIA", "WINE RUSSIA", "WINE SERBIA", "WINE SLOVAKIA", "WINE SPAIN", "WINE TURKEY", "WINE UK", "WINE UKRAINE", "WINE VIETNAM", "X-CLUB", "YOUKON", "ZEBRALINO"
+// };
+
+
+
+
+
+// string[] ddd = getFieldOptions("ALC", "ALC Request", "customfield_10702");
+// string[] cma ={"1516 Санкт-Петербург","1519 Москва",
+// "1544 Новосибирск","1546 Красноярск","1574 Казань","1309 Волжский",
+// "1529 Екатеринбург","1535 Пермь","1542 Ставрополь","1594 Новороссийск"};
+//  string[] aaa = arraySort(arrayUnion(ddd,cma),false);
+//  for (string curcma in aaa){
+// //  admAddCustomFieldOption("New Option", "Select List", "TEST", "Bug");
+// //  admAddCustomFieldOption(option, fieldName[, projectKey, issueType])
+//       admAddCustomFieldOption(curcma, "Issue Location", "ALC","ALC Request");
+//       runnerLog(curcma + " добавлен");
+//  }
+ 
+
+//  for (string brand in brands){
+//       admAddCustomFieldOption(brand, "OwnBrands");
+//       runnerLog(brand + " добавлен");
+//  }
+ 
+ 
+
+ 
+
+
+ 
+
+//  string[] cma = {"101 - Canned Food", "102 - Dairy", "103 - Sweets", "104 - Drinks", "105 - Detergents", "106 - Processed Meat", "107 - Fruits / Vegetables", 
+//  "108 - Grocery", "109 - Fish", "110 - Wines", "111 - Tobacco", "112 - Fresh Meat", "113 - Deep Frozen", "114 - Delicatessen and Cheese", "115 - Bakery", 
+//  "116 - Soft Drinks", "117 - Toiletries", "500 - Sales out articles food", "600 - Gifts", "210 - Office Technics", "214 - D.I.Y.", "215 - Car Accessories", 
+//  "216 - Home textiles", "217 - Sport", "218 - Camping/Garden", "219 - Ladies confection", "221 - Workwear", "222 - Shoes", "223 - Underwear", 
+//  "224 - Office Supplies", "227 - Toys", "228 - Cookware", "229 - Luggage", "230 - Office Furniture/Stationery", "232 - Home equipment", "238 - Tableware", "501 - Metropolia"};
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+// string formatForSearch = "yyyyMMdd";
+// string myYear = year(currentDate());
+// string myMonth = month(currentDate());
+// string myDay = day(currentDate());
+// string dateToSearch = formatDate(currentDate(), formatForSearch);
+// string myJQL = "project = FI AND issuetype = 'Store Revenue' AND text ~ '" + dateToSearch + "'";
+// string[] selected_issues = selectIssues(myJQL);
+// number isCount = countIssues(myJQL);
+// string answer = "Создано " + isCount + " задачи из " + arraySize(finance_pilot_stores);
+// runnerLog(answer);
+
+// // sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{""},"test",answer);
+// return isCount;
+
+
+
+
+
+
+
+
+
+
+
+//---------------------------------------------создание задачи на опредедённую таймзону
+// for(Store current_store in finance_pilot_stores){
+//   if(current_store.timezone ==  "GMT+2" || current_store.timezone ==  "GMT+3"  || current_store.timezone ==  "GMT+4"){
+//         // createTasks(Expenses, Expenses_Childs, formatForSummaryMonth, adminspec_group, current_store);
+//         // createTasks(Arenda, Arenda_Childs, formatForSummaryMonth, adminspec_group, current_store);
+//         // createTasks(Recycled, "", formatForSummaryMonth, adminspec_group, current_store);
+//         MyChild[] MMC_Childs_To_Create = MMC_Childs;
+//         if(current_store.index=="1196"){
+//             MMC_Childs_To_Create=MMC_Childs_1196;
+//         }
+//         createTasks(Revenue, MMC_Childs_To_Create, formatforsummary, dept_group,current_store);
+//     }
+// }
+// Создание по будням задач по КЕБ, переносу оплат и выравниванию
+//----------------------------------------------------------------------------------------
+
+
+
+// --------------------------------------------Проверка файлов Z-отчетов--------------------
+// string mykey = "FI-51520";
+// string store_number = matchText(%mykey%.summary, "1[0-4][0-9]{2}");
+// string date_in_summary = matchText(%mykey%.summary, "20[1-2][0-9][0-1][0-9][0-3][0-9]");
+// string date_in_attach = substring(date_in_summary, 2, 8);
+// string attach_regex = store_number + "_[zZ]_" + date_in_attach + ".(xlsx|XLSX)";
+// string attach_name = store_number + "_Z_" + date_in_attach + ".xlsx";
+// number countattach = 0;
+// string answer = "";
+//  if(%mykey%.type=="Проверка Z-отчетов"){
+// //  if(%mykey%.type=="Обработка в MMC"){
+//     for(string cur_attach_name in %mykey%.attachments){
+//         if(matches(cur_attach_name,attach_regex)){
+//              runnerLog (cur_attach_name);
+//              countattach+=1;
+//         }
+        
+//     }
+//       runnerLog(countattach);
+//      if(countattach==0){
+//         //  addJSDComment(mykey, "admin-ag", "Хуйня у Вас, а не файл.", true);
+       
+//           answer = "Присланный файл не соответсвует формату указанному в инструкции. Просьба пересохранить файл с именем " + attach_name + " и прислать ответом на это письмо. Данное сообщение создано автоматически.";// 
+//           runnerLog(answer);
+//             sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{""},"test",answer);
+//             for(string cur_attach_name in %mykey%.attachments){
+//                 if(contains(cur_attach_name, "xls")||contains(cur_attach_name, "XLS") ){
+//                     deleteAttachment(mykey,cur_attach_name);
+//                 }
+//             }
+//     }
+//      else{
+//          answer = "Всё ок. Файл что надо. "+ %mykey%.reporter + " молодец!";// 
+//           runnerLog(answer);
+//             sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"},{""},"test",answer);
+//      }  
+     
+// }
+// ----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+//  string myKey = "FI-29674";
+
+//--------------------------------------------Отчет о статусах
+// function getStatusesTimeSpent(string issueKey) {
+//     // function that returns a map with key status and value total time spent
+//     interval[] result;
+//     string[] statusHistory = fieldHistory(issueKey, "status");
+//   // runnerLog(statusHistory);
+    
+    
+//     number FLSUserTimeSpent_seconds=0;
+//     JFieldChange[] statusChanges = getFieldChanges(issueKey, "status");
+//     interval FLSUserTimeSpent = 0;
+  
+//     for(number j = 0; j<arraySize(statusChanges)-1; j++){
+//         if ((statusChanges[j].oldVal=="In Progress"))  {
+// //            if (statusChanges[j].user=="daniil.bass" || statusChanges[j].user=="ivan.shitov" || statusChanges[j].user=="sergey.pimenov" || statusChanges[j].user=="andrey.bushev" || statusChanges[j].user=="sergey.medvedev") {
+            
+             
+//             if(isNull(statusChanges[j-1].changeDate)){
+               
+//                  FLSUserTimeSpent =  FLSUserTimeSpent + statusChanges[j].changeDate-%issueKey%.created;
+                
+//             }
+//             else{
+                 
+//             FLSUserTimeSpent =  FLSUserTimeSpent + statusChanges[j].changeDate-statusChanges[j-1].changeDate;
+//             }
+            
+           
+//               // FLSUserTimeSpent =  FLSUserTimeSpent + statusChanges[j].changeDate-statusChanges[j-1].changeDate;
+//         }
+                    
+//     };
+//     FLSUserTimeSpent_seconds = FLSUserTimeSpent["DAY"]*24*60*60 +FLSUserTimeSpent["HOUR"]*60*60 + FLSUserTimeSpent["MINUTE"]*60+ FLSUserTimeSpent["SECOND"];
+//      runnerLog(issueKey+","+FLSUserTimeSpent_seconds+","+%issueKey%.type+","+%issueKey%.customfield_10702 +","+%issueKey%.summary); 
+// //   runnerLog(FLSUserTimeSpent_seconds);
+    
+    
+     
+//     date oldDate = %issueKey%.created;
+//     if(!size(statusHistory) > 0) {
+//         //status never changed
+//         result[%issueKey%.status] = currentDate() - oldDate;
+//         return result;
+//     }
+     
+//     string oldStatus = statusHistory[1];
+//     interval timeSpent = 0;
+     
+//     for(number i = 3; i < size(statusHistory); i += 2) {
+//         string newStatus = statusHistory[i];
+//         date newDate = statusHistory[i-1];
+//         timeSpent = newDate - oldDate;
+//         if(isNotNull(result[oldStatus])) {
+//             // if issue already was in this status add the time interval to the time spent
+//             result[oldStatus] = result[oldStatus] + timeSpent;
+//         } else {
+//             // otherwise set the time spent for this status
+//             result[oldStatus] = timeSpent;
+//         }
+//         oldStatus = newStatus;
+//         oldDate = newDate;
+//     }
+//     //add also last status time interval
+//     interval lastTime = currentDate() - oldDate;
+//     if(isNotNull(result[oldStatus])) {
+//         result[oldStatus] = result[oldStatus] + lastTime;
+//     } else {
+//         result[oldStatus] = lastTime;
+//     }
+     
+//     return result;
+// }
+
+
+
+// string text_report = "";
+// string myJQL = "project = FI  AND status = Resolved AND 'FI Команда' in ('MMC Group') AND created >= 2018-10-30 and assignee not in (anna.perova,admin-ag)";
+// // string myJQL = "project = FI  and 'FI Команда' in ('SAP FI Group', 'MMC Group') AND (status in (Resolved)) AND text ~ '201808*' and assignee not in (anna.perova,admin-ag)";
+//         runnerLog(myJQL);
+//      string[]   selected_issues = selectIssues(myJQL);
+//         for(string cur_issue in selected_issues){
+//             getStatusesTimeSpent(cur_issue);
+//           interval mmm = %cur_issue%.updated - %cur_issue%.created; 
+//          text_report += %cur_issue%.key + ";" +%cur_issue%.assignee + ";" + %cur_issue%.type + ";" + %cur_issue%.labels + ";" + %cur_issue%.created + ";" + %cur_issue%.customfield_13001 + ";" + mmm + ";" +  %cur_issue%.updated + "\r\n";
+//     //   runnerLog(text_report);
+        
+        
+        
+        
+//     //   runnerLog(%cur_issue%.key);
+//         }
+//     string filePath2="D:/Atlassian/JIRA/Projects/FI/report2.csv";
+//         createFile(filePath2);
+//         printInFile(filePath2, text_report,"Windows-1251"); 
+
+//----------------------------------------------------------------------------------------
+
+
+
+
+
+
+// string[] timeSpentInStatuses = getStatusesTimeSpent("FI-29674");
+
+
+
+// string myJQL = "labels = Авансовый_отчёт and type = Закрытие"; 
+// string[]   selected_issues = selectIssues(myJQL);
+// for(string cur_issue in selected_issues){
+//     %cur_issue%.type = "Закрытие";
+//       runnerLog(%cur_issue%.key);
+// }
+
+
+
+
+
+
+
+
+
+
+
+// JComment cmt = getLastComment(myKey);
+// if(cmt.author != %myKey%.reporter){
+//   string  commettext = "Повторный запрос от " + currentDate() + " " + cmt.text;
+//   addJSDComment(myKey, currentUser(), commettext, true);
+//   runnerLog(cmt.text);
+// }
+
+// %myKey%.labels = arrayUnion(%myKey%.labels, {"QA_Approved"});
+// sendEmail("it-support@metro-cc.ru", {"jira_support@metro-cc.ru"}, {}, "Test", "Тест");
+
+
+// for(Region current_region in all_regions){
+//     for(Store cur in current_region.stores )
+//     runnerLog(cur.name);
+// }
+
+
+
+
+// include "main/Stores.sil";
+// string project_name = "IT";
+// string issue_priority_name = "4";//поменять на актуальный приоритет
+// string parent_issue_type_name = "Инцидент";//поменять на актуальный тип задачи
+// string child_issue_type_name = "Подзадача";//поменять на актуальный тип подзадачи
+// string issue_summary = "Месячный Backup ";
+// string[] issue_components = {"Backup"};
+// string[] custom_fields_mapping = "Metro Service|Storage & Backup > Backup & Archiving > Files Backup & Archiving|Metro Team|Local IT Support|Issue Location";
+// string parent_issue_description = "Необходимо заменить месячную backup ленту согласно инструкции: 3.18.6 Проведение процедуры резервного копирования данных.doc ";
+// string child_issue_description = "Необходимо заменить месячную backup ленту согласно инструкции: 3.18.6 Проведение процедуры резервного копирования данных.doc в ТЦ ";
+// string custom_fields_mapping_store;
+// // Region[] all_regions2 = {East};//массив регионов. поменять на {East,West,Center,South,Siberia,Mow}
+//     //создание задачи на регион
+// for(Region current_region in all_regions){
+
+//     string custom_fields_mapping_region = custom_fields_mapping+current_region.name;
+//     runnerLog(custom_fields_mapping_region);
+//     string parent_issue = createIssue(
+//     project_name,
+//     "", 
+//     parent_issue_type_name,
+//     issue_summary + current_region.name, 
+//     issue_priority_name, 
+//     parent_issue_description + current_region.name,
+//     issue_components,"","","",custom_fields_mapping_region);
+//     runnerLog(parent_issue);
+//     %parent_issue%.reporter = current_region.reporter;
+    
+//     // создание подзадач на ТЦ
+// //   runnerLog(current_region);
+//     for(Store curstore in all_stores){
+//     //  runnerLog(curstore.region);
+//     //  runnerLog(current_region.index);
+//      if(curstore.region == current_region.index){
+        
+     
+//         // Store current_store = curstore;
+       
+        
+//         string custom_fields_mapping_store = custom_fields_mapping+curstore.name;
+//         string child_issue = createIssue(
+//         project_name,
+//         parent_issue,
+//         child_issue_type_name,
+//         issue_summary + curstore.name,
+//         issue_priority_name,
+//         child_issue_description + curstore.name,
+//         issue_components,"","","",custom_fields_mapping_store);
+//         %child_issue%.reporter = current_region.reporter;
+//   }
+   
+   
+//     }   
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+// if(hour(currentDate())==17){
+// runnerLog("Часы верны");
+//       for(Store current_store in expense_pilot_stores_test){
+//   runnerLog("ТЦ23");
+//         createTasks(Expenses, Expenses_Childs, formatForSummaryMonth, adminspec_group,current_store);
+//         createTasks(Arenda, Arenda_Childs, formatForSummaryMonth, adminspec_group,current_store);
+//         createTasks(Recycled, "", formatForSummaryMonth, adminspec_group,current_store);
+//     } 
+// }
+
+
+
+
+
+
+
+//--------------------------------------------
+// string jql = "summary ~ 'Расчет недостач кассира' and status!= Resolved ORDER BY status asc, updatedDate  desc";
+// string[] selected_issues = selectIssues(jql); 
+
+
+
+
+//for(string mykey2 in selected_issues){
+// string mykey = mykey2.key;
+// string mykey = "FI-40186";
+// string text_t_find = %mykey%.summary +" "+ %mykey%.description;
+
+
+// string tabNumber="";
+// string strDate="";
+// string dateFormat = "yyyyMMdd";
+
+// string regex_tabnumber = ".*33[0-9]{6}.*";
+// string regex_tabnumber_start = "33[0-9]{6}.*";
+// string regex_tabnumber_stop = ".*33[0-9]{6}";
+
+// string regex_date = ".*[0-3][0-9].[0-1][0-9].20[0-9]{2}.*";
+// string regex_date_start = "[0-3][0-9].[0-1][0-9].20[0-9]{2}.*";
+// string regex_date_stop = ".*[0-3][0-9].[0-1][0-9].20[0-9]{2}";
+
+
+
+// for(string current_garbage in garbage_array){
+//     text_t_find = replace(text_t_find,current_garbage, " ");
+// }
+
+
+
+
+// //if (%mykey%.summary =="Расчет недостач кассира"){
+//   runnerLog("Расчёт");
+    
+//     if (matches(toLower(text_t_find), regex_tabnumber)){
+//         number startIndex = matchStart(toLower(text_t_find), regex_tabnumber_start);
+//         number stopIndex = startIndex+8;
+//         tabNumber = substring(text_t_find, startIndex, stopIndex);
+        
+//     }
+    
+//      if (matches(toLower(text_t_find), regex_date)){
+//         number startIndex = matchStart(toLower(text_t_find), regex_date_start);
+//         number stopIndex = startIndex+10;
+//         strDate = substring(text_t_find, startIndex, stopIndex);
+        
+//         date toDate = parseDate("dd MM yyyy", strDate);
+//         strDate = formatDate(toDate, dateFormat);
+//         runnerLog(strDate);
+//         %mykey%.customfield_13302 = toDate;
+//     }
+   
+    
+    
+  //  %mykey%.summary += " " + strDate + " " + tabNumber;
+   
+    
+    
+// }
+
+
+//}
+
+
+
+//---------------------------------------------
+
+
+
+
+
+// string mykey = "FI-25807";
+//  formatforsummary = "yyyyMMdd";
+// string sum_date = formatDate(currentDate(), formatforsummary);
+// if (%mykey%.summary == "Коррекция"){
+//     %mykey%.summary = "Коррекция " + chop(%mykey%.customfield_10702,4) + " " + sum_date ;
+// }
+
+
+
+
+// string text_t_find = %mykey%.description;
+
+
+// string regex_store = ".*тц\\s[0-9]{2,3}.*";
+// string regex_store_stop = ".*тц\\s[0-9]{2,3}";
+// string regex_store_start = "тц\\s[0-9]{2,3}.*";
+// string storeNumber="";
+// string[] garbage_array = {".",",","!","?",";",":","\r","\n","_","  ","  "};
+// for(string current_garbage in garbage_array){
+//     text_t_find = replace(text_t_find,current_garbage, " ");
+// }
+
+//  if (matches(toLower(text_t_find), regex_store)){
+//     number stopIndex = matchEnd(toLower(text_t_find), regex_store_stop);
+//     number startIndex = matchStart(toLower(text_t_find), regex_store_start);
+//     storeNumber = substring(text_t_find, startIndex+3, stopIndex);
+//     if(length(storeNumber)==2){storeNumber = "10" + storeNumber;}
+//     if(length(storeNumber)==3){storeNumber = "1" + storeNumber;}
+//     for(Store current_store in all_stores){
+//         if(current_store.index==storeNumber){
+//             %mykey%.customfield_10702 = current_store.name;
+//             runnerLog(current_store.name);
+//             break;
+//         }
+//     }    
+//  }
+
+
+// string mykey = "FI-31753";
+// string text_t_find = %mykey%.description;
+// string regex_store = ".*fi.[0-9]{3,6}.*";
+// string regex_store_stop = ".*fi.[0-9]{3,6}";
+// string regex_store_start = "fi.[0-9]{3,6}.*";
+// string[] garbage_array = {".",",","!","?",";",":","\r","\n","_","  ","  "};
+// for(string current_garbage in garbage_array){
+//     text_t_find = replace(text_t_find,current_garbage, " ");
+// }
+
+
+
+//  if (matches(toLower(text_t_find), regex_store)){
+//  runnerLog("ща свяжем");
+//     number stopIndex = matchEnd(toLower(text_t_find), regex_store_stop);
+//     number startIndex = matchStart(toLower(text_t_find), regex_store_start);
+//     string finumber = substring(text_t_find, startIndex, stopIndex);
+//      runnerLog(startIndex);
+//      runnerLog(stopIndex);
+//     linkIssue(mykey, toUpper(finumber), "Problem/Incident");
+//   runnerLog(toUpper(finumber));
+//  }
+
+
+
+
+
+
+
+// string myJQL = "project = FI AND issuetype = 'Finance Task' AND status = Open AND assignee in (anna.perova)";
+// string[] selected_issues = selectIssues(myJQL); 
+// string[] selected_issues2 = ""; 
+
+
+// for (string curissue in selected_issues){
+//     JFieldChange[] statusChanges = getFieldChanges(curissue, "status");
+//     for(number j = 0; j<arraySize(statusChanges)-1; j++){
+//         if ((statusChanges[j].oldVal=="Wait Customer"))  {
+//           selected_issues2 = arrayAddElementIfNotExist(selected_issues2,curissue);
+//         }
+//     }
+ 
+// }
+// return selected_issues2;
+
+
+
+
+
+//  string format = "YYYYMMdd";
+//  string for_date = gadget_getDateValue(argv, "Создано");//
+// // // string[] selected_stores = gadget_getMultiValues(argv, "Номер ТЦ");
+// // string[] selected_types = gadget_getMultiValues(argv, "Тип задачи или метка");//
+// // string action = gadget_getSingleValue(argv, "Тип отчёта");//
+// string mytext = formatDate(for_date, format);
+// interval[] timespent; 
+// interval totaltimespent = 0;
+
+// //string allstores = "";
+// function getStatusesTimeSpent(string issueKey) {
+//     number FLSUserTimeSpent_seconds=0;
+//     JFieldChange[] statusChanges = getFieldChanges(issueKey, "status");
+//     // JFieldChange[] statusChanges = getFieldChanges(issueKey, "customfield_13001");
+//     interval FLSUserTimeSpent = 0;
+    
+    
+//     //----------------------------------------- ИЗ в работе в решено  ---------------------------------------------
+    
+    
+    
+//     // for(number j = 0; j<arraySize(statusChanges)-1; j++){
+//     //     if ((statusChanges[j].oldVal=="Open"))  {
+//     //         FLSUserTimeSpent =  FLSUserTimeSpent + statusChanges[j+1].changeDate-statusChanges[j].changeDate;
+//     //     }
+//     //     mytext = %issueKey%.created;
+//     //     FLSUserTimeSpent_seconds = FLSUserTimeSpent["HOUR"]*60*60 + FLSUserTimeSpent["MINUTE"]*60+ FLSUserTimeSpent["SECOND"];
+//     //     //  runnerLog(statusChanges[0].user + "," + mytext +"," + issueKey+","+%issueKey%.assignee+","+FLSUserTimeSpent_seconds+","+%issueKey%.type+","+%issueKey%.labels);   
+//     //      runnerLog(mytext +"," + issueKey+","+%issueKey%.assignee+","+FLSUserTimeSpent_seconds+","+%issueKey%.type+","+%issueKey%.labels);   
+        
+//     //     return FLSUserTimeSpent;
+//     // }
+// //----------------------------------------- ИЗ Открыто в В работе ---------------------------------------------
+
+
+//      for(number j = 0; j<arraySize(statusChanges)-1; j++){
+//       if ((statusChanges[j].newVal=="In Progress"))  {
+        
+//         // if ((statusChanges[j].oldVal=="Open"))  {
+//         //  
+//         //   if ((statusChanges[1].oldval=="In Progress"))  {
+//         // runnerLog(statusChanges);
+//         //  if(isNotNull(statusChanges[0])) {
+         
+      
+//                  FLSUserTimeSpent =  FLSUserTimeSpent + statusChanges[0].changeDate-%issueKey%.created;
+//               // FLSUserTimeSpent =  FLSUserTimeSpent + statusChanges[0].changeDate-%issueKey%.created;
+//           // }
+                    
+//         }
+//         mytext = %issueKey%.created;
+//         FLSUserTimeSpent_seconds = FLSUserTimeSpent["HOUR"]*60*60 + FLSUserTimeSpent["MINUTE"]*60+ FLSUserTimeSpent["SECOND"];
+//         //  runnerLog(statusChanges[0].user + "," + mytext +"," + issueKey+","+%issueKey%.assignee+","+FLSUserTimeSpent_seconds+","+%issueKey%.type+","+%issueKey%.labels);   
+//          runnerLog(mytext +"," + issueKey+","+%issueKey%.assignee+","+FLSUserTimeSpent_seconds+","+%issueKey%.type+","+%issueKey%.labels);   
+        
+//         return FLSUserTimeSpent;
+//     }
+
+
+
+    
+    
+    
+    
+    
+    
+// }
+
+
+
+// string myJQL = "project = FI AND issuetype = 'Finance Task' AND status = Resolved AND created >= 2018-07-16 AND created <= 2018-07-22 and labels in (Баланс)";
+// // string myJQL = "project = FI AND issuetype = 'Finance Task' AND status = Resolved AND created >= 2018-07-16 AND created <= 2018-07-22 and 'FI Команда' not in ('Financial Support')";
+// string[] selected_issues = selectIssues(myJQL); 
+ 
+//     // getStatusesTimeSpent("FI-25810");
+ 
+//   for(string cur_issue in selected_issues){
+//     getStatusesTimeSpent(cur_issue);
+//   }
+
+
+
+
+
+
+
+
+
+
+
+// string[] ddddd = {"vera.vasileva","Larisa.Kiselyova","Vera.Sinicina","Tatyana.Golovina","Larisa.Sidorshina","Larisa.Sutyrkina","Anna.Shutskaya",
+// "M.Sokolova","natalya.karpusha","Elena.Mayzina","Anna.Ruban","tatyana.turaeva","aleksandr.kuzyakin"};
+
+
+
+
+
+//  string mykey2 = "FI-6386";
+
+// finance_pilot_stores = arraySort(finance_pilot_stores, false);
+// runnerLog(finance_pilot_stores);
+
+ 
+// string aaa = "1010 1013 1060 1357 1444 1020 1030 1040";
+// string[] bb = "";
+// number len = length(aaa);
+// number start = 0;
+// number i = 0;
+// do {
+// start = i*5;
+//     number stop = start+4;
+//     string tc = substring(aaa, start, stop);
+//     bb = arrayAddElementIfNotExist(bb, tc);
+//     i = i + 1;
+//     runnerLog(tc);
+// } while(start < len);
+// runnerLog(bb);
+// for(Store curstore in finance_pilot_stores){
+//     if(arrayElementExists(bb, curstore.index)){
+//          runnerLog(curstore.name);
+//     }
+   
+// }
+
+
+
+// string[]sss={"2","1","5","7"};
+// sss=arraySort(sss, false);
+// runnerLog(sss);
+// string myJQL = "project = FI and status =  'Wait Service'";
+// string[] sel_issues = selectIssues(myJQL);
+//     runnerLog(sel_issues); 
+//     for(string parent_key in sel_issues){
+//         JIssueLink[] jIssueLinks = getIssueLinksDetail(%parent_key%.key);//массив всех подзадач
+//         for(JIssueLink jIssueLink in jIssueLinks){
+//             if(jIssueLink.description == "causes"){
+//                 string my_linked_issue_key = jIssueLink[4];
+//                 runnerLog(%parent_key%.key);
+//                 if(%my_linked_issue_key%.status == "Resolved"){
+//                     autotransition("Ответ получен", %parent_key%.key, true,true,true); 
+//                 } 
+//             }
+//         }
+//     }
+
+
+
+// string path_to_file;
+// string issue;
+// path_to_file = "C:/install/forBelov/issuestatistics.txt";
+// issue = "IT-129118";
+// attachFile(path_to_file, issue);
+
+// if(fileExists("C:/install/forBelov/issuestatistics.txt")){
+//     runnerLog("The file exists!");
+// } else {
+//     runnerLog("The file does not exist!");
+// }
+//sendEmail("santa@kepler.ro", {"jira-users"}, {}, "santa_subject.tpl", "santa_letter.tpl", key, {"attachment.*"});
+// sendEmail("it-support@metro-cc.ru", {"jira_support@metro-cc.ru"}, {}, "Test", "Тест",issue,{"attachment.*"});
+
+// for(Store current_store in expense_pilot_stores_test){
+//         createTasks(Expenses, Expenses_Childs, formatForSummaryMonth, adminspec_group, current_store);
+//         // createTasks(Expenses, Expenses_Childs, formatForSummaryMonth, "ekaterina.troshina",current_store);
+//     }
+
+ 
+// //  string[] args = {"FI-6386", "FI"}; //assume we're in the context of an issue
+// // interval varInterval = "1m";
+// // runJobIn("script.sil", args, varInterval);
+ 
+ 
+//  string text_t_find = %mykey2%.summary +" "+ %mykey2%.description;
+//  string regex_finance = ".*fi.*[0-9]{1,6}.*";
+//  string regex_finance_start = "FI.*[0-9]{1,6}.*";
+//  string regex_finance_stop = ".*FI.*[0-9]{1,6}";
+
+
+// string text_t_find_only_description = %mykey2%.description;
+// string[] garbage_array = {".",",","!","?",";",":","\r","\n","_","  ","  "};
+// for(string current_garbage in garbage_array){
+//     text_t_find = replace(text_t_find,current_garbage, " ");
+//     text_t_find_only_description = replace(text_t_find_only_description,current_garbage, " ");
+// }
+ 
+//  if (matches(toLower(text_t_find_only_description), regex_finance)){
+ 
+//     number fi_Start = matchStart(text_t_find_only_description, regex_finance_start);
+//     runnerLog(fi_Start);
+//     // string mykey = substring(%mykey2%.description, fi_Start, -1);
+//     //  runnerLog(mykey);
+//      number fi_Stop = matchEnd(text_t_find_only_description, regex_finance_stop);
+//     runnerLog(fi_Stop);
+//     // runnerLog(mykey2);
+   
+
+//     string mykey = trim(substring(text_t_find_only_description, fi_Start, fi_Stop));
+//     // mykey = trim(mykey);
+//     runnerLog(mykey);
+//     //return linkIssue(%mykey%.key, %mykey2%.key, "Problem/Incident");
+   
+// }
+ 
+ 
+ 
+//  string mykey = "FI-7084";
+//  %mykey%.type = "Расход ДТ";
+//  mykey = "FI-7088";
+//  %mykey%.type = "Расход ДТ";
+ 
+ 
+ 
+ 
+ 
+ 
+// string project_name = "FI";//
+// string issue_priority_name = "4";//
+// string[] issue_components = {""};
+// function createTasks(MyChild Task,MyChild[] SubTasks, string dateformat,string reporter_group,Store current_store){
+//     string issue_summary = ""; 
+//     string cur_reporter = "";
+//     if(reporter_group == "remoteuser"){
+//                 cur_reporter="remoteuser";
+//                 issue_summary = Task.child_summary + current_store.index + " " + formatDate(currentDate(), dateformat);
+//     }
+//     else{
+//         cur_reporter = getReporter(current_store.storegroup,reporter_group);
+//         issue_summary = Task.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+//     }
+//          if(isNotNull(cur_reporter)){
+           
+//             if(current_store.index == "1202"){
+//                 cur_reporter="anna.mikhaylova";
+//             }
+//             string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", Task.fi_team);
+//             custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//             runnerLog(custom_fields_mapping_store);
+//             string parent_issue = createIssue(
+//                 project_name,
+//                 "",
+//                 Task.name, 
+//                 issue_summary,
+//                 issue_priority_name,
+//                 Task.child_description,
+//                 issue_components,
+//                 "",
+//                 "",
+//                 "",
+//                 custom_fields_mapping_store);
+                
+//                 %parent_issue%.labels = Task.fi_labels;
+               
+//             //создание подзадач на ТЦ
+//             for(MyChild curchild in SubTasks){
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", curchild.fi_team);
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//                 string cur_issue_summary = curchild.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+//                 string child_issue = createIssue(
+//                     project_name, 
+//                     parent_issue,  
+//                     curchild.name, 
+//                     cur_issue_summary,
+//                     issue_priority_name, 
+//                     curchild.child_description, 
+//                     issue_components,
+//                     "",
+//                     "",
+//                     "",
+//                     custom_fields_mapping_store);
+                    
+//                     %child_issue%.labels = curchild.fi_labels;
+//             }
+//         }
+//     return true;
+// }
+
+
+
+
+
+
+// string mykey = "FI-5942";
+// %mykey%.type = "Finance Task";
+
+
+
+
+
+
+// if(dayOfWeek(currentDate())!="Sun" && dayOfWeek(currentDate())!="Sat" ){
+//     if(hour(currentDate())==14){
+//         createTasks(CEB, CEB_Child, formatforsummary, "remoteuser",store_MCoE);
+//     }
+//     if(hour(currentDate())==10){
+//         createTasks(CEB_SAP, CEB_SAP_Child, formatforsummary, "remoteuser",store_MCoE);
+//     }
+//     if(hour(currentDate())==9){
+//     runnerLog("8");
+//         for(Store current_store in finance_pilot_stores_test){
+//             createTasks(Perenos, Perenos_Child, formatforsummary, "remoteuser",current_store);
+//         } 
+//     }    
+// } 
+
+
+
+
+
+
+
+
+
+
+
+//подставление компоненты и метросервиса по ключевым словам.
+// string ddd = dayOfWeek(currentDate());
+// runnerLog(dayOfWeek(currentDate()));
+
+// include "ops/OPS_types.sil";
+
+
+
+
+
+// string myJQL = "project = FI AND issuetype in ('Корректировка Доставка', 'Обработка в MMC', 'Проверка Z-отчетов') and 'Предоставление документов (SMR)'  is EMPTY ";
+// string[] sel_issues = selectIssues(myJQL);
+//     for(string mykey in sel_issues){
+//     %mykey%.customfield_13302 = %mykey%.created +"9h";
+//     }
+
+
+
+
+
+
+// string regex_perenos = ".*перен(о|е)с.*оплат(ы|у).*|.*перенести.*(деньги).*";
+// return matches("перенести деньги", regex_perenos);
+
+// string myJQL = "project = FI";
+// string[] sel_issues = selectIssues(myJQL);
+//     for(string mykey in sel_issues){
+//         if(%mykey%.customfield_10702==""){
+           
+//             string issueReporter=getUser(%mykey%.reporter).username;
+//             if(userInGroup("MCC RU - FOL_Project_MSSC_RW", issueReporter)){
+//                 %mykey%.customfield_10702="MCoE (Самара)";
+//                 runnerLog(%mykey%.key);
+//             }
+//         }
+        
+//     }
+// include "main/Stores.sil";
+// string[] array1 = {1,2,3};
+// string[] array2 = {4,5,6};
+// array1 = array1 + array2;
+// // arraysConcat(array1, array2)
+
+// runnerLog(array1);
+// return finance_pilot_stores;
+//  struct Change_data{string[] ch_labels; string ch_type; string ch_fi_team;}
+//  Change_data change_data;
+// string mykey = "FI-9715";
+// string text_t_find = %mykey%.summary +" "+ %mykey%.description;
+// string ended = "(а|ы|е|ой|я|ем|и|ю|у|ом|ый|ая|ые|ого|ыый)";
+// string regex_avance = "ао_?\\s.*|.*[Аа]вансов"+ended+"\\s.*.*отч(е|ё)т"+ended+"?.*|.*зар(а|о)ботн"+ended+"\\s.*.*плата"+ended+"?\\s.*|.*зарплат"+ended+"?\\s.*|.*депонент"+ended+"?\\s.*|.*выдать д/с\\s.*|.*внести д/с\\s.*|.*пко\\s.*|.*рко\\s.*";
+// string regex_pl = ".*pl\\s.*|.*расшифровать\\s.*|.*детализировать\\s.*";
+// string regex_balance = ".*баланс.*|.*остаток.*";
+// string regex_act = ".*(акт|скан)"+ended+"?.*сверк"+ended+"?\\s.*|.*сверк"+ended+"? с клиентом.*";
+// string regex_perenos = ".*[Пп]ерен(о|е)с.*(оплат(ы|у)|д\\/?с|денег).*|.*(пере|раз)нес.*ден(ги|ежн).*";
+// string regex_vyrav = ".*выр(а|о)вн(ивание|ять|ить).*";
+// number matchregex = 0;
+// string[] regexes = {
+//     regex_avance,regex_pl,regex_balance,regex_act,regex_perenos,regex_vyrav
+// };
+// string[] garbage_array = {".",",","!","?",";",":","\r","\n","_","  ","  "};
+// for(string current_garbage in garbage_array){
+//     text_t_find = replace(text_t_find,current_garbage, " ");
+// }
+// for(string current_regex in regexes){
+//     if (matches(toLower(text_t_find), current_regex)){
+//         break;
+//     }
+//     matchregex += 1;
+// }
+// switch(matchregex){
+//     case 0:change_data = {"Авансовый_отчёт","Expenses","T&E and Petty Cash"};
+//     break;
+//     case 1:change_data = {{"PL"},"Finance Task","Financial Support"};
+//     break;
+//     case 2:change_data = {{"Баланс"},"Finance Task","Financial Support"};
+//     break;
+//     case 3:change_data = {{"Акт_сверки"},"Finance Task","Financial Support"};
+//     break;
+//     case 4:change_data = {{"Перенос_оплаты"},"Finance Task","Financial Support"};
+//     break;
+//     case 5:change_data = {{"Выравнивание"},"Finance Task","Clearing"};
+//     break;
+// }
+// if(isNotNull(change_data)){
+//     %mykey%.type = change_data.ch_type;
+//     %mykey%.labels = change_data.ch_labels;
+//     %mykey%.customfield_13001 = change_data.ch_fi_team;
+// }
+
+
+
+
+
+
+
+//возврат из ожидания сервиса
+// string myJQL = "project = FI and status =  'Wait Service'";
+// string[] sel_issues = selectIssues(myJQL);
+ 
+//     for(string parent_key in sel_issues){
+//         JIssueLink[] jIssueLinks = getIssueLinksDetail(%parent_key%.key);//массив всех подзадач
+//         for(JIssueLink jIssueLink in jIssueLinks){
+          
+//             if(jIssueLink.description == "causes"){
+//                 string my_linked_issue_key = jIssueLink[4];
+                 
+                  
+//                 if(%my_linked_issue_key%.status == "Resolved"){
+//                     runnerLog(parent_key);
+//                     runnerLog("x");
+//                     autotransition("Ответ получен", %parent_key%.key, true,true,true); 
+//                 } 
+//             }
+//         }
+//     }
+
+
+
+
+
+
+
+
+
+
+// include "main/Stores.sil";
+// include "ursa/fi_functions.sil";
+
+// string project_name = "FI";//
+// string issue_priority_name = "4";//
+// string[] issue_components = {""};
+// function createTasks(MyChild Task,MyChild[] SubTasks, string dateformat,string reporter_group,Store current_store){
+//     string issue_summary = ""; 
+//     string cur_reporter = "";
+//     if(reporter_group == "remoteuser"){
+//                 cur_reporter="remoteuser";
+//                 issue_summary = Task.child_summary + current_store.index + " " + formatDate(currentDate(), dateformat);
+//     }
+//     else{
+//         cur_reporter = getReporter(current_store.storegroup,reporter_group);
+//         issue_summary = Task.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+//     }
+//          if(isNotNull(cur_reporter)){
+           
+//             if(current_store.index == "1202"){
+//                 cur_reporter="anna.mikhaylova";
+//             }
+//             string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", Task.fi_team);
+//             custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//             runnerLog(custom_fields_mapping_store);
+//             string parent_issue = createIssue(
+//                 project_name,
+//                 "",
+//                 Task.name, 
+//                 issue_summary,
+//                 issue_priority_name,
+//                 Task.child_description,
+//                 issue_components,
+//                 "",
+//                 "",
+//                 "",
+//                 custom_fields_mapping_store);
+                
+//                 %parent_issue%.labels = Task.fi_labels;
+               
+//             //создание подзадач на ТЦ
+//             for(MyChild curchild in SubTasks){
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", curchild.fi_team);
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//                 string cur_issue_summary = curchild.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+//                 string child_issue = createIssue(
+//                     project_name, 
+//                     parent_issue,  
+//                     curchild.name, 
+//                     cur_issue_summary,
+//                     issue_priority_name, 
+//                     curchild.child_description, 
+//                     issue_components,
+//                     "",
+//                     "",
+//                     "",
+//                     custom_fields_mapping_store);
+                    
+//                     %child_issue%.labels = curchild.fi_labels;
+//             }
+//         }
+//     return true;
+// };
+
+// if(dayOfWeek(currentDate())!="Sun" && dayOfWeek(currentDate())!="Sat" ){
+//     if(hour(currentDate())==14){
+//         createTasks(CEB, CEB_Child, formatforsummary, "remoteuser",store_MCoE);
+//     }
+//     if(hour(currentDate())==10){
+//         createTasks(CEB_SAP, CEB_SAP_Child, formatforsummary, "remoteuser",store_MCoE);
+//     }    
+// } 
+
+//  for (OPS_type cur_type in ops_types){
+//      if(%mykey%.customfield_13300==cur_type.ops_type){
+//          %mykey%.customfield_10002=cur_type.emailusers;
+//         // %mykey%.customfield_10002="admin-ag";
+//         //sendEmail("it-support@metro-cc.ru", "anatoliy.gundarov@metro-cc.ru", "", "afa", cur_type.ops_type);
+//         %mykey%.summary = cur_type.ops_type;
+//       // summary = "asdfshsfhsh";
+//          break;
+//      }
+//  }
+
+// string mykey = "FI-4333";
+// return admReindexIssue(mykey); 
+//  autotransition("Решить", %mykey%.key, true,true,true); 
+// struct Change_data{string[] ch_labels; string ch_type; string ch_fi_team;}
+// Change_data change_data;
+
+// string mykey = "FI-7333";
+
+// string text_t_find = %mykey%.summary +" "+ %mykey%.description;
+
+
+// string ended = "(а|ы|е|ой|я|ем|и|ю|у|ом|ый|ая|ые|ого)";
+// string regex_avance = ".*ао\\s.*|.*авансов"+ended+"\\s.*.*отч(е|ё)т"+ended+"?.*|.*зар(а|о)ботн"+ended+"\\s.*.*плата"+ended+"?\\s.*|.*зарплат"+ended+"?\\s.*|.*депонент"+ended+"?\\s.*|.*выдать д/с\\s.*|.*внести д/с\\s.*|.*пко\\s.*|.*рко\\s.*";
+// string regex_pl = ".*pl\\s.*|.*расшифровать\\s.*|.*детализировать\\s.*";
+// string regex_balance = ".*баланс.*|.*остаток.*";
+// string regex_act = ".*(акт|скан)"+ended+"?.*сверк"+ended+"?\\s.*|.*сверк"+ended+"? с клиентом.*";
+// string regex_perenos = ".*перен(о|е)с.*(оплат(ы|у)|д\\/?с|денег).*|.*(пере|раз)нес.*(ден(ги|ежн)|платеж).*";
+// string regex_vyrav = ".*(вы|с)р(а|о)вн(ивани(е|я)|ять|ить).*";
+// string regex_finance = ".*FI-[0-9]{1,6}.*";
+
+// number matchregex = 0;
+// string[] regexes = {
+//     regex_avance,regex_pl,regex_balance,regex_act,regex_perenos,regex_vyrav
+// };
+// string[] garbage_array = {".",",","!","?",";",":","\r","\n","_","  ","  "};
+// for(string current_garbage in garbage_array){
+//     text_t_find = replace(text_t_find,current_garbage, " ");
+// }
+// for(string current_regex in regexes){
+//     if (matches(toLower(text_t_find), current_regex)){
+//         break;
+//     }
+//     matchregex += 1;
+// }
+// switch(matchregex){
+//     case 0:change_data = {"Авансовый_отчёт","Expenses","T&E and Petty Cash"};
+//     break;
+//     case 1:change_data = {{"PL"},"Finance Task","Financial Support"};
+//     break;
+//     case 2:change_data = {{"Баланс"},"Finance Task","Financial Support"};
+//     break;
+//     case 3:change_data = {{"Акт_сверки"},"Finance Task","Financial Support"};
+//     break;
+//     case 4:change_data = {{"Перенос_оплаты"},"Finance Task","Financial Support"};
+//     break;
+//     case 5:change_data = {{"Выравнивание"},"Finance Task","Clearing"};
+//     break;
+// }
+
+// if(isNotNull(change_data)){
+//     runnerLog(change_data);
+//     %mykey%.type = change_data.ch_type;
+//     %mykey%.labels = change_data.ch_labels;
+//     %mykey%.customfield_13001 = change_data.ch_fi_team;
+// }
+
+
+// include "main/Stores.sil";
+// include "ursa/fi_functions.sil";
+
+// string project_name = "FI";//
+// string issue_priority_name = "4";//
+// string[] issue_components = {""};
+
+// function createTasks(MyChild Task,MyChild[] SubTasks, string dateformat,string reporter_group,Store current_store){
+//     string issue_summary = ""; 
+//     string cur_reporter = "";
+//     if(reporter_group == "remoteuser"){
+//                 cur_reporter="remoteuser";
+//                  runnerLog("2");
+//                  issue_summary = Task.child_summary + current_store.index + " " + formatDate(currentDate(), dateformat);
+//     }
+//     else{
+//         cur_reporter = getReporter(current_store.storegroup,reporter_group);
+//         issue_summary = Task.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+//     }
+    
+//     runnerLog("0");
+//     runnerLog(cur_reporter);
+//         if(isNotNull(cur_reporter)){
+//             runnerLog("1");
+//             if(current_store.index == "1202"){
+//                 cur_reporter="anna.mikhaylova";
+//             }
+            
+            
+//             string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", Task.fi_team);
+//             custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//             runnerLog(custom_fields_mapping_store);
+//             string parent_issue = createIssue(
+//                 project_name,
+//                 "",
+//                 Task.name, 
+//                 issue_summary,
+//                 issue_priority_name,
+//                 Task.child_description,
+//                 issue_components,
+//                 "",
+//                 "",
+//                 "",
+//                 custom_fields_mapping_store);
+                
+//                 %parent_issue%.labels = Task.fi_labels;
+               
+//             //создание подзадач на ТЦ
+//             for(MyChild curchild in SubTasks){
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", curchild.fi_team);
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//                 string cur_issue_summary = curchild.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+//                 string child_issue = createIssue(
+//                     project_name, 
+//                     parent_issue,  
+//                     curchild.name, 
+//                     cur_issue_summary,
+//                     issue_priority_name, 
+//                     curchild.child_description, 
+//                     issue_components,
+//                     "",
+//                     "",
+//                     "",
+//                     custom_fields_mapping_store);
+                    
+//                     %child_issue%.labels = curchild.fi_labels;
+//             }
+//         }
+//     return true;
+// };
+
+
+//      createTasks(CEB_SAP, CEB_SAP_Child, formatforsummary, "remoteuser",store_MCoE);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// if(day(currentDate())!=5 && day(currentDate())!=7 && hour(currentDate())==17){
+//     runnerLog("OK");    
+// } 
+
+
+
+
+
+
+// string myJQL = "project = FI AND issuetype = 'Finance Task' AND status = Resolved";
+// string[] sel_issues = selectIssues(myJQL);
+// for(string mykey in sel_issues){
+//     JComment mycomment = getLastComment(%mykey%.key);
+//     if(mycomment.author==%mykey%.reporter){
+//         runnerLog(mykey);
+//     } 
+// }
+
+// string answer = "";
+// string myJQL = "project = CMREQ AND issuetype = 'Credit Limits' AND status not in (Done, Rejected) AND text ~ 'Cash&Carry prepayment'";
+// string[] sel_issues = selectIssues(myJQL);
+// for(string mykey in sel_issues){
+//     number store_start = matchEnd(%mykey%.description, "ТЦ №")+2;
+//     number store_stop = matchStart(%mykey%.description, "CFM Cu_No")-5;
+//     number clientnum_start = matchEnd(%mykey%.description, "номер карты клиента")+3;
+//     number clientnum_stop = matchStart(%mykey%.description, "Legal customer name")-5;
+//     number client_leg_start = matchEnd(%mykey%.description, "название компании")+2;
+//     number client_leg_stop = matchStart(%mykey%.description, "Logo name")-5;
+//     number client_start = matchEnd(%mykey%.description, "Фактическое название")+2;
+//     number client_stop = matchStart(%mykey%.description, "E-mail")-5;
+//     number email_start = matchEnd(%mykey%.description, "Электронная почта")+2;
+//     number email_stop = matchStart(%mykey%.description, "INN")-5;
+//     number inn_start = matchEnd(%mykey%.description, "ИНН")+2;
+//     number inn_stop = matchStart(%mykey%.description, "KPP")-5;
+//     number kpp_start = matchEnd(%mykey%.description, "КПП")+2;
+//     number kpp_stop = matchStart(%mykey%.description, "Requested Credit Limit")-5;
+    
+//     string mystore = substring(%mykey%.description, store_start, store_stop);
+//     string clientnum = substring(%mykey%.description, clientnum_start, clientnum_stop);
+//     string client_leg = substring(%mykey%.description, client_leg_start, client_leg_stop);
+//     string client = substring(%mykey%.description, client_start, client_stop);
+//     string email = substring(%mykey%.description, email_start, email_stop);
+//     string inn = substring(%mykey%.description, inn_start, inn_stop);
+//     string kpp = substring(%mykey%.description, kpp_start, kpp_stop);
+
+//     answer += mystore+","+clientnum+","+client_leg+","+client+","+email+","+inn+","+kpp+","+%mykey%.created+","+%mykey%.updated+"\r\n";
+// }
+
+// sendEmail("it-support@metro-cc.ru", {"anna.perova@metro-cc.ru"},{"anatoliy.gundarov@metro-cc.ru"},"test",answer);
+
+
+
+
+
+
+
+
+
+
+
+
+
+// include "ursa/childs";
+// include "main/Stores.sil";
+// include "ursa/fi_functions.sil";
+// JUser usr = ""
+// string mykey = "UREQ-1270";
+// runnerLog(%mykey%.customfield_13113);
+
+
+
+// string[] selectedissues = selectIssues("project = 'METRO - MSSC Finance' AND issuetype != 'Проверка Z-отчетов' and created >= startOfWeek() ");
+// for (string cur_is in selectedissues){
+//     %cur_is%.customfield_13002 = {""};
+//     runnerLog(%cur_is%.key);
+// }
+
+// string mykey = "FI-4333";
+// %mykey%.type ="Expenses";
+// return %mykey%.type;
+
+// include "main/stores.sil";
+// string[] store_list = {};
+// for(Store cur_store in all_stores){
+//     // runnerLog(cur_store.name); 
+//   store_list= addElement(store_list, cur_store.name);
+// }
+// string ddd = store_list;
+// runnerLog(store_list); 
+
+
+// string [] groups2 = {"MCC RU - Information Services"};
+
+// string [] groups4 = {"jira-isdivision"};
+
+// string [] listr2 = usersInGroups(groups2);
+
+
+// string [] listr4 = usersInGroups(groups4);
+
+// string [] allu = arrayDiff(allu, listr4);
+// runnerLog(allu);
+// runnerLog(size(allu));
+
+// for(Store cur_store in all_stores){
+// string [] groups = {cur_store.storegroup,"MCC RU MOW - Store Managers"};
+//  string [] user_list = usersInGroups(groups);
+ 
+//  if(size(user_list)>0){
+                
+//                     for(string current_user in user_list){
+//                         if(getUserDirectoryName(current_user) != "GroupMailboxes"){// поиск гпя
+//                                 usr = getUser(current_user);
+//                                 break;
+//                             }
+                        
+//                     }   
+                    
+//                 }
+
+
+//     runnerLog(cur_store.index);
+//     runnerLog(usr.email);
+   
+// }
+
+
+
+// MyChild[] new_Tasks;
+// boolean isDone = isSubtaskDone("FI-2980");
+// if(isDone){
+//     new_Tasks = SAP_4;
+// }
+
+
+// include "bmpl/BMPL_types.sil";
+// // string bmpl_type = customfield_13113;
+// for (BMPL_type cur_type in bmpl_types){
+//     string [] sendTo={}; 
+//     string myJQL = "project = BMPL and status =  Open AND issuetype = 'BMPL Task' AND 'BMPL Type' = '"+cur_type.bmpl_type+"' AND updated <= -3d ORDER BY created DESC";
+//     string[] outofdate = selectIssues(myJQL);
+//     if(arraySize(outofdate)!=0){
+//         sendTo = cur_type.emailusers;
+//         string head = "<head><style>#customers {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;border-collapse: collapse;}#customers td, #customers th {border: 1px solid #ddd;padding: 5px;}#customers th {padding-top: 8px;padding-bottom: 8px;text-align: left;background-color: #214f81;color: white;}</style></head>";
+//         string sendbody=head+"<table id='customers'><th>Задача</th><th>Последнее обновление</th>";
+//         string last_update ="";
+//         string format = "dd.MM.yyyy HH:mm:ss z";
+//         for(string curIsuue in outofdate){
+//             JComment cmt = getLastComment(curIsuue);
+//             if(!cmt.updated==""){
+//                 last_update = formatDate(cmt.updated, format);
+//             }
+//             else{
+//                 last_update = formatDate(%curIsuue%.updated, format);
+//             }
+//             sendbody+="<tr><td><a href='"+getIssueURL(curIsuue)+"'>"+%curIsuue%.key+"</a></td><td> "+ last_update +"</td></tr>";
+//         }
+//         string tosend_message = "<html><body><img src='https://jira.r4.madm.net/s/-8afm4w/73016/b5a7941b5c073eb6643972c2b899996a/_/images/64jira.png' alt='JIRA'><H2 style='color:#214f81;'>Задачи обновлённые более 3х дней назад<br>"+cur_type+"</H2><H3 style='color:#214f81'>Всего задач:" +arraySize(outofdate) + "</H3>"+sendbody+"</table></body></html>";
+//         sendHtmlEmail("it-support", sendTo, {"anatoliy.gundarov@metro-cc.ru"}, "более 3х дней", tosend_message);
+//         // sendHtmlEmail("it-support",  {"anatoliy.gundarov@metro-cc.ru"}, {"anatoliy.gundarov@metro-cc.ru"}, "более 3х дней", tosend_message);
+//     }
+// }
+
+
+//Задачи для обучения
+// include "main/Stores.sil";
+// include "ursa/fi_functions.sil";
+
+// string project_name = "FI";//
+// string issue_priority_name = "4";//
+// string[] issue_components = {""};
+
+// function createTasks(MyChild Task,MyChild[] SubTasks, string dateformat,string reporter_group,Store current_store){
+//     string issue_summary = Task.child_summary + current_store.index + " " + formatDate(report_date, dateformat); 
+//     string cur_reporter = reporter_group;
+//         if(isNotNull(cur_reporter)){
+//             string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", Task.fi_team);
+//             custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//             runnerLog(custom_fields_mapping_store);
+//             string parent_issue = createIssue(
+//                 project_name,
+//                 "",
+//                 Task.name, 
+//                 issue_summary,
+//                 issue_priority_name,
+//                 Task.child_description,
+//                 issue_components,
+//                 "",
+//                 "",
+//                 "",
+//                 custom_fields_mapping_store);
+//                 if(%parent_issue%.description=="Продажа вторсырья"){
+//                     %parent_issue%.labels = {"Вторсырьё"};
+//                 }
+//             //создание подзадач на ТЦ
+//             for(MyChild curchild in SubTasks){
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", curchild.fi_team);
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//                 string cur_issue_summary = curchild.child_summary + current_store.index + " " + formatDate(report_date, dateformat);
+//                 string child_issue = createIssue(
+//                     project_name, 
+//                     parent_issue,  
+//                     curchild.name, 
+//                     cur_issue_summary,
+//                     issue_priority_name, 
+//                     curchild.child_description, 
+//                     issue_components,
+//                     "",
+//                     "",
+//                     "",
+//                     custom_fields_mapping_store
+//                 );
+//             }
+//         }
+//     return true;
+// };
+
+// //создание задачи на опредедённую таймзону
+// for(Store current_store in finance_pilot_stores_test){
+//     createTasks(Revenue, MMC_Childs, formatforsummary, "anna.perova",current_store);
+// }
+
+
+
+
+// string[] selectedissues = selectIssues("project = FI AND issuetype = 'Проверка Z-отчетов' AND created  >= -2d");
+// for(string cur_is in selectedissues){
+//     JFieldChange[] statusChanges = getFieldChanges(cur_is, "status");
+//     date com = statusChanges[0].changeDate;
+//     date cre = %cur_is%.created;
+//     interval sss = com-cre;
+//     string fff = sss;
+//     string hhhh = %cur_is%.customfield_10702 + " " + fff;
+//     runnerLog(hhhh);
+// } 
+
+
+
+
+
+
+
+
+
+
+
+// // string mykey = "IT-125017";
+// string[] mykeys = {"IT-125099","IT-125100","IT-125101","IT-125103","IT-125104","IT-125105","IT-125144","IT-125149","IT-125150","IT-125151","IT-125152","IT-125154","IT-125156","IT-125158","IT-125159","IT-125189","IT-125190","IT-125191","IT-125192","IT-125193","IT-125194","IT-125196","IT-125199","IT-125202","IT-125215","IT-125216","IT-125217","IT-125218","IT-125220","IT-125233","IT-125234","IT-125235","IT-125237","IT-125238","IT-125241","IT-125243","IT-125245","IT-125246","IT-125247","IT-125248","IT-125249","IT-125250","IT-125251","IT-125252","IT-125254","IT-125256","IT-125258","IT-125259","IT-125260","IT-125261","IT-125265","IT-125266","IT-125267","IT-125272","IT-125273","IT-125280","IT-125281","IT-125296","IT-125297","IT-125298","IT-125299","IT-125300","IT-125301","IT-125306","IT-125350","IT-125351","IT-125352","IT-125353","IT-125354","IT-125355","IT-125360","IT-125362","IT-125363","IT-125364","IT-125365","IT-125366","IT-125369","IT-125381"};
+// // string[] args = {mykey, "IT"}; //assume we're in the context of an issue
+// // interval varInterval = "15s";
+// // runJobIn("script.sil", args, varInterval);
+
+// for(string myKey in mykeys){
+//     if(%myKey%.issueType=="Подзадача"){
+//         deleteIssue(%myKey%.key);
+//         runnerLog(%myKey%.key);
+//     }
+    
+// }
+
+
+
+// runnerLog(isSubtaskDone(mykey));
+// runnerLog(getTasksToCreate(mykey));
+// runnerLog(isTasksToCreateExist(mykey));
+// if(isSubtaskDone(mykey) && isNotNull(getTasksToCreate(mykey)) && isTasksToCreateExist(mykey)!=true){
+//     return "ok";
+// }
+// string mycom = "Воспользуйтесь ссылкой [Сброс пароля в приложения |https://confluence.r4.madm.net/pages/viewpage.action?pageId=13173768]\r\nЕсли статья не подходит, ответьте на письмо или на портале";
+//     addComment(mykey, "remoteuser", mycom );
+//     %mykey%.resolution = "Инструкция предоставлена";
+//     autotransition("Решить", mykey, true,true,true); 
+//     admReindexIssue(mykey);
+
+
+// admReindexIssue("IT-122141");
+// return deleteIssue("IT-122041");
+// string project_name = "FI";//
+// string issue_priority_name = "4";//
+// string parent_issue_type_name = "Store Revenue";//поменять на актуальный тип задачи
+// string issue_summary_begin = "Выручка ТЦ ";
+// string[] issue_components = {""};
+// string dept_group = "MCC RU - Cashier Supervisor";
+// string MMCGroup = "MMC Group";
+// string SAPFIGroup= "SAP FI Group";
+// string SAPGroupLeader= "SAP Group Leader";
+
+// string[] custom_fields_mapping_toChange = "reporter|reporter_toChange|FI Команда|Group_toChange|Issue Location";
+
+// if(day(currentDate())==1){
+//   issue_priority_name="1";
+// }
+// string parent_issue_description = "Заявка выручка";
+// MyChild[] allchilds = {Mcc,Delivery,Z,Reg,Cor};
+
+// //создание задачи на опредедённую таймзону
+// for(Store current_store in finance_pilot_stores){
+//     if(current_store.timezone == timezone){
+//         string issue_summary = issue_summary_begin + current_store.index + " " + formatDate(report_date, format); 
+//         string cur_reporter = getReporter(current_store.storegroup,dept_group);
+//         if(isNotNull(cur_reporter)){
+//             string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", SAPGroupLeader);
+//             custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//             runnerLog(custom_fields_mapping_store);
+//             string parent_issue = createIssue(
+//                 project_name,
+//                 "",
+//                 parent_issue_type_name, 
+//                 issue_summary,
+//                 issue_priority_name,
+//                 parent_issue_description,
+//                 issue_components,
+//                 "",
+//                 "",
+//                 "",
+//                 custom_fields_mapping_store);
+//             //создание подзадач на ТЦ
+//             for(MyChild curchild in MMC_Childs){
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", MMCGroup);
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//                 string cur_issue_summary = curchild.child_summary + current_store.index + " " + formatDate(report_date, format);
+//                 string child_issue = createIssue(
+//                     project_name, 
+//                     parent_issue,  
+//                     curchild.name, 
+//                     cur_issue_summary,
+//                     issue_priority_name, 
+//                     curchild.child_description, 
+//                     issue_components,
+//                     "",
+//                     "",
+//                     "",
+//                     custom_fields_mapping_store
+//                 );
+//             }
+//         }
+//     }
+// // }
+// struct serverInfo{
+//     string Connection;
+//   }
+ 
+//Create request
+// HttpRequest request;
+// HttpHeader hdrValue = httpGetHeader("Content-Type");
+// request.headers += hdrValue;
+ 
+// //Post data and get response
+
+// return httpGet("http://ya.ru", request);
+
+
+
+
+
+ 
+//Post data and get response
+
+
+
+
+
+
+
+
+
+
+
+
+// interval hhh= "1h 120m 120s";
+
+// string aaa = hhh["HOUR"]*60+hhh["MINUTE"];
+
+// include "ursa/childs";
+// include "main/Stores.sil";
+// include "ursa/fi_functions.sil";
+
+// string project_name = "FI";//
+// string issue_priority_name = "4";//
+// string[] issue_components = {""};
+
+
+// function createTasks(MyChild Task,MyChild[] SubTasks, string dateformat,string reporter_group,Store current_store){
+//     string issue_summary = Task.child_summary + current_store.index + " " + formatDate(expenses_date, dateformat); 
+//     string cur_reporter = getReporter(current_store.storegroup,reporter_group);
+//         if(isNotNull(cur_reporter)){
+//             string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", Task.fi_team);
+//             custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//             runnerLog(custom_fields_mapping_store);
+//             string parent_issue = createIssue(
+//                 project_name,
+//                 "",
+//                 Task.name, 
+//                 issue_summary,
+//                 issue_priority_name,
+//                 Task.child_description,
+//                 issue_components,
+//                 "",
+//                 "",
+//                 "",
+//                 custom_fields_mapping_store);
+//             //создание подзадач на ТЦ
+//             for(MyChild curchild in SubTasks){
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_toChange+current_store.name, "Group_toChange", curchild.fi_team);
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", cur_reporter);
+//                 string cur_issue_summary = curchild.child_summary + current_store.index + " " + formatDate(expenses_date, dateformat);
+//                 string child_issue = createIssue(
+//                     project_name, 
+//                     parent_issue,  
+//                     curchild.name, 
+//                     cur_issue_summary,
+//                     issue_priority_name, 
+//                     curchild.child_description, 
+//                     issue_components,
+//                     "",
+//                     "",
+//                     "",
+//                     custom_fields_mapping_store
+//                 );
+//             }
+//         }
+//     return true;
+// };
+
+
+// //создание задачи на опредедённую таймзону
+// for(Store current_store in finance_pilot_stores){
+//     runnerLog(current_store);
+//      runnerLog(current_store.timezone);
+//      runnerLog(timezone);
+//     if(current_store.timezone == timezone){
+//         runnerLog("2");
+//         createTasks(Expenses, Expenses_Childs, formatForSummaryMonth, adminspec_group,current_store);
+//         createTasks(Arenda, Arenda_Childs, formatForSummaryMonth, adminspec_group,current_store);
+//         createTasks(Recycled, "", formatForSummaryMonth, adminspec_group,current_store);
+//         createTasks(Revenue, MMC_Childs, formatforsummary, adminspec_group,current_store);
+//     }
+// }
+
+// function createTasksAfterResolving(string TaskKey){
+
+// number notresolved = 0;
+//     if(isNotNull(%TaskKey%.parent)){
+//         JIssueLink[] jIssueLinks = getIssueLinksDetail(%TaskKey%.parent.key);
+        
+//         for(JIssueLink curLinkedIssue in jIssueLinks){
+//             string curIssuename = curLinkedIssue.issue;
+//             if(!%curIssuename%.status=="Resolved" && curLinkedIssue.name=="jira_subtask_link"){//проверка, что связанные - подзадачи и подсчёт нерешенных
+//                 notresolved ++;
+//             }
+//         }
+        
+        
+//     }
+//     return true;
+// }
+
+
+
+// string mykey =  "FI-2880";
+
+// string parent_issue = %mykey%.parent;
+// string current_store_number= chop(%mykey%.customfield_10702,4);
+// string parentlocation = %mykey%.customfield_10702;
+// string project_name = %mykey%.project;
+// string parent_reporter = %mykey%.reporter;
+// string issue_priority_name =  %mykey%.priority;
+// string fi_team =  %mykey%.customfield_13001;
+// string issue_components={""};
+// date myCDate =  %mykey%.created;
+// date sapIssueDate = (hour(myCDate)==0) || (hour(myCDate)==1) ? myCDate-"1d" : myCDate;
+
+
+
+// MyChild Cur_Task;
+
+// switch (%mykey%.type){
+//     case "Списание материалов":
+//     Cur_Task = MaterialAct;
+//     runnerLog(%mykey%.type);
+//     break;
+//     case "Расход ДТ":
+//     Cur_Task = DtAct;
+//     runnerLog(%mykey%.type);
+//     break;
+//     case "Счетчики арендаторов":
+//     if(%mykey%.resolution!="Отклонён"){
+//         Cur_Task = ArendaUPD;
+//         runnerLog(%mykey%.type);
+//     }
+    
+//     break;
+// }
+// if(isNotNull(Cur_Task)){
+//     string custom_fields_mapping_store = replace(custom_fields_mapping_toChange+parentlocation, "Group_toChange", Cur_Task.fi_team);
+// custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", parent_reporter);
+// string cur_issue_summary = Cur_Task.child_summary + current_store_number + " " + formatDate(sapIssueDate, formatForSummaryMonth);
+//     string child_issue = createIssue(
+//                     project_name, 
+//                     parent_issue,  
+//                     Cur_Task.name, 
+//                     cur_issue_summary,
+//                     issue_priority_name, 
+//                     Cur_Task.child_description, 
+//                     issue_components,
+//                     "",
+//                     "",
+//                     "",
+//                     custom_fields_mapping_store
+//                 );
+// }
+
+
+
+
+
+// number notresolved = 0;
+
+// if(isNotNull(parent)){//если есть родительская задача
+//     JIssueLink[] jIssueLinks = getIssueLinksDetail(%parent%.key);//массив всех подзадач
+   
+//     for(JIssueLink curLinkedIssue in jIssueLinks){
+//         string curIssuename = curLinkedIssue.issue;
+//         if(!%curIssuename%.status=="Resolved" && curLinkedIssue.name=="jira_subtask_link"){//проверка, что связанные - подзадачи и подсчёт нерешенных
+//             notresolved ++;
+//         }
+//     }
+//     if(notresolved==0){
+//         switch(arraySize(subtasks(%parent%.key))){
+//             case 3:
+//             date myCDate =  %parent%.created;
+//           // date sapIssueDate;
+//             date sapIssueDate = (hour(myCDate)==0) || (hour(myCDate)==1) ? myCDate-"1d" : myCDate;
+//             // if(hour(myCDate)==0 || hour(myCDate)==1){
+//             //     sapIssueDate=myCDate-"1d";
+//             // }
+//             // else{
+//             //     sapIssueDate=myCDate;
+//             // }
+           
+//             string current_store_number= chop(%parent%.key.%mykey%.customfield_10702,4);
+//             string parentlocation = %parent%.key.%mykey%.customfield_10702;
+//             string project_name = %parent%.key.project;
+//             string parent_issue = %parent%.key;
+//             string parent_reporter = %parent%.key.reporter;
+//             string issue_priority_name =  %parent%.key.priority;
+//             string issue_components={""};
+            
+//             for(MyChild curchild in SAP_Childs){
+//                 string custom_fields_mapping_store = replace(custom_fields_mapping_toChange + parentlocation, "Group_toChange", curchild.fi_team);
+//                 custom_fields_mapping_store = replace(custom_fields_mapping_store, "reporter_toChange", parent_reporter);
+//                 string cur_issue_summary = curchild.child_summary + current_store_number + " " + formatDate(sapIssueDate, formatforsummary);
+//                 string child_issue = createIssue(
+//                 project_name, 
+//                 parent_issue,  
+//                 curchild.name, 
+//                 cur_issue_summary,
+//                 issue_priority_name,
+//                 curchild.child_description,
+//                 issue_components,
+//                 "",
+//                 "",
+//                 "",
+//                 custom_fields_mapping_store);
+//             }
+//             break;
+            
+//             case 5:
+//             autotransition("Начать работу", %parent%.key, true,true,true); 
+//             autotransition("Отправить на подтверждение", %parent%.key, true,true,true); 
+//           //  addComment(%parent%.key,"admin-ag","Решено 5 подзадач");
+//             break;
+//         }
+//     } 
+//     else{
+//       // addComment(%parent%.key,"admin-ag","Есть нерешенные задачи в количестве: "+notresolved+"шт.");
+//     }
+   
+//   // autotransition("Решить", %parent%.key, true,true,true); 
+    
+   
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  include "main/stores.sil";//подключение структуры регионов
+// include "main/phone_structure.sil";
+// include "ursa/childs";
+// description=replace(description, "\r\n\r\n", "\r\n");
+// string forWho=getUser(reporter).username;
+// string issueReporter=getUser(reporter).username;
+// if (isNotNull(customfield_13004)){
+//     forWho=getUser(customfield_13004).username;
+// }
+// if (forWho!=issueReporter){
+//     customfield_10002+=forWho;
+//     watchers+=forWho;
+// } else forWho=issueReporter;
+// string[] domains = {"r4 domain LDAP","mgl domain LDAP"};
+// for (string cur_domain in domains){
+//     string userPath=ldapUserAttr("DN", "(sAMAccountName="+forWho+")",cur_domain);
+//     if (isNotNull(userPath)){ 
+//         switch(cur_domain){
+//             case "r4 domain LDAP":
+//             string my_transition = "DM APPROVE";
+//             break;
+//             case "mgl domain LDAP":
+//             my_transition ="MGL IT";
+//             break;
+//         }
+//         description="|*User Name*|"+forWho+"|\r\n|*Department*|"+ldapUserAttr("department", "(sAMAccountName=" 
+//         + forWho + ")",cur_domain)+"|\r\n|*Position*|"+ldapUserAttr("metroJobTitle", "(sAMAccountName=" 
+//         + forWho + ")",cur_domain)+"|\r\n"+description;
+//         autotransition(my_transition, key, true,true,true);
+//     }
+// }
+
+// string[] custom_fields_mapping_SAPGroupLeader = "reporter|cashier.store1342|FI Команда|SAP Group Leader|Issue Location";
+// string custom_fields_mapping_store = replace(custom_fields_mapping_SAPGroupLeader, "cashier.store1342", "cashier.store1343");
+
+// runnerLog(custom_fields_mapping_store);
+
+
+
+
+
+
+
+
+
+//  string [] groups = {"MCC RU VOG - Store1309","MCC RU - Dairy"};
+//  string [] user_list = usersInGroups(groups);
+//  return user_list;
+//return " до 09:00 утра по вашему часовому поясу.\r\n(ВАЖНО!При ответе просьба не менять тему письма)";
+// 
+// string ddd = "на принтер не работает";
+
+
+//  string[] dddd = split(ddd," ");
+//  string[] array1 = {" "};
+//  string[] ddddd = arrayDiff(dddd, array1);
+
+// runnerLog(ddddd);
+
+
+//______________________________
+
+// ____________________________
+
+// string[] results = sql("JIRA_fls", "select TO_CHAR(SUBSTR(DESCRIPTION, 0,1000)) FROM JIRAISSUE where TO_CHAR(SUBSTR(DESCRIPTION, 0,1000)) like '%принтер%'");
+// string[] results = sql("JIRA_fls", "select * FROM JIRA_AI where DESCRIPTION like '%printer%'");
+// string aaaa = results[0];
+// runnerLog(results);
+// string format = "yyyyMMdd";
+// string formatfordescription = "dd.MM.yyyy";
+// string minus_day="0d";
+// string zreport_description = "Добрый день! Просьба предоставить файл с данными Z-отчетов ответом на это письмо datetochange до 09:00 утра по вашему часовому поясу.\r\n(ВАЖНО! При ответе просьба не менять тему письма)";
+ 
+// string timezone="";
+// switch(hour(currentDate())){//определение таймзоны
+//     case 19:
+//     timezone = "GMT+8";  break;
+//     case 20:
+//     timezone = "GMT+7";    break;
+//     case 21:
+//     timezone = "GMT+6";    break;
+//     case 22:
+//     timezone = "GMT+5";    break;
+//     case 23:
+//     timezone = "GMT+4";    break;
+//     case 0:
+//     timezone = "GMT+3";minus_day = "1d";    break;
+//     case 1:
+//     timezone = "GMT+2";minus_day = "1d";    break;
+//     default:
+//     timezone = "GMT+3";minus_day = "1d";
+// }
+// date report_date = currentDate()-minus_day;
+// date zreport_date = report_date+"1d";
+
+// string cparent_issue_description = replace(zreport_description, "datetochange", formatDate(zreport_date, formatfordescription));
+
+// string mykey="BMPL-13";
+// string[] mykey2=%mykey%.customfield_10200;
+// runnerLog(mykey2);
+
+// admActivateUser("a.arkhipova");
+
+// string reg = ".*Android.*";
+// if(contains(%mykey%.description,"Android")){
+//     %mykey%.components = {"User Rights (Access)","internet"};
+// }
+
+// runnerLog(cparent_issue_description);
+
+
+
+
+// string myKey = "FI-2737";
+// date myCDate = %myKey%.created;
+// date sapIssueDate;
+// if(hour(myCDate)==0 || hour(myCDate)==0){
+//     sapIssueDate=myCDate-"1d";
+// }
+// else{
+//     sapIssueDate=myCDate;
+// }
+// runnerLog(sapIssueDate);
+
+
+// runnerLog(aaaa);
+
+
+
+
+
+
+
+
+
+
+
+//  string mykey = "TEST-976";
+//  JUser mail_user = getUser(%mykey%.assignee);
+//     string assignee_mail = mail_user.email;
+    
+//     sendEmail("it-support@metro-cc.ru", {assignee_mail},{"anatoliy.gundarov@metro-cc.ru"}, %mykey%.key+ " прокомментирована и вернулась в работу", getIssueURL(%mykey%.key));
+//     runnerLog(mail_user);
+
+
+
+
+
+// string mykey = "IT-110220";
+// string[] issueReporter=getUser(%mykey%.reporter).username; 
+// runnerLog(issueReporter);
+
+
+// string myJQL = "project = CMREQ AND status = 'Contract management group' AND updated <= -3d ORDER BY updated ASC";
+// string[] outofdate = selectIssues(myJQL);
+// string head = "<head><style>#customers {font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;border-collapse: collapse;}#customers td, #customers th {border: 1px solid #ddd;padding: 5px;}#customers th {padding-top: 8px;padding-bottom: 8px;text-align: left;background-color: #214f81;color: white;}</style></head>";
+// string sendbody=head+"<table id='customers'><th>Задача</th><th>Последнее обновление</th>";
+// string last_update ="";
+// string format = "dd.MM.yyyy  HH:mm:ss z";
+// for(string curIsuue in outofdate){
+//     JComment cmt = getLastComment(curIsuue);
+//     if(!cmt.updated==""){
+//         last_update = formatDate(cmt.updated, format);
+//     }
+//     else{
+//         last_update = formatDate(%curIsuue%.updated, format);
+//     }
+//     sendbody+="<tr><td><a href='"+getIssueURL(curIsuue)+"'>"+%curIsuue%.key+"</a></td><td> "+ last_update +"</td></tr>";
+// }
+// string tosend_message = "<html><body><div style='float:left'><img alt='JIRA' style='max-width:20px;max-height:20px;' src='https://jira.r4.madm.net/s/-8afm4w/73016/b5a7941b5c073eb6643972c2b899996a/_/images/64jira.png'></div><div><H2 style='color:#214f81;'>Задачи обновлённые более 3х дней назад</H2></div><H3 style='color:#214f81'>Всего задач:" +arraySize(outofdate) + "</H3>"+sendbody+"</table></body></html>";
+// sendHtmlEmail("it-support", {"anatoliy.gundarov@metro-cc.ru"},{""}, "более 3х дней", tosend_message);
+
+
+// cfm@metro-cc.ru
+
+
+// string[] custom_fields_mapping_SAPGroup = "reporter|anatoliy.gundarov|Issue Location";
+// string mykey = "TEST-978";
+// number notresolved = 0;
+// JIssueLink[] jIssueLinks = getIssueLinksDetail(mykey);
+// for(JIssueLink curLinkedIssue in jIssueLinks){
+//     string curIssuename = curLinkedIssue.issue;
+//     if(!%curIssuename%.status=="Resolved"){
+//         notresolved +=1;
+//         runnerLog(curLinkedIssue);
+//     }
+// }
+// if(notresolved==0 && arraySize(jIssueLinks)==2){
+// string current_store_number= "1023";
+// string parentlocation = %mykey%.customfield_10702;
+// string project_name = %mykey%.project;
+// string parent_issue = %mykey%.key;
+// string custom_fields_mapping_store = custom_fields_mapping_SAPGroup + parentlocation;
+// string issue_priority_name = %mykey%.priority;
+// string issue_components={""};
+//     for(MyChild curchild in SAP_Childs){
+    // runnerLog (project_name);
+    // runnerLog (parent_issue);
+    // runnerLog (custom_fields_mapping_store);
+    // runnerLog (custom_fields_mapping_store);
+    // runnerLog (custom_fields_mapping_store);
+    // runnerLog (custom_fields_mapping_store);
+    // runnerLog (custom_fields_mapping_store);
+    
+//         string child_issue = createIssue(
+//         project_name, 
+//         parent_issue,  
+//         "Подзадача", 
+//         curchild.child_summary + current_store_number + " " + formatDate(currentDate()-"1d", format),
+//             issue_priority_name, 
+//             curchild.child_description,
+//             issue_components,"","","",custom_fields_mapping_store);
+//             runnerLog(child_issue);
+//     }
+    
+
+
+
+
+
+//     return notresolved;
+// }
+// string mykey = "TEST-991";
+// number notresolved = 0;
+// if(isNotNull(%mykey%.parent)){
+//     JIssueLink[] jIssueLinks = getIssueLinksDetail(%mykey%.parent.key);
+//     for(JIssueLink curLinkedIssue in jIssueLinks){
+//         string curIssuename = curLinkedIssue.issue;
+//         if(!%curIssuename%.status=="Resolved"){
+//             notresolved +=1;
+//             runnerLog(curLinkedIssue.name);
+//         }
+//     }
+//     if(notresolved==3 && arraySize(jIssueLinks)==3){
+    
+//     runnerLog("Решено");
+//     //autotransition("Решить", %mykey%.parent.key, true,true,true); 
+//     }
+//     runnerLog(notresolved);
+// }
+
+// number notresolved = 0;
+
+// JIssueLink[] PLinks = getIssueLinksDetail(mykey);
+
+
+// добавление файла в задачу
+// if(fileExists("C:/install/forBelov/IssueStatistics.txt")){
+//     runnerLog("The file exists!");
+//     string path_to_file;
+//     string issue;
+//     path_to_file = "C:/install/forBelov/IssueStatistics.txt";
+//     issue = "IT-109752";
+//     attachFile(path_to_file, issue);
+//         addComment(issue, currentUser(), "[^IssueStatistics.txt]");
+// } else {
+//     runnerLog("The file does not exist!");
+// }
+// runnerLog("ddd");
+
+
+
+
+
+// Регулярный выражения для указанных сумм
+// string s1 = "100,25";
+// string REGEX_1 = "[0-9]{1,3},[0-9]{2}";
+// string s2 = "100 500,99";
+// string REGEX_2 = "[0-9]{1,3}\\s[0-9]{3},[0-9]{2}";
+// string s3 = "100 000 000,00";
+// string REGEX_3 = "[0-9]{1,3}\\s[0-9]{3}\\s[0-9]{3},[0-9]{2}";
+
+// if (matches(s1,REGEX_1)){
+//     runnerLog(s1+"\n");
+//     runnerLog(REGEX_1+"\n");
+//     runnerLog("Заебок");
+// }
+// else{
+//     runnerLog("Чёт не заебок");
+// }
+// if (matches(s2,REGEX_2)){
+//     runnerLog(s2+"\n");
+//     runnerLog(REGEX_2+"\n");
+//     runnerLog("Заебок");
+// }
+// else{
+//     runnerLog("Чёт не заебок");
+// }
+// if (matches(s3,REGEX_3)){
+//     runnerLog(s3+"\n");
+//     runnerLog(REGEX_3+"\n");
+//     runnerLog("Заебок");
+// }
+// else{
+//     runnerLog("Чёт не заебок");
+// }
+//______________________________________________________________
+
+
+//добавление participants
+
+// string my_key = "IT-103443";
+// // string current_user = "anatoliy.gundarov";
+// string current_user = "Cashier.Supervisor23";
+// if(getUserDirectoryName(current_user) == "GroupMailboxes"){// поиск гпя
+//   string myjql = "project = IT AND reporter in ("+%my_key%.reporter+") ORDER BY created desc";
+//     number i = 0;
+//     string[] Issuee_keys = selectIssues(myjql);
+//     string[] participants;
+//  runnerLog(size(Issuee_keys));
+//     for (string cur_key in Issuee_keys){
+//         if(size(%cur_key%.customfield_10002)==1){
+//           participants = arrayAddElementIfNotExist(participants, %cur_key%.customfield_10002);
+//         }
+//         if (i >= 3) {
+//             break;
+//         }
+//         i=i+1;
+//     }
+// runnerLog(participants); 
+    
+    
+    
+// }
+//_______________________________________________________________
+
+
+
+// runnerLog(phone);
+// string REGEX = "[0-9]{5}";
+//   if(matches(phone,(REGEX))==true){
+//       runnerLog("Найдено"); 
+//       number store_pref = chop(phone,3);
+//       string dept_num = substring(phone, 3, 5);
+//       runnerLog(store_pref);
+//       runnerLog(dept_num);
+//       runnerLog(allphones);
+      
+//       for(Store_phone curnum in allphones){
+//         runnerLog(curnum.user_to_find);
+//       // JUser usr = getUser(curnum.user_to_find);
+//         //%my_key%.reporter = usr.username;
+//       }
+      
+//       for(Store cur_store in all_stores){
+//           runnerLog(cur_store.phonepref);
+//             runnerLog(store_pref);
+            
+//             if(cur_store.phonepref==store_pref){
+//               %my_key%.%mykey%.customfield_10702 = cur_store.name;
+//           }
+//       }
+
+
+
+// string aaa="Входящий звонок от SALKOV ALEXANDER 3240";
+// aaa = replace(aaa, "Входящий звонок от ", "");
+// number stop = indexOf(aaa, " ");
+
+// string bbb = substring(aaa,0,stop);
+
+// JUser usr = getUser(bbb);
+
+// string s = "";
+// string f = "";
+// return usr;
+
+// string[] first_names;
+// string[] same_surname_users;
+// string[] usersnames;
+
+
+// for (string surname in usersInGroups({"MCC RU - All HO Users"})){
+//     if(matches(surname,".*nekrasova.*")){
+//         same_surname_users = arrayAddElement(same_surname_users, surname);
+//         runnerLog(same_surname_users);
+//     }
+// }
+
+
+// struct region {string hhh;string[] a;}
+// struct store {string sss; region bbb;}
+
+
+// region Region = {"1",{"2","3"}};
+// store bbbbbb = {"1234567",Region};
+
+// string[] phrases = {"антон был нло похищен\r\n и опыт ставили на нём\r\nпоэтому он весь в помаде\r\nпришёл домой и без трусов",
+//     "нашёл макбук бомж анатолий\r\nего немедленно включил\r\nи первым делом по привычке\r\nкорзину в нём проверил он",
+//     "есть в языке у русских слово\r\nи означает оно нет\r\nв том слове тоже лишь три буквы\r\nно пишется совсем не так",
+//     "поймал в реке герасим щуку\r\nжеланья жестом загадал\r\nтеперь есть у него корова\r\nлыж пара с палками и грудь",
+//     "за пять секунд сломал василий\r\nсервак у друга своего\r\nя хакер спрашивает вася\r\nдруг отвечает ты чудак",
+//     "похитил васю анатолий\r\nза ноги держит над рекой\r\nда не ори ты бедолага\r\nсейчас тебя я отпущу",
+//     "моя любовь к тебе похожа\r\nна конституцию страны\r\nона конечно существует\r\nно не влияет ни на что",
+//     "мужик идёт с конем по полю\r\nи конь внезапно говорит\r\nне надо петь про это песню\r\nпусть это будет наш секрет",
+//     "о подозрительных предметах\r\nя машинисту сообщил\r\nдва бильбоке одна клепсидра\r\nжабо спирограф и бювар",
+//     "василий любит караоке\r\nпридёт с работы и поёт\r\nпод чёрный ворон дочь зачали\r\nпод чунгачангу помер тесть",
+//     "бобры загрызли буратино\r\nон весь в березовом соку\r\nлежит в траве раскинув руки\r\nи дятлы кружатся над ним",
+//     "вот штангенцыркуль он опасен\r\nсказал ребятам трудовик\r\nрукою крепко зажимая\r\nбольшую дырку в животе",
+//     "забей на всё сказал геннадий\r\nна всё на всё спросил олег\r\nнет не на всё на всё а просто\r\nна всё геннадий уточнил",
+//     "я разругался сам с собою\r\nуже три дня не говорим\r\nя просто молча ставлю ужин\r\nи молча ем и порознь сплю",
+//     "висит на сцене в первом акте\r\nбензопила ведро и ёж\r\nзаинтригован станиславский\r\nбоится выйти в туалет",
+//     "бывает думаешь что знаешь\r\nты человека двадцать лет\r\nно вот приходишь к нему в гости\r\nи видишь ложечки свои",
+//     "купил айфон а чо с ним делать\r\nгде кнопки чтобы нажимать\r\nи как мне позвонить сереге\r\nа вот и он звонит и чо",
+//     "сейчас я получу по морде\r\nедва успел договорить\r\nа вот уже и получаю\r\nа вот уже и получил",
+//     "любимый взял меня за локоть\r\nподвёл к окну и показал\r\nвсё то чего я не увижу\r\nвовеки если не заткнусь",
+//     "рояль имеет две педали\r\nавтомобиль имеет три\r\nа это значит что в рояле\r\nстоит коробка автомат"};
+
+
+
+
+
+
+
+
+
+
+// if (arraySize(same_surname_users)>1){
+// runnerLog(same_surname_users);
+//     for(string same_surname_user in same_surname_users){
+//         string user_first_name = chop(same_surname_user, indexOf(same_surname_user, "."));
+//         runnerLog(user_first_name);
+//         if(matches(user_first_name,".*tat.*")){
+//             first_names = arrayAddElement(first_names, same_surname_user);
+//             runnerLog(first_names);
+//         }
+//     }
+// }
+
+
+
+
+
+
+
+// string REGEX_STORE6 = "7[0-9]{5}";
+// string fff = "4955025600";
+// if(matches(fff,REGEX_STORE6)){
+//     runnerLog(fff);
+// }
+// fff = replace(fff,"495502","1");
+//  runnerLog(fff);
+
+// string phone = "749550212134";
+
+// phone = substring(phone,7,-1);
+
+// runnerLog(phone);
+
+//  return getCustomFieldNameById(10002);
+
+
+
+    // string[] TEXT = {"MCC RU - Delivery MOW1"};
+    // string dept_num = "38";
+    // for(string cur_text in TEXT){
+       
+    //         string groups = {"MCC RU MOW - Store13",cur_text};
+    //         string [] user_list = usersInGroups(groups);
+            
+    //         for(string current_user in user_list){
+           
+    //          if(!(dept_num == "61" or dept_num == "51")){
+    //             if(getUserDirectoryName(current_user) == "GroupMailboxes"){
+    //                 runnerLog(current_user);
+    //             } 
+                
+    //          }
+             
+                
+    //         }
+           
+    // }
+    
+    
+//     string regex = ".*ext.*[0-9]{5}.*";
+//     string my_key = "IT-103887";
+//     string hhh = %my_key%.description;
+//     hhh = replace(hhh,"\r","");
+//     hhh = replace(hhh,"\n","");
+//   //return matches(hhh,regex);
+    
+        
+    
+//     if(%my_key%.customfield_11601==""){// поиск внутреннего номера в описании
+       
+         
+       
+//         if(matches(hhh,regex)==true){
+//             string regexEnd = ".*ext.*[0-9]{5}";
+//             number endIndexh = matchEnd(hhh, regexEnd);
+//             number startIndex = endIndexh-5;
+            
+//             %my_key%.customfield_11601 = substring(hhh,startIndex,endIndexh);
+//             string debugext = startIndex + endIndexh + substring(hhh,startIndex,endIndexh);
+//             runnerLog(debugext);
+//             //sendEmail("it-support@metro-cc.ru", {"anatoliy.gundarov@metro-cc.ru"}, {""}, "Ext.", debugext);
+//         }
+//     }
+    
+   
+    // return %my_key%.customfield_11601;
+   
+   
+    //return matches(fff,regex);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    //   for (phone_number cur_phoneindex in allphones){
+      
+         // store_phone cur_phone=cur_phoneindex;
+        //   runnerLog(cur_phoneindex);
+    //   }
+      
+      
+//  }
+
+// string [] keys = selectIssues("project = FI and issuetype = 'Store Revenue' AND status = Resolved");
+// for(string current_issue in keys){
+//     runnerLog(current_issue);
+    
+//     %current_issue%.resolution = "Готово";
+//     runnerLog(current_issue.resolution);
+// }
+// string aaaa= "привет медвед";
+// string TEXT = "приве";
+// string REGEX = ".*\b" + TEXT + "\b.*";
+
+// if (matches(aaaa, REGEX)){
+//     runnerLog(REGEX);
+// }
+// string[] expences_list = {"авансовый отчет","Заработная плата","Депонент","Выдать д/с"};
+// string[] maintask_list_pl = {"PL","Расшифровать","Детализировать"};
+// string[] maintask_list_balance = {"Баланс","Остаток"};
+// string[] maintask_list_act = {"Акт","Сверка","Акт сверки"};
+// int exp_count = 0;
+// int main_pl_count = 0;
+// int main_balance_count = 0;
+// int main_act_count = 0;
+
+// string TEXT = expences_list;
+// runnerLog(TEXT);
+// for(string cur_regex in expences_list){
+//     TEXT = TEXT + cur_regex+ "|";
+// }
+
+
+// string REGEX = ".*\b(" + TEXT + "){2}[1-5]\b.";
+
+// string aaaaa = "Авансовый отчет25";
+// string aaaa = toLower(aaaaa);
+//     if(matches(aaaa,(REGEX))==true){
+//   runnerLog("Найдено"); 
+//       }
+
+
+
+
+
+
+
+
+// if(exp_count>0){
+//   type="T&E and Petty Cash";
+//   customfield_13001 = "Expences";
+// }
+// for(string cur_pl in maintask_list_pl){
+//     if(contains(description,cur_pl)==true){
+//     main_pl_count = main_pl_count+1;
+//     }
+// }
+// for(string cur_balance in maintask_list_balance){
+//     if(contains(description,cur_balance)==true){
+//     main_balance_count = main_balance_count+1;
+//     }
+// }
+// for(string cur_act in maintask_list_act){
+//     if(contains(description,cur_act)==true){
+//     main_act_count = main_act_count+1;
+//     }
+// }
+// if(exp_count>0){
+//   type="T&E and Petty Cash";
+//   customfield_13001 = "Expences";
+// }
+// if(main_pl_count>0){
+//   labels={"PL"};
+//   customfield_13001 = "Other Reporting";
+// }
+// if(main_balance_count>0){
+//   labels={"Баланс"};
+//   customfield_13001 = "Other Reporting";
+// }
+// if(main_act_count>0){
+//   labels={"Акт сверки"};
+//   customfield_13001 = "Other Reporting";
+// }
+// if(type == "Prepayment return"){
+//   summary  = summary + " " + %mykey%.customfield_10702;
+// }
+// return main_pl_count;
+
+
+
+
+
+// string REGEX_HPSM = ".*IM[0-9]{8}.*";
+// string REGEX_HPSM_END = ".*IM[0-9]{8}";
+// string my_key = "TEST-976";
+// if(matches(%my_key%.summary,REGEX_HPSM)){ 
+//   number endindex = matchEnd(%my_key%.summary,REGEX_HPSM_END);
+//   string hpsm_number = substring(%my_key%.summary,endindex-10,endindex);
+//   if(matches(hpsm_number,REGEX_HPSM)){
+//       string myjqlhpsm = "project = IT AND 'HPSM No.' ~ " + hpsm_number;
+//       string[] Issuee_keys_hpsm = selectIssues(myjqlhpsm);
+//       string hpsm_key = arrayGetElement(Issuee_keys_hpsm, 0);
+//       linkIssue(%hpsm_key%.key,my_key, "Problem/Incident");
+//     } 
+   
+// }
+
+
+
+
+
+
+
+
+
+
+
+// Tasks[] fileContent 
+//   runnerLog(fileContent);
+//
+
+// addComment(my_key, "remoteuser", renderWiki("h1. Biggest heading"));
+
+// return renderWiki("h1. Biggest heading");
+
+// string uname = "anatoliy.gundarov";
+// JUser usr = getUser(uname);
+// string fff = getUserProperty(uname);
+// string mykey = "ITREQ-401";
+// //В зависимости от расположения пользователя, выставляется Яков Рстакян, Алексей Окулов либо Анастасия Мартынова
+// string issueReporter=getUser(%mykey%.reporter).username;
+
+// string userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","r4 domain LDAP");
+// if (isNull(userCompany)){
+//     userCompany=ldapUserAttr("metrocompanyCode", "(sAMAccountName=" + issueReporter + ")","mgl domain LDAP");
+// }
+// string storeNum=ldapUserAttr("metroStoreNumber", "(sAMAccountName=" +issueReporter+ ")","r4 domain LDAP");
+// storeNum=substring(storeNum, length(storeNum)-4, -1);
+// string userPath=ldapUserAttr("DN", "(sAMAccountName="+issueReporter+")","r4 domain LDAP");
+// if (contains(toLower(userPath),"st1491-sip")){ //проверяем крымские ТЦ отдельно, т.к. у них недостаточно инфы в АД
+//     userCompany="3466";
+//     storeNum="1491";
+// }  else if (contains(toLower(userPath),"st1492-svt")){
+//     userCompany="3466";
+//     storeNum="1492";
+// } else if (contains(toLower(userPath),"hq01-mow")){
+//     storeNum="1090";
+// }
+// if (userCompany!="3113") {
+//     if (storeNum=="1090" or storeNum=="1990"){
+//         %mykey%.customfield_10100={"Yakov.Rstakyan","a.gerasimenko"};
+//     } else if (userInGroup("MCC RU - EDP System Support", issueReporter)){
+//         %mykey%.customfield_10100="aleksey.okulov";
+//     } else {
+//         %mykey%.customfield_10100="Anastasia.Martynova";
+//     }
+
+// } else if (userCompany=="3113") {
+//     customfield_10100="marcin.mucha";
+// }

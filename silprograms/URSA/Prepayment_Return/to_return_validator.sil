@@ -1,0 +1,22 @@
+//Валидатор "К возврату" by Anatoliy.Gundarov
+
+string regex_deb_number = "[0-9]{1,10}";
+if(!matches(customfield_14100,regex_deb_number)){
+    return false, "Неверно введён номер дебитора. Должен состоять не более чем из десяти цифр";
+}
+ string regexdocument = "[0-9]{10}";
+        if(!matches(customfield_14101,regexdocument)){
+            return false, "Неверно введён номер документа к возврату. Должен состоять из десяти цифр";
+        }
+if(isNull(customfield_14111)){
+    return false, "Не заполнено поле Тип оплаты";
+}
+if(isNull(customfield_14112)){
+    return false, "Не заполнено поле Тип контрагента";
+}
+if(isNull(customfield_14113)){
+    return false, "Не заполнено поле Тип организации";
+}
+if (customfield_14100 == "76270000" && customfield_14111 == "Автоматическая постоплата"){
+    customfield_14111 = "Ручная оплата";
+}

@@ -1,0 +1,8 @@
+//проверка сумма MMC больше суммы банка кредита и доставки
+number summ_mmc = customfield_14203;
+number summ_bank = customfield_14204;
+number summ_credit = customfield_14205;
+number summ_delivery = customfield_14206;
+if(summ_mmc<summ_bank+summ_credit+summ_delivery){
+    return false, "Сумма MMC не может быть меньше суммы банка кредита и доставки";
+}

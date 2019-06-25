@@ -1,0 +1,220 @@
+struct MainCashier{
+    string index;
+    string CashierName;
+}
+
+// MainCashier Cashier1010 = {"1010","Larisa.Kiselyova"};
+// MainCashier Cashier1011 = {"1011","Larisa.Kiselyova"};
+// MainCashier Cashier1012 = {"1012","vera.vasileva"};
+// MainCashier Cashier1013 = {"1013","vera.vasileva"};
+// MainCashier Cashier1014 = {"1014","Larisa.Kiselyova"};
+// MainCashier Cashier1015 = {"1015","nataliya.abramkina"};
+// MainCashier Cashier1016 = {"1016","nataliya.abramkina"};
+// MainCashier Cashier1017 = {"1017","Larisa.Kiselyova"};
+// MainCashier Cashier1018 = {"1018","Larisa.Kiselyova"};
+// MainCashier Cashier1019 = {"1019","vera.vasileva"};
+// MainCashier Cashier1020 = {"1020","Vera.Sinicina"};
+// MainCashier Cashier1021 = {"1021","Larisa.Sidorshina"};
+// MainCashier Cashier1022 = {"1022","Larisa.Kiselyova"};
+// MainCashier Cashier1023 = {"1023","Larisa.Sidorshina"};
+// MainCashier Cashier1024 = {"1024","Anna.Shutskaya"};
+// MainCashier Cashier1025 = {"1025","Tatyana.Golovina"};
+// MainCashier Cashier1026 = {"1026","Anna.Shutskaya"};
+// MainCashier Cashier1027 = {"1027","natalya.karpusha"};
+// MainCashier Cashier1028 = {"1028","olga.karpacheva"};
+// MainCashier Cashier1029 = {"1029","M.Sokolova"};
+// MainCashier Cashier1030 = {"1030","M.Sokolova"};
+// MainCashier Cashier1031 = {"1031","M.Sokolova"};
+// MainCashier Cashier1032 = {"1032","Elena.Mayzina"};
+// MainCashier Cashier1033 = {"1033","natalya.karpusha"};
+// MainCashier Cashier1034 = {"1034","Larisa.Sutyrkina"};
+// MainCashier Cashier1035 = {"1035","natalya.karpusha"};
+// MainCashier Cashier1036 = {"1036","Vera.Sinicina"};
+// MainCashier Cashier1037 = {"1037","Vera.Sinicina"};
+// MainCashier Cashier1038 = {"1038","Larisa.Sutyrkina"};
+// MainCashier Cashier1039 = {"1039","Tatyana.Golovina"};
+// MainCashier Cashier1040 = {"1040","Elena.Mayzina"};
+// MainCashier Cashier1041 = {"1041","Larisa.Sutyrkina"};
+// MainCashier Cashier1042 = {"1042","olga.karpacheva"};
+// MainCashier Cashier1043 = {"1043","Larisa.Sidorshina"};
+// MainCashier Cashier1044 = {"1044","Anna.Ruban"};
+// MainCashier Cashier1045 = {"1045","Anna.Ruban"};
+// MainCashier Cashier1046 = {"1046","tatyana.turaeva"};
+// MainCashier Cashier1047 = {"1047","Elena.Mayzina"};
+// MainCashier Cashier1048 = {"1048","vera.vasileva"};
+// MainCashier Cashier1049 = {"1049","vera.vasileva"};
+// MainCashier Cashier1050 = {"1050","Anna.Shutskaya"};
+// MainCashier Cashier1051 = {"1051","Tatyana.Golovina"};
+// MainCashier Cashier1052 = {"1052","Tatyana.Golovina"};
+// MainCashier Cashier1053 = {"1053","Anna.Shutskaya"};
+// MainCashier Cashier1054 = {"1054","tatyana.turaeva"};
+// MainCashier Cashier1055 = {"1055","Vera.Sinicina"};
+// MainCashier Cashier1056 = {"1056","Tatyana.Golovina"};
+// MainCashier Cashier1057 = {"1057","tatyana.turaeva"};
+// MainCashier Cashier1058 = {"1058","olga.karpacheva"};
+// MainCashier Cashier1059 = {"1059","Vera.Sinicina"};
+// MainCashier Cashier1060 = {"1060","Anna.Ruban"};
+// MainCashier Cashier1061 = {"1061","Larisa.Sutyrkina"};
+// MainCashier Cashier1063 = {"1063","Vera.Sinicina"};
+// MainCashier Cashier1064 = {"1064","M.Sokolova"};
+// MainCashier Cashier1065 = {"1065","M.Sokolova"};
+// MainCashier Cashier1066 = {"1066","Anna.Ruban"};
+// MainCashier Cashier1067 = {"1067","Larisa.Sidorshina"};
+// MainCashier Cashier1068 = {"1068","Tatyana.Pushilina"};
+// MainCashier Cashier1069 = {"1069","natalya.karpusha"};
+// MainCashier Cashier1070 = {"1070","Larisa.Sidorshina"};
+// MainCashier Cashier1071 = {"1071","Elena.Mayzina"};
+// MainCashier Cashier1072 = {"1072","Anna.Shutskaya"};
+// MainCashier Cashier1073 = {"1073","Larisa.Sutyrkina"};
+// MainCashier Cashier1074 = {"1074","Larisa.Sidorshina"};
+// MainCashier Cashier1076 = {"1076","tatyana.turaeva"};
+// MainCashier Cashier1077 = {"1077",""};
+// MainCashier Cashier1078 = {"1078","Elena.Mayzina"};
+// MainCashier Cashier1082 = {"1082","Anna.Shutskaya"};
+// MainCashier Cashier1083 = {"1083","aleksandr.kuzyakin"};
+// MainCashier Cashier1086 = {"1086","olga.karpacheva"};
+// MainCashier Cashier1088 = {"1088","natalya.karpusha"};
+// MainCashier Cashier1094 = {"1094","olga.karpacheva"};
+// MainCashier Cashier1095 = {"1095","tatyana.turaeva"};
+// MainCashier Cashier1097 = {"1097",""};
+// MainCashier Cashier1196 = {"1196",""};
+// MainCashier Cashier1197 = {"1197",""};
+// MainCashier Cashier1202 = {"1202","M.Sokolova"};
+// MainCashier Cashier1303 = {"1303","natalya.karpusha"};
+// MainCashier Cashier1304 = {"1304","Anna.Ruban"};
+// MainCashier Cashier1306 = {"1306","tatyana.turaeva"};
+// MainCashier Cashier1307 = {"1307","Larisa.Sutyrkina"};
+// MainCashier Cashier1308 = {"1308","Larisa.Kiselyova"};
+// MainCashier Cashier1309 = {"1309","olga.karpacheva"};
+// MainCashier Cashier1310 = {"1310","Tatyana.Golovina"};
+// MainCashier Cashier1311 = {"1311","Anna.Ruban"};
+// MainCashier Cashier1317 = {"1317","Vera.Sinicina"};
+// MainCashier Cashier1318 = {"1318",""};
+// MainCashier Cashier1320 = {"1320","Vera.Sinicina"};
+// MainCashier Cashier1322 = {"1322",""};
+// MainCashier Cashier1336 = {"1336","Tatyana.Golovina"};
+// MainCashier Cashier1337 = {"1337","Elena.Mayzina"};
+// MainCashier Cashier1340 = {"1340","Anna.Shutskaya"};
+// MainCashier Cashier1342 = {"1342","Tatyana.Pushilina"};
+// MainCashier Cashier1356 = {"1356","vera.vasileva"};
+// MainCashier Cashier1357 = {"1357","olga.karpacheva"};
+// MainCashier Cashier1444 = {"1444","Larisa.Sidorshina"};
+// MainCashier Cashier1451 = {"1451",""};
+MainCashier Cashier1010 = {"1010","vera.vasileva"};
+MainCashier Cashier1011 = {"1011","vera.vasileva"};
+MainCashier Cashier1012 = {"1012","vera.vasileva"};
+MainCashier Cashier1013 = {"1013","vera.vasileva"};
+MainCashier Cashier1014 = {"1014","vera.vasileva"};
+MainCashier Cashier1015 = {"1015","Tatyana.Pushilina"};
+MainCashier Cashier1016 = {"1016","Tatyana.Pushilina"};
+MainCashier Cashier1017 = {"1017","vera.vasileva"};
+MainCashier Cashier1018 = {"1018","vera.vasileva"};
+MainCashier Cashier1019 = {"1019","vera.vasileva"};
+MainCashier Cashier1020 = {"1020","Tatyana.Pushilina"};
+MainCashier Cashier1021 = {"1021","Larisa.Sidorshina"};
+MainCashier Cashier1022 = {"1022","vera.vasileva"};
+MainCashier Cashier1023 = {"1023","Larisa.Sidorshina"};
+MainCashier Cashier1024 = {"1024","olga.karpacheva"};
+MainCashier Cashier1025 = {"1025","Vera.Sinicina"};
+MainCashier Cashier1026 = {"1026","olga.karpacheva"};
+MainCashier Cashier1027 = {"1027","M.Sokolova"};
+MainCashier Cashier1028 = {"1028","olga.karpacheva"};
+MainCashier Cashier1029 = {"1029","M.Sokolova"};
+MainCashier Cashier1030 = {"1030","M.Sokolova"};
+MainCashier Cashier1031 = {"1031","M.Sokolova"};
+MainCashier Cashier1032 = {"1032","Elena.Mayzina"};
+MainCashier Cashier1033 = {"1033","M.Sokolova"};
+MainCashier Cashier1034 = {"1034","Larisa.Sidorshina"};
+MainCashier Cashier1035 = {"1035","M.Sokolova"};
+MainCashier Cashier1036 = {"1036","Vera.Sinicina"};
+MainCashier Cashier1037 = {"1037","Vera.Sinicina"};
+MainCashier Cashier1038 = {"1038","Larisa.Sidorshina"};
+MainCashier Cashier1039 = {"1039","Vera.Sinicina"};
+MainCashier Cashier1040 = {"1040","Elena.Mayzina"};
+MainCashier Cashier1041 = {"1041","Larisa.Sidorshina"};
+MainCashier Cashier1042 = {"1042","olga.karpacheva"};
+MainCashier Cashier1043 = {"1043","Larisa.Sidorshina"};
+MainCashier Cashier1044 = {"1044","tatyana.turaeva"};
+MainCashier Cashier1045 = {"1045","tatyana.turaeva"};
+MainCashier Cashier1046 = {"1046","tatyana.turaeva"};
+MainCashier Cashier1047 = {"1047","Elena.Mayzina"};
+MainCashier Cashier1048 = {"1048","vera.vasileva"};
+MainCashier Cashier1049 = {"1049","vera.vasileva"};
+MainCashier Cashier1050 = {"1050","olga.karpacheva"};
+MainCashier Cashier1051 = {"1051","Vera.Sinicina"};
+MainCashier Cashier1052 = {"1052","Vera.Sinicina"};
+MainCashier Cashier1053 = {"1053","olga.karpacheva"};
+MainCashier Cashier1054 = {"1054","tatyana.turaeva"};
+MainCashier Cashier1055 = {"1055","Vera.Sinicina"};
+MainCashier Cashier1056 = {"1056","Vera.Sinicina"};
+MainCashier Cashier1057 = {"1057","tatyana.turaeva"};
+MainCashier Cashier1058 = {"1058","olga.karpacheva"};
+MainCashier Cashier1059 = {"1059","Vera.Sinicina"};
+MainCashier Cashier1060 = {"1060","tatyana.turaeva"};
+MainCashier Cashier1061 = {"1061","Larisa.Sidorshina"};
+MainCashier Cashier1063 = {"1063","Vera.Sinicina"};
+MainCashier Cashier1064 = {"1064","M.Sokolova"};
+MainCashier Cashier1065 = {"1065","M.Sokolova"};
+MainCashier Cashier1066 = {"1066","tatyana.turaeva"};
+MainCashier Cashier1067 = {"1067","Larisa.Sidorshina"};
+MainCashier Cashier1068 = {"1068","Svetlana.Ofitserova"};
+MainCashier Cashier1069 = {"1069","Elena.Mayzina"};
+MainCashier Cashier1070 = {"1070","Larisa.Sidorshina"};
+MainCashier Cashier1071 = {"1071","Elena.Mayzina"};
+MainCashier Cashier1072 = {"1072","olga.karpacheva"};
+MainCashier Cashier1073 = {"1073","Larisa.Sidorshina"};
+MainCashier Cashier1074 = {"1074","Larisa.Sidorshina"};
+MainCashier Cashier1076 = {"1076","tatyana.turaeva"};
+MainCashier Cashier1077 = {"1077","Araksi.Kulbikayan"};
+MainCashier Cashier1078 = {"1078","Elena.Mayzina"};
+MainCashier Cashier1082 = {"1082","olga.karpacheva"};
+MainCashier Cashier1083 = {"1083","aleksandr.kuzyakin"};
+MainCashier Cashier1086 = {"1086","olga.karpacheva"};
+MainCashier Cashier1088 = {"1088","Elena.Mayzina"};
+MainCashier Cashier1094 = {"1094","olga.karpacheva"};
+MainCashier Cashier1095 = {"1095","tatyana.turaeva"};
+MainCashier Cashier1097 = {"1097","vera.vasileva"};
+MainCashier Cashier1196 = {"1196","Araksi.Kulbikayan"};
+MainCashier Cashier1197 = {"1197",""};
+MainCashier Cashier1202 = {"1202","M.Sokolova"};
+MainCashier Cashier1303 = {"1303","Elena.Mayzina"};
+MainCashier Cashier1304 = {"1304","tatyana.turaeva"};
+MainCashier Cashier1306 = {"1306","tatyana.turaeva"};
+MainCashier Cashier1307 = {"1307","Larisa.Sidorshina"};
+MainCashier Cashier1308 = {"1308","vera.vasileva"};
+MainCashier Cashier1309 = {"1309","olga.karpacheva"};
+MainCashier Cashier1310 = {"1310","Vera.Sinicina"};
+MainCashier Cashier1311 = {"1311","tatyana.turaeva"};
+MainCashier Cashier1317 = {"1317","Vera.Sinicina"};
+MainCashier Cashier1318 = {"1318","Araksi.Kulbikayan"};
+MainCashier Cashier1320 = {"1320","Vera.Sinicina"};
+MainCashier Cashier1322 = {"1322","Araksi.Kulbikayan"};
+MainCashier Cashier1336 = {"1336","Vera.Sinicina"};
+MainCashier Cashier1337 = {"1337","Elena.Mayzina"};
+MainCashier Cashier1340 = {"1340","olga.karpacheva"};
+MainCashier Cashier1342 = {"1342","Svetlana.Ofitserova"};
+MainCashier Cashier1356 = {"1356","vera.vasileva"};
+MainCashier Cashier1357 = {"1357","olga.karpacheva"};
+MainCashier Cashier1444 = {"1444","Larisa.Sidorshina"};
+MainCashier Cashier1451 = {"1451",""};
+
+
+MainCashier[] allCashiers = {
+Cashier1010, Cashier1011, Cashier1012, Cashier1013, Cashier1014, Cashier1015, 
+Cashier1016, Cashier1017, Cashier1018, Cashier1019, Cashier1020, Cashier1021, 
+Cashier1022, Cashier1023, Cashier1024, Cashier1025, Cashier1026, Cashier1027, 
+Cashier1028, Cashier1029, Cashier1030, Cashier1031, Cashier1032, Cashier1033, 
+Cashier1034, Cashier1035, Cashier1036, Cashier1037, Cashier1038, Cashier1039, 
+Cashier1040, Cashier1041, Cashier1042, Cashier1043, Cashier1044, Cashier1045, 
+Cashier1046, Cashier1047, Cashier1048, Cashier1049, Cashier1050, Cashier1051, 
+Cashier1052, Cashier1053, Cashier1054, Cashier1055, Cashier1056, Cashier1057,
+Cashier1058, Cashier1059, Cashier1060, Cashier1061, Cashier1063, Cashier1064, 
+Cashier1065, Cashier1066, Cashier1067, Cashier1068, Cashier1069, Cashier1070, 
+Cashier1071, Cashier1072, Cashier1073, Cashier1074, Cashier1076, Cashier1077, 
+Cashier1078, Cashier1082, Cashier1083, Cashier1086, Cashier1088, Cashier1094, 
+Cashier1095, Cashier1097, Cashier1196, Cashier1197, Cashier1202, Cashier1303, 
+Cashier1304, Cashier1306, Cashier1307, Cashier1308, Cashier1309, Cashier1310, 
+Cashier1311, Cashier1317, Cashier1318, Cashier1320, Cashier1322, Cashier1336, 
+Cashier1337, Cashier1340, Cashier1342, Cashier1356, Cashier1357, Cashier1444, 
+Cashier1451
+};

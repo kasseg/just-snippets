@@ -1,0 +1,31 @@
+string answer = "";
+string myJQL = "project = CMREQ AND issuetype = 'Credit Limits' AND status not in (Done, Rejected) AND text ~ 'Cash&Carry prepayment'";
+string[] sel_issues = selectIssues(myJQL);
+for(string mykey in sel_issues){
+    number store_start = matchEnd(%mykey%.description, "ТЦ №")+2;
+    number store_stop = matchStart(%mykey%.description, "CFM Cu_No")-5;
+    number clientnum_start = matchEnd(%mykey%.description, "номер карты клиента")+3;
+    number clientnum_stop = matchStart(%mykey%.description, "Legal customer name")-5;
+    number client_leg_start = matchEnd(%mykey%.description, "название компании")+2;
+    number client_leg_stop = matchStart(%mykey%.description, "Logo name")-5;
+    number client_start = matchEnd(%mykey%.description, "Фактическое название")+2;
+    number client_stop = matchStart(%mykey%.description, "E-mail")-5;
+    number email_start = matchEnd(%mykey%.description, "Электронная почта")+2;
+    number email_stop = matchStart(%mykey%.description, "INN")-5;
+    number inn_start = matchEnd(%mykey%.description, "ИНН")+2;
+    number inn_stop = matchStart(%mykey%.description, "KPP")-5;
+    number kpp_start = matchEnd(%mykey%.description, "КПП")+2;
+    number kpp_stop = matchStart(%mykey%.description, "Requested Credit Limit")-5;
+    
+    string mystore = substring(%mykey%.description, store_start, store_stop);
+    string clientnum = substring(%mykey%.description, clientnum_start, clientnum_stop);
+    string client_leg = substring(%mykey%.description, client_leg_start, client_leg_stop);
+    string client = substring(%mykey%.description, client_start, client_stop);
+    string email = substring(%mykey%.description, email_start, email_stop);
+    string inn = substring(%mykey%.description, inn_start, inn_stop);
+    string kpp = substring(%mykey%.description, kpp_start, kpp_stop);
+
+    answer += mystore+","+clientnum+","+client_leg+","+client+","+email+","+inn+","+kpp+","+%mykey%.created+","+%mykey%.updated+"\r\n";
+}
+
+sendEmail("it-support@metro-cc.ru", {"anna.perova@metro-cc.ru"},{"anatoliy.gundarov@metro-cc.ru"},"Отчёт CMREQ",answer);

@@ -1,0 +1,13 @@
+//добавление остальных участников команды автора в задачу, для доступа к утверждению и просмотру
+string [] allGroups=userGroups(reporter);
+string targetGroup;
+for (string oneGroup in allGroups){
+    if (contains(oneGroup,"jira-TPM-") and oneGroup!="jira-TPM-agent"){
+        targetGroup=oneGroup;
+    }
+}
+if (isNotNull(targetGroup)){
+    string [] teamMembers=usersInGroups(targetGroup);
+    teamMembers-=reporter;
+    customfield_10002=teamMembers;
+}

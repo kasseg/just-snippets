@@ -1,0 +1,40 @@
+//Удаляет человека из делегирования через "самообслуживание"
+string getData=arrayGetElement(argv, 0);
+string username=substring(getData,0,indexOf(getData,"*"));
+string ToDelete=toLower(substring(getData,indexOf(getData,"*")+1,-1));
+string userDelegate=toLower(getUserProperty(username, "delegates"));
+
+string [] userDelegatesNameAndDate=split(userDelegate,",");//0 = username, 1=until date
+string newDelegates="";
+for(string delegateWithdate in userDelegatesNameAndDate){
+    string [] DelegateByOne=split(delegateWithdate,"=");//0 = username, 1=until date
+    if (DelegateByOne[0]!=ToDelete){
+        newDelegates+=delegateWithdate+",";
+    } else {
+        //не включаем удалённого в новый список
+    }
+}
+
+//string jql= "issuekey = test-517";
+string jql= "(project = \"Customer Manager Requests\" or project =\"IT Requests\" ) and Одобрения ="+username;
+string [] SelIss = selectIssues (jql);
+sendEmail("it-support@metro-cc.ru", "evgeniy.russkikh@metro-cc.ru", {}, "самоделегирование","Сейчас на утверждении у "+username+" вот столько задач: "+size(SelIss)+"<br>УДален делегейт: "+ToDelete);
+for (string isc in SelIss) {
+    string [] issueApprovers=%isc%.customfield_10100;
+    if (arrayElementExists(issueApprovers, ToDelete)){
+        issueApprovers=deleteElement(issueApprovers, ToDelete);
+        %isc%.customfield_10100=issueApprovers; 
+        admReindexIssue(isc);
+    }
+    
+}
+
+if (isNotNull(newDelegates)){
+    newDelegates=chop(newDelegates,length(newDelegates)-1);
+}
+if (newDelegates==""){
+    newDelegates="null";
+}
+
+setUserProperty(username, "delegates", newDelegates);
+return "deleted";
