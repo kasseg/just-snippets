@@ -1,0 +1,33 @@
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.component.ComponentAccessor
+import java.util.Date.*
+import java.sql.Timestamp
+import java.time.DayOfWeek
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager()
+
+def start = (issue.getCustomFieldValue(customFieldManager.getCustomFieldObjectsByName("Start date 2").iterator().next()) as Timestamp).toLocalDateTime()//.toLocalDate()
+def end  = (issue.getCustomFieldValue(customFieldManager.getCustomFieldObjectsByName("Completion date").iterator().next()) as Timestamp).toLocalDateTime()//.toLocalDate()
+log.debug start
+log.debug end
+if (!start.isBefore(end)) {
+    return null
+}
+def weekend = EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+def workingMinutes = 0
+
+while (start.isBefore(end)) {
+    if (!(start.dayOfWeek in weekend)) {
+        //workingDays += 1
+        if (start.getHour()>=0 && start.getHour()<8){
+            workingMinutes+=1
+        }
+    }
+
+    start = start.plusMinutes(1)
+}
+//def workingHours=workingMinutes/60
+log.debug workingMinutes
+return workingMinutes*60
+//def difference = (end-start)/3600000
+//log.debug difference
+//return difference
