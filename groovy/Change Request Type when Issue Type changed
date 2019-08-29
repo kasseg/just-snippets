@@ -1,0 +1,53 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.Issue
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.issue.IssueManager
+import com.atlassian.jira.issue.fields.CustomField
+import com.atlassian.jira.issue.IssueInputParametersImpl
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
+import com.atlassian.jira.user.ApplicationUser
+import com.atlassian.jira.bc.issue.IssueService
+import com.atlassian.jira.event.type.EventDispatchOption
+
+//MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject("SD-109") //debug
+
+RequestTypeChanger script = new RequestTypeChanger()
+log.setLevel(Level.DEBUG)
+long ScriptStartTime = System.currentTimeMillis()
+log.debug("${event.issue.key} Script started")
+def change = event?.getChangeLog()?.getRelated("ChildChangeItem").find {it.field == "issuetype"}
+log.debug event?.getChangeLog()?.getRelated("ChildChangeItem")
+if (change) script.run(event.issue)
+
+long ScriptWorkTime = System.currentTimeMillis() - ScriptStartTime
+log.debug("${issue.key} Script work time: ${ScriptWorkTime} ms.")
+
+class RequestTypeChanger {
+    IssueManager issueManager = ComponentAccessor.getIssueManager()
+    CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager()
+    ApplicationUser currentUser = ComponentAccessor.getJiraAuthenticationContext()?.getLoggedInUser()
+    Logger log = Logger.getLogger("Handle slave incidents/SR when master updated")
+    
+
+    void run(MutableIssue issue) {
+        def issueManager = ComponentAccessor.issueManager
+        def REPORT_INCIDENT = "sd/systemproblem"
+        def REPORT_SR = "sd/getithelp"
+        def customFieldManager = ComponentAccessor.getCustomFieldManager()
+        def tgtField = customFieldManager.getCustomFieldObjectsByName("Customer Request Type")[0]
+		log.debug issue.issueType.name
+        log.debug issue.getCustomFieldValue(tgtField)
+        def requestType
+        if (issue.issueType.name == "Service Request" && issue.getCustomFieldValue(tgtField)!="sd/getithelp"){
+            requestType = tgtField.getCustomFieldType().getSingularObjectFromString(REPORT_SR)
+            issue.setCustomFieldValue(tgtField, requestType)
+            issueManager.updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)  //Сохраняем изменения
+        } else if (issue.issueType.name == "Incident" && issue.getCustomFieldValue(tgtField)!="sd/systemproblem"){
+            requestType = tgtField.getCustomFieldType().getSingularObjectFromString(REPORT_INCIDENT)
+            issue.setCustomFieldValue(tgtField, requestType)
+            issueManager.updateIssue(currentUser, issue, EventDispatchOption.DO_NOT_DISPATCH, false)  //Сохраняем изменения
+        }
+    }
+}
