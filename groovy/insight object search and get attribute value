@@ -1,0 +1,22 @@
+import com.atlassian.jira.component.ComponentAccessor;
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+/* Get Insight IQL Facade from plugin accessor */
+Class iqlFacadeClass = ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.IQLFacade"); 
+def iqlFacade = ComponentAccessor.getOSGiComponentInstanceOfType(iqlFacadeClass);
+Class objectFacadeClass = ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.ObjectFacade");  
+Class objectTypeAttributeFacadeClass = ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.ObjectTypeAttributeFacade");
+def objectTypeAttributeFacade = ComponentAccessor.getOSGiComponentInstanceOfType(objectTypeAttributeFacadeClass);
+def objectFacade = ComponentAccessor.getOSGiComponentInstanceOfType(objectFacadeClass);
+/* Specify the schema id as well as the IQL that will fetch objects. In this case all objects with Name matching the valueCF, be sure to include " around value */
+def objects = iqlFacade.findObjectsByIQLAndSchema(1, "\"Name\" = \"" + currentUser.name + "\""); // See the complete list of possible IQL on the Insight Query Language documentation page
+/* If this is a mandatory field you should be able to do this: */
+log.info("Insight object: " + objects[0]);
+try {
+    def room = objectFacade.loadObjectAttributeBean(objects[0].getId(), "Room").getObjectAttributeValueBeans()[0].getValue()
+    log.info("Room: " + room);
+}
+catch (Exception ex)
+{
+    log.info("Room: null");
+}
+
