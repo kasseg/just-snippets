@@ -1,0 +1,42 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.servicedesk.api.requesttype.RequestTypeService
+import com.atlassian.servicedesk.api.request.type.CustomerRequestTypeService
+import com.atlassian.servicedesk.api.user.UserFactory
+import com.onresolve.scriptrunner.runner.customisers.WithPlugin
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+@WithPlugin("com.atlassian.servicedesk")
+def log = Logger.getLogger("testing")
+log.setLevel(Level.DEBUG)
+CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager();
+MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject('SD-1828')
+def currentUser = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser() //Получаем текущего пользователя (создателя)
+def requestTypeService = ComponentAccessor.getOSGiComponentInstanceOfType(RequestTypeService)
+def reqQ = requestTypeService.newQueryBuilder().issue(issue.id).build()
+def reqT = requestTypeService.getRequestTypes(currentUser, reqQ)
+def requestType = reqT.results[0].getName() //Получаем название услуги
+log.debug issue
+log.debug requestType
+
+def requestTypeService2 = ComponentAccessor.getOSGiComponentInstanceOfType(CustomerRequestTypeService)
+def reqQ2 = requestTypeService2.newQueryBuilder().requestType(reqT.results[0]).build()
+def userFactory = ComponentAccessor.getOSGiComponentInstanceOfType(UserFactory)
+def uncheckedUser = userFactory.getUncheckedUser()
+def reqT2 = requestTypeService2.getCustomerRequestType(uncheckedUser, reqQ2)
+log.debug reqT2
+def reqQ3 = requestTypeService.newQueryBuilder().serviceDesk(4).build()
+def reqT3 = requestTypeService.getRequestTypes(currentUser, reqQ3)
+def newRequestType
+reqT3.results.each{
+    if (it.getName()=="Get IT help"){
+        newRequestType=it
+    }
+}
+
+def reqQ4 = requestTypeService2.newQueryBuilder().requestType(newRequestType).build()
+def reqT4 = requestTypeService2.getCustomerRequestType(uncheckedUser, reqQ4)
+log.debug reqT4
+//Pass-card replacement
