@@ -1,0 +1,69 @@
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.issue.changehistory.ChangeHistory
+import com.atlassian.jira.issue.changehistory.ChangeHistoryManager
+import com.atlassian.jira.issue.fields.CustomField
+import com.atlassian.jira.event.type.EventDispatchOption
+import com.atlassian.jira.issue.history.ChangeItemBean
+import com.atlassian.jira.security.JiraAuthenticationContext
+import com.atlassian.jira.user.ApplicationUser
+import com.atlassian.jira.user.util.UserManager
+import com.onresolve.scriptrunner.runner.customisers.WithPlugin
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
+import com.atlassian.jira.util.json.JSONObject
+import com.atlassian.jira.issue.comments.CommentManager
+import com.atlassian.jira.event.type.EventDispatchOption;
+import com.atlassian.jira.bc.issue.search.SearchService
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.jql.parser.JqlQueryParser
+import com.atlassian.jira.web.bean.PagerFilter
+
+//MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject("HR-3155")
+def searchService = ComponentAccessor.getComponent(SearchService)
+def user = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser()
+def queryParser = ComponentAccessor.getComponent(JqlQueryParser)
+
+def query = queryParser.parseQuery("type = \"Request for benefit\" and \"Benefit Card\"  is EMPTY")
+def search = searchService.search(user, query, new PagerFilter())
+
+search.results.each {
+    UpdateBenefitReservedSpent updateBenefitReservedSpent = new UpdateBenefitReservedSpent()
+    MutableIssue issue = ComponentAccessor.getIssueManager().getIssueObject(it.key)
+    updateBenefitReservedSpent.run(issue)
+}
+
+
+@WithPlugin("com.riadalabs.jira.plugins.insight")
+class UpdateBenefitReservedSpent{
+    Logger log = Logger.getLogger(this.class.name)
+    def objectFacade = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.ObjectFacade"))
+    def objectTypeAttributeFacade = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.ObjectTypeAttributeFacade"))
+    def iqlFacade = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.IQLFacade"))
+    def objectAttributeBeanFactory = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.services.model.factory.ObjectAttributeBeanFactory"))
+    CustomFieldManager customFieldManager = ComponentAccessor.getCustomFieldManager()
+    UserManager userManager = ComponentAccessor.getUserManager()
+    CustomField benefitOptionField = customFieldManager.getCustomFieldObjectsByName("Benefit Card").iterator().next()
+    CustomField costField = customFieldManager.getCustomFieldObjectsByName("Cost").iterator().next()
+    CustomField yearField = customFieldManager.getCustomFieldObjectsByName("Year").iterator().next()
+    ChangeHistoryManager changeHistoryManager = ComponentAccessor.getChangeHistoryManager()
+    JiraAuthenticationContext authenticationContext = ComponentAccessor.getJiraAuthenticationContext()
+    ApplicationUser user = userManager.getUserByName("Admin")
+    CommentManager commentManager = ComponentAccessor.getCommentManager()
+
+    public void run(MutableIssue curIssue) {
+        log.setLevel(Level.DEBUG)
+        def reporter = curIssue.getReporter()
+        authenticationContext.setLoggedInUser(user)
+        log.debug("${curIssue.key} Started")
+        def yearValue = curIssue.getCustomFieldValue(yearField)
+        def userBenefitCard
+        userBenefitCard = iqlFacade.findObjects("\"objectType\" = \"Benefit\" and User = ${reporter.getName()} and Year = 2019")
+        log.debug userBenefitCard
+        curIssue.setCustomFieldValue(benefitOptionField, userBenefitCard);
+        ComponentAccessor.getIssueManager().updateIssue(user, curIssue, EventDispatchOption.DO_NOT_DISPATCH, false);
+        log.debug("${curIssue.key} Ended")
+    }
+}
+
