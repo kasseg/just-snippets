@@ -1,0 +1,74 @@
+package com.onresolve.jira.groovy.jql
+import com.atlassian.jira.bc.issue.search.SearchService
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.jql.parser.JqlQueryParser
+import com.atlassian.jira.jql.query.LuceneQueryBuilder
+import com.atlassian.jira.jql.query.QueryCreationContext
+import com.atlassian.jira.jql.validator.NumberOfArgumentsValidator
+import com.atlassian.jira.user.ApplicationUser
+import com.atlassian.jira.util.MessageSet
+import com.atlassian.query.clause.TerminalClause
+import com.atlassian.query.operand.FunctionOperand
+import org.apache.lucene.search.Query
+import org.apache.lucene.search.BooleanClause
+import org.apache.lucene.search.BooleanQuery
+import org.apache.lucene.search.TermQuery
+import java.text.MessageFormat
+class MyWorkersFunction extends AbstractScriptedJqlFunction implements JqlQueryFunction {
+    /**
+     * Modify this query as appropriate.
+     *
+     * See {@link java.text.MessageFormat} for details
+     */
+    public static final String TEMPLATE_QUERY =
+            "assignee in ({0})"
+    def queryParser = ComponentAccessor.getComponent(JqlQueryParser)
+    def luceneQueryBuilder = ComponentAccessor.getComponent(LuceneQueryBuilder)
+    def searchService = ComponentAccessor.getComponent(SearchService)
+    def objectFacade = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.ObjectFacade"))
+    def objectTypeAttributeFacade = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.ObjectTypeAttributeFacade"))
+    def iqlFacade = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.IQLFacade"))
+
+    @Override
+    String getDescription() {
+        "find issues where assignee are workers of given Manager"
+    }
+    @Override
+    List<Map> getArguments() {
+        [
+                [
+                        description: "Manager's UserName",
+                        optional   : true,
+                ]
+        ]
+    }
+    @Override
+    String getFunctionName() {
+        "assigneeAreWorkersOf"
+    }
+    @Override
+    Query getQuery(QueryCreationContext queryCreationContext, FunctionOperand operand, TerminalClause terminalClause) {
+        String manager = ""
+        if (operand.args) {
+            manager=operand.args.first()
+        } else {
+            manager = ComponentAccessor.getJiraAuthenticationContext().getLoggedInUser().username
+        }
+        def objects = iqlFacade.findObjectsByIQLAndSchema(1, "\"Manager\" = \"${manager}\"");
+        String usernames = ""
+        objects.each{
+            String username = objectFacade.loadObjectAttributeBean(it.getId(), "Name").getObjectAttributeValueBeans()[0].getValue()
+            usernames += "${username},"
+        }
+        if (usernames!=""){
+            usernames = usernames.substring(0, usernames.length() - 1)
+        }
+        if (usernames!="") {
+            def queryStr = MessageFormat.format(TEMPLATE_QUERY, usernames)
+            luceneQueryBuilder.createLuceneQuery(queryCreationContext, queryParser.parseQuery(queryStr).whereClause)
+        } else {
+            BooleanQuery.Builder boolQueryBuilder = new BooleanQuery.Builder();
+            return boolQueryBuilder.build();
+        }
+    }
+}
