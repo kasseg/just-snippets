@@ -1,0 +1,120 @@
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
+import com.atlassian.fugue.Option
+import com.atlassian.jira.issue.MutableIssue
+import com.atlassian.jira.component.ComponentAccessor
+import com.atlassian.jira.issue.CustomFieldManager
+import com.atlassian.jira.user.util.UserManager
+import com.atlassian.jira.user.ApplicationUser
+import com.atlassian.jira.issue.fields.CustomField
+import com.atlassian.jira.security.JiraAuthenticationContext
+import com.atlassian.jira.event.type.EventDispatchOption;
+import com.atlassian.jira.bc.user.UserService
+import com.atlassian.servicedesk.api.organization.OrganizationService
+import com.atlassian.servicedesk.api.organization.OrganizationsQuery
+import com.atlassian.servicedesk.api.organization.UsersOrganizationUpdateParameters
+import com.atlassian.servicedesk.api.util.paging.LimitedPagedRequest
+import com.atlassian.servicedesk.api.util.paging.LimitedPagedRequestImpl
+import com.atlassian.servicedesk.api.ServiceDeskManager
+import com.onresolve.scriptrunner.runner.customisers.PluginModule
+import com.onresolve.scriptrunner.runner.customisers.WithPlugin
+@WithPlugin("com.atlassian.servicedesk")
+
+@PluginModule
+OrganizationService organizationService
+@PluginModule
+ServiceDeskManager serviceDeskManager
+
+File file = new File("/tmp/JSA-SPB.csv")
+def objectFacade = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.ObjectFacade"))
+def objectTypeAttributeFacade = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.ObjectTypeAttributeFacade"))
+def iqlFacade = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.IQLFacade"))
+def objectAttributeBeanFactory = ComponentAccessor.getOSGiComponentInstanceOfType(ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.services.model.factory.ObjectAttributeBeanFactory"))
+Class objectTypeFacadeClass = ComponentAccessor.getPluginAccessor().getClassLoader().findClass("com.riadalabs.jira.plugins.insight.channel.external.api.facade.ObjectTypeFacade"); 
+def objectTypeFacade = ComponentAccessor.getOSGiComponentInstanceOfType(objectTypeFacadeClass);
+UserManager userManager = ComponentAccessor.getUserManager()
+def userService = ComponentAccessor.getComponent(UserService)
+ApplicationUser user = userManager.getUserByName("Admin")
+if (file.exists() && file.isFile()) {
+    log.debug "Go!"
+    String[] lines = file.text.split('\n')
+    for (int i=1;i<2;i++){
+        List<String> items = new ArrayList<String>(Arrays.asList(lines[i].split(";")));
+        log.debug "${items[0]} - ${items[1]}"
+
+        
+        def newCreateRequest = UserService.CreateUserRequest.withUserDetails(user, items[1], "password", items[1], items[0])
+        .withNoApplicationAccess()
+        .sendNotification(false)
+        def createValidationResult = userService.validateCreateUser(newCreateRequest)
+        assert createValidationResult.isValid() : createValidationResult.errorCollection
+        def newUser 
+        if(createValidationResult.isValid()) {
+            newUser = userService.createUser(createValidationResult) // ApplicationUser here
+            def groupManager = ComponentAccessor.getGroupManager()
+            def jsaGroup = groupManager.getGroup("jsa_support")
+            groupManager.addUserToGroup(newUser, jsaGroup)
+        }
+        
+        //ApplicationUser newUser = userManager.getUserByName("anastasia.v.akimova@megafon.ru")
+        log.debug newUser
+        def objectTypeUsers = objectTypeFacade.loadObjectTypeBean(19)
+        def newObjectBean = objectTypeUsers.createMutableObjectBean();
+        def objectAttributeBeans = new ArrayList();
+        def nameObjectTypeAttributeBean = objectTypeAttributeFacade.loadObjectTypeAttributeBean(136);  
+        objectAttributeBeans.add(objectAttributeBeanFactory.createObjectAttributeBeanForObject(newObjectBean, nameObjectTypeAttributeBean, items[1]));
+        def emailObjectTypeAttributeBean = objectTypeAttributeFacade.loadObjectTypeAttributeBean(142);   
+        objectAttributeBeans.add(objectAttributeBeanFactory.createObjectAttributeBeanForObject(newObjectBean, emailObjectTypeAttributeBean, items[1]));
+        List<String> firstAndLastName = new ArrayList<String>(Arrays.asList(items[0].split(" ")));
+        def firstNameObjectTypeAttributeBean = objectTypeAttributeFacade.loadObjectTypeAttributeBean(139);   
+        objectAttributeBeans.add(objectAttributeBeanFactory.createObjectAttributeBeanForObject(newObjectBean, firstNameObjectTypeAttributeBean, firstAndLastName[1]));
+        def lastNameObjectTypeAttributeBean = objectTypeAttributeFacade.loadObjectTypeAttributeBean(141);   
+        objectAttributeBeans.add(objectAttributeBeanFactory.createObjectAttributeBeanForObject(newObjectBean, lastNameObjectTypeAttributeBean, firstAndLastName[0]));
+        def profileObjectTypeAttributeBean = objectTypeAttributeFacade.loadObjectTypeAttributeBean(155);   
+        objectAttributeBeans.add(objectAttributeBeanFactory.createObjectAttributeBeanForObject(newObjectBean, profileObjectTypeAttributeBean, newUser.username));
+        try {
+            def company = iqlFacade.findObjectsByIQLAndSchema(1, "objectType = Company and Name = \"JSA Group\""); // See the complete list of possible IQL on the Insight Query Language documentation page
+            log.debug company[0].getObjectKey()
+            def companyObjectTypeAttributeBean = objectTypeAttributeFacade.loadObjectTypeAttributeBean(148)
+            objectAttributeBeans.add(objectAttributeBeanFactory.createObjectAttributeBeanForObject(newObjectBean, companyObjectTypeAttributeBean, company[0].getObjectKey()));
+        }
+        catch (Exception e){
+            log.warn(e)
+        }
+        def statusCodeObjectTypeAttributeBean = objectTypeAttributeFacade.loadObjectTypeAttributeBean(152);   // 178 is the ID of the object type attribute "Status"
+        objectAttributeBeans.add(objectAttributeBeanFactory.createObjectAttributeBeanForObject(newObjectBean, statusCodeObjectTypeAttributeBean, "Active" ));
+
+        newObjectBean.setObjectAttributeBeans(objectAttributeBeans);
+
+        try {
+            newObjectBean = objectFacade.storeObjectBean(newObjectBean);
+            log.warn("newObjectBean: " + newObjectBean);
+        } catch (Exception vie) {
+            log.warn("Could not create issue due to validation exception:" + vie.getMessage());
+        }
+
+        def serviceDeskProject = serviceDeskManager.getServiceDeskForProject(ComponentAccessor.getProjectManager().getProjectObjByKey("SDEXT"))
+        log.debug serviceDeskProject
+        def serviceDeskId = serviceDeskProject.serviceDeskId as Integer
+        log.debug serviceDeskId
+        def organizationsQuery = organizationService.newOrganizationsQueryBuilder().serviceDeskId().build()
+        def organizationsToAdd = organizationService.getOrganizations(user, organizationsQuery).results
+		log.debug organizationsToAdd
+        def orgThatIneed
+        organizationsToAdd.each{
+            if (it.name == "JSA Group") orgThatIneed= it
+        }
+        log.debug orgThatIneed
+        
+        Set<ApplicationUser> usersToAdd = new HashSet<ApplicationUser>()
+        usersToAdd.add(newUser)
+        def usersOrganizationUpdateParameters = organizationService.newUsersOrganizationUpdateParametersBuilder().organization(orgThatIneed).users(usersToAdd).build()
+        organizationService.addUsersToOrganization(user,usersOrganizationUpdateParameters)
+    }
+
+} else {
+    "No file found at that location..."
+}
+
+
+
